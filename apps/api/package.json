@@ -1,0 +1,22 @@
+{
+  "name": "@aestus/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "lint": "eslint src",
+    "db:migrate": "echo 'migration placeholder — implement at P04'"
+  },
+  "dependencies": {
+    "@aestus/contracts": "workspace:*",
+    "@aestus/config": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "aestus",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "packages/contracts",
+    "packages/ui",
+    "packages/config"
+  ],
+  "scripts": {
+    "dev": "bun run --filter '*' dev",
+    "build": "bun run --filter '*' build",
+    "test": "bun run --filter '*' test",
+    "lint": "bun run --filter '*' lint",
+    "typecheck": "bun run --filter '*' typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
+    "docker:up": "docker compose -f infra/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infra/docker-compose.yml down",
+    "db:migrate": "bun run --filter 'apps/api' db:migrate"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0"
+  }
+}

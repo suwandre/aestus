@@ -122,7 +122,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: Folders exist with placeholder README files explaining ownership.
 
-### [ ] P01-T002 - Initialize package manager for TypeScript workspaces
+### [x] P01-T002 - Initialize package manager for TypeScript workspaces
 
 - Agent action: Set up Bun workspace config for `apps/api`, `apps/web`, `packages/contracts`, `packages/ui`, and `packages/config`.
 

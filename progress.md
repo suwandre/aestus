@@ -69,6 +69,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T002 — Initialize package manager for TypeScript workspaces
+- Files: package.json (root Bun workspace), apps/api/package.json, apps/web/package.json, packages/contracts/package.json, packages/ui/package.json, packages/config/package.json, apps/api/src/index.ts, packages/contracts/src/index.ts, packages/ui/src/index.ts, packages/config/src/index.ts, bun.lock
+- Checks: `bun install` succeeded (56 packages); `bun pm ls` shows all 5 workspace packages resolve at expected paths
+- Assumptions: apps/web placeholder entry point deferred — Next.js app structure created at P16-T001; bun.lock committed (standard lockfile practice)
+- Follow-ups: none
+
 ### P01-T001 — Create monorepo root structure
 - Files: apps/web/README.md, apps/api/README.md, services/ingestion/README.md, services/features/README.md, services/context/README.md, packages/contracts/README.md, packages/ui/README.md, packages/config/README.md, infra/README.md, fixtures/README.md (docs/ and scripts/ pre-existed)
 - Checks: All ten required new folders created with ownership READMEs; docs/ and scripts/ already present from P00
