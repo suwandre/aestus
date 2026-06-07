@@ -215,7 +215,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: Local artifact path exists and is ignored by git.
 
-### [ ] P02-T007 - Create infra health script
+### [x] P02-T007 - Create infra health script
 
 - Agent action: Write a script that checks NATS, Redis, Postgres, and ClickHouse connectivity.
 

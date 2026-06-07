@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T007 — Create infra health script
+
+- Files: scripts/infra-health.sh (new)
+- Checks: `sh -n scripts/infra-health.sh` passes (syntax clean); script checks NATS (/healthz), Redis (redis-cli ping), Postgres (pg_isready), ClickHouse (/ping); each service prints [PASS] or [FAIL] with host:port; exits 0 only when all pass; all hosts/ports configurable via env vars with local-dev defaults
+- Assumptions: redis-cli and pg_isready may not be installed on the host — FAIL message advises this; wget is used for HTTP checks (available on macOS via homebrew, standard on Linux)
+- Follow-ups: none
+
 ### P02-T006 — Add local object/artifact folder
 
 - Files: .local/artifacts/.gitkeep (new, force-added), .gitignore (appended .local/)
