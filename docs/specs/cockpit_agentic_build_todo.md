@@ -81,7 +81,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: Non-goals doc exists and explicitly says no trade placement or auto-close logic in MVP.
 
-### [ ] P00-T004 - Create glossary
+### [x] P00-T004 - Create glossary
 
 - Agent action: Write `docs/glossary.md` defining asset, venue, market state, feature snapshot, anomaly, context packet, briefing, decision, setup, regime, R-multiple, invalidation.
 
