@@ -153,3 +153,20 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Checks: Verified doc covers all six required topics from task spec: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost; no new product scope added
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
+
+### P01 REVIEW — PASS
+
+Verified all 10 P01 tasks against the actual repo with zero trust in progress.md claims.
+
+- P01-T001: All 10 required folders present; every folder has a README explaining ownership and dependent services.
+- P01-T002: `bun pm ls` shows all 5 workspace packages resolving at correct paths; bun.lock committed.
+- P01-T003: `cargo check --workspace` passes; 4 crates compile (event_model, market_math, ingestion, features).
+- P01-T004: Root README "Common commands" table lists all required commands (dev, test, lint, typecheck, format, docker:up, docker:down, db:migrate) plus Cargo equivalents.
+- P01-T005: `bun run format:check` passes clean; .prettierrc, .prettierignore, rustfmt.toml all present.
+- P01-T006: `bun run lint` passes (ESLint flat config + cargo clippy --workspace -D warnings); eslint.config.js present.
+- P01-T007: All workspace tsconfigs extend tsconfig.base.json with `strict: true` (implies noImplicitAny); `bun run typecheck` passes on placeholders across all 5 packages.
+- P01-T008: 5 .env.example files confirmed at root, apps/api, apps/web, services/ingestion, infra; no live secrets.
+- P01-T009: docs/dev_workflow.md present; branch format `task/<PHASE-TASKID>-<short-slug>` documented with exact example `task/P03-T004-clickhouse-schema`.
+- P01-T010: .github/workflows/ci.yml present; two jobs (ts-checks, rust-checks) covering format-check, lint, typecheck, and test for both TS and Rust on PR/push to main.
+
+No [!] tasks in P01. No failures.
