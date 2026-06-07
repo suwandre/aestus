@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T002 — Configure NATS JetStream container
+
+- Files: infra/nats/nats-server.conf (new), infra/docker-compose.yml (updated: nats service uses config file)
+- Checks: `docker compose config --quiet` passes; nats service now mounts nats-server.conf read-only and uses `-c /etc/nats/nats-server.conf`; JetStream store_dir matches named volume mount path (/data/jetstream); client port 4222 and monitoring port 8222 both exposed
+- Assumptions: max_memory_store=256MB and max_file_store=1GB are conservative dev defaults; production can override via a separate config or env-substituted values
+- Follow-ups: none
+
 ### P02-T001 — Create Docker Compose baseline
 
 - Files: infra/docker-compose.yml (new)

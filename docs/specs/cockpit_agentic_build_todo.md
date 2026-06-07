@@ -185,7 +185,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: `docker compose up` starts the databases/message bus even if app services are placeholders.
 
-### [ ] P02-T002 - Configure NATS JetStream container
+### [x] P02-T002 - Configure NATS JetStream container
 
 - Agent action: Enable JetStream persistence and mount a local volume. Expose client and monitoring ports.
 
