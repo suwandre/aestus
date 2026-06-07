@@ -7,3 +7,7 @@ dist/
 build/
 target/
 .DS_Store
+
+# Runner-owned local telemetry
+metrics.csv
+.loop-state

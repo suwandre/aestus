@@ -17,13 +17,21 @@ param(
     [int]$EndPhase = 30,
     [switch]$Interactive,
     [double]$Budget = 0,
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$SkipCI
 )
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
 $MetricsCsv = Join-Path $RepoRoot 'metrics.csv'
 $StopFile = Join-Path $RepoRoot '.stop'
+
+# Format a number with a fixed decimal count using a period separator regardless
+# of the machine's locale — German locale otherwise writes "1,333", and the comma
+# splits the cost_usd column into two in the CSV.
+function Fmt([double]$n, [int]$dp) {
+    return $n.ToString("F$dp", [System.Globalization.CultureInfo]::InvariantCulture)
+}
 
 # --- Locate the todo file (P00-T001 moves it under docs/specs/) ---------------
 function Get-TodoPath {
@@ -143,11 +151,10 @@ function Invoke-Agent {
     $cachePct = if ($inTok -gt 0) { [math]::Round(100 * ($u.cache_read_input_tokens ?? 0) / $inTok) } else { 0 }
     $durS = [math]::Round(($r.duration_ms ?? $sw.ElapsedMilliseconds) / 1000)
 
-    Write-Host ("[{0}] {1} done | {2} turns | {3}k in ({4}% cached) / {5}k out | `${6} | {7}m {8}s | total `${9}" -f `
+    Write-Host ("[{0}] {1} done | {2} turns | {3}k in ({4}% cached) / {5}k out | `$$(Fmt $cost 3) | {6}m {7}s | total `$$(Fmt $script:TotalCost 3)" -f `
         $label, $Role, $r.num_turns,
         [math]::Round($inTok / 1000), $cachePct, [math]::Round(($u.output_tokens ?? 0) / 1000),
-        [math]::Round($cost, 2), [math]::Floor($durS / 60), ($durS % 60),
-        [math]::Round($script:TotalCost, 2)) -ForegroundColor Green
+        [math]::Floor($durS / 60), ($durS % 60)) -ForegroundColor Green
 
     if (-not (Test-Path $MetricsCsv)) {
         'timestamp,phase,role,model,effort,duration_s,turns,input_tokens,cache_read_tokens,output_tokens,cost_usd,is_error' |
@@ -156,7 +163,7 @@ function Invoke-Agent {
     ('{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}' -f `
         (Get-Date -Format 'yyyy-MM-ddTHH:mm:ss'), $label, $Role, $Model, ($Effort ?? ''), $durS,
         $r.num_turns, $inTok, ($u.cache_read_input_tokens ?? 0), ($u.output_tokens ?? 0),
-        [math]::Round($cost, 4), [bool]$r.is_error) | Add-Content $MetricsCsv -Encoding UTF8
+        (Fmt $cost 3), [bool]$r.is_error) | Add-Content $MetricsCsv -Encoding UTF8
 
     return $r
 }
@@ -181,7 +188,7 @@ function Test-Halt {
         return $true
     }
     if ($Budget -gt 0 -and $script:TotalCost -ge $Budget) {
-        Write-Host ("`nBudget cap `${0} reached (spent `${1}) — halting." -f $Budget, [math]::Round($script:TotalCost, 2)) -ForegroundColor Yellow
+        Write-Host ("`nBudget cap `$$(Fmt $Budget 2) reached (spent `$$(Fmt $script:TotalCost 2)) — halting.") -ForegroundColor Yellow
         return $true
     }
     return $false
@@ -210,21 +217,91 @@ function Invoke-ReviewCycle([int]$Phase, [hashtable]$Routing) {
     return $false
 }
 
+# --- Phase review checkpoint ---------------------------------------------------
+# The reviewer commits a "### PXX REVIEW — PASS" line to progress.md. Treat that as a
+# durable checkpoint: a phase whose tasks are done but whose review was interrupted
+# (Ctrl+C during the reviewer) is re-reviewed on the next launch instead of skipped.
+function Test-PhaseReviewed([int]$Phase) {
+    $progress = Join-Path $RepoRoot 'progress.md'
+    if (-not (Test-Path $progress)) { return $false }
+    $label = 'P{0:D2}' -f $Phase
+    return [bool](Select-String -Path $progress -Pattern "^### $label REVIEW.*PASS" -Quiet)
+}
+
+# --- CI gate -------------------------------------------------------------------
+# After a phase, verify the pushed commits pass CI on GitHub. On failure, feed the
+# failed log to an escalating repair worker (Sonnet -> Opus) and re-check. Non-blocking
+# when CI can't be determined (no gh CLI, no workflow, or poll timeout).
+function Get-LatestCIRun {
+    $json = gh run list --branch main --limit 1 --json databaseId,status,conclusion 2>$null
+    if (-not $json) { return $null }
+    try { return @($json | ConvertFrom-Json)[0] } catch { return $null }
+}
+function Wait-CI([int]$TimeoutSec = 600) {
+    $deadline = (Get-Date).AddSeconds($TimeoutSec)
+    while ((Get-Date) -lt $deadline) {
+        $run = Get-LatestCIRun
+        if (-not $run) { return $null }
+        if ($run.status -eq 'completed') { return $run }
+        Start-Sleep -Seconds 15
+    }
+    return $null
+}
+function Invoke-CIGate([int]$Phase) {
+    $label = 'P{0:D2}' -f $Phase
+    if ($SkipCI) { return $true }
+    if (-not (Test-Path (Join-Path $RepoRoot '.github\workflows'))) { return $true }
+    if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+        Write-Host "[$label] CI check skipped — gh CLI not found." -ForegroundColor DarkYellow
+        return $true
+    }
+
+    $escalation = @(
+        @{ Model = 'claude-sonnet-4-6'; Effort = $null },
+        @{ Model = 'claude-opus-4-8';   Effort = 'high' }
+    )
+    for ($attempt = 0; $attempt -le $escalation.Count; $attempt++) {
+        Write-Host "[$label] checking CI on main..." -ForegroundColor Cyan
+        $run = Wait-CI
+        if (-not $run) { Write-Host "[$label] CI status indeterminate — skipping gate." -ForegroundColor DarkYellow; return $true }
+        if ($run.conclusion -eq 'success') { Write-Host "[$label] CI green." -ForegroundColor Green; return $true }
+        if ($attempt -eq $escalation.Count) { break }
+
+        $log = (gh run view $run.databaseId --log-failed 2>$null | Out-String)
+        if ($log.Length -gt 6000) { $log = $log.Substring($log.Length - 6000) }
+        $fixer = $escalation[$attempt]
+        Write-Host ("[{0}] CI FAILED ({1}) — repair attempt {2} ({3})" -f $label, $run.conclusion, ($attempt + 1), $fixer.Model) -ForegroundColor Yellow
+        $prompt = @"
+CI on the ``main`` branch is failing. Fix the root cause with minimal, targeted changes — no scope expansion. A common cause early on: a test command that exits non-zero when a package has no test files yet. Project guardrails in CLAUDE.md are absolute.
+
+After each fix: commit (conventional message, e.g. ``fix(ci): ...``) and ``git push`` immediately. Never edit metrics.csv.
+
+Most recent failed CI log (tail):
+``````
+$log
+``````
+"@
+        Invoke-Agent -Role 'ci-repair' -Phase $Phase -Model $fixer.Model -Effort $fixer.Effort -Prompt $prompt | Out-Null
+        if (Test-Halt) { return $false }
+        Start-Sleep -Seconds 10  # let the push trigger a fresh CI run before re-polling
+    }
+    Write-Host "[$label] CI still failing after repairs — halting for human input." -ForegroundColor Red
+    return $false
+}
+
 # --- Main ----------------------------------------------------------------------
 $script:TotalCost = 0.0
 $script:McpConfig = if (-not $DryRun) { New-McpConfig } else { '' }
 $loopStart = Get-Date
 
-if ($StartPhase -lt 0) {
-    $StartPhase = 0
-    for ($p = 0; $p -le 30; $p++) {
-        $s = Get-PhaseState $p
-        if ($s.Open -gt 0 -or $s.Blocked -gt 0) { $StartPhase = $p; break }
-        if ($p -eq 30 -and $s.Open -eq 0) { Write-Host 'All phases complete.' -ForegroundColor Green; return }
-    }
-}
+# Always scan from P00 (or the requested StartPhase). Completed+reviewed phases are
+# fast-skipped per-iteration; a completed-but-unreviewed phase gets its review re-run.
+if ($StartPhase -lt 0) { $StartPhase = 0 }
 
 Write-Host ("Aestus build loop | phases P{0:D2}-P{1:D2} | budget: {2}" -f $StartPhase, $EndPhase, $(if ($Budget -gt 0) { "`$$Budget" } else { 'unlimited' })) -ForegroundColor Magenta
+
+# Verify current CI state up front — catches a red main left by an earlier run.
+if (-not $DryRun) { if (-not (Invoke-CIGate $StartPhase)) { return } }
 
 for ($phase = $StartPhase; $phase -le $EndPhase; $phase++) {
     $state = Get-PhaseState $phase
@@ -234,7 +311,19 @@ for ($phase = $StartPhase; $phase -le $EndPhase; $phase++) {
         Write-Host "[$label] has $($state.Blocked) blocked [!] task(s) — resolve in todo/progress.md, then rerun." -ForegroundColor Red
         break
     }
-    if ($state.Open -eq 0) { Write-Host "[$label] already complete ($($state.Done)/$($state.Total)) — skipping." -ForegroundColor DarkGray; continue }
+    if ($state.Open -eq 0) {
+        if (Test-PhaseReviewed $phase) {
+            Write-Host "[$label] already complete & reviewed ($($state.Done)/$($state.Total)) — skipping." -ForegroundColor DarkGray
+            continue
+        }
+        # Tasks done but the review never passed (e.g. Ctrl+C during the reviewer). Re-run it.
+        if ($DryRun) { Write-Host "[$label] plan: complete but unreviewed — would run review." ; continue }
+        Write-Host "[$label] tasks complete but review missing — running review now." -ForegroundColor Yellow
+        if (Test-Halt) { break }
+        if (-not (Invoke-ReviewCycle $phase (Get-Routing $phase))) { break }
+        if (-not (Invoke-CIGate $phase)) { break }
+        continue
+    }
 
     $routing = Get-Routing $phase
     if ($DryRun) {
@@ -278,8 +367,9 @@ for ($phase = $StartPhase; $phase -le $EndPhase; $phase++) {
 
     if (Test-Halt) { break }
     if (-not (Invoke-ReviewCycle $phase $routing)) { break }
+    if (-not (Invoke-CIGate $phase)) { break }
 
-    Write-Host ("[{0}] PHASE COMPLETE | cumulative: `${1} | elapsed: {2:hh\:mm\:ss}" -f $label, [math]::Round($script:TotalCost, 2), ((Get-Date) - $loopStart)) -ForegroundColor Magenta
+    Write-Host ("[{0}] PHASE COMPLETE | cumulative: `$$(Fmt $script:TotalCost 2) | elapsed: {1:hh\:mm\:ss}" -f $label, ((Get-Date) - $loopStart)) -ForegroundColor Magenta
 
     if ($Interactive -and $phase -lt $EndPhase) {
         Write-Host 'Interactive mode — press Enter to start next phase (or Ctrl+C to stop)...' -ForegroundColor Yellow
@@ -287,4 +377,4 @@ for ($phase = $StartPhase; $phase -le $EndPhase; $phase++) {
     }
 }
 
-Write-Host ("`nLoop finished | total cost: `${0} | wall time: {1:hh\:mm\:ss} | metrics: metrics.csv" -f [math]::Round($script:TotalCost, 2), ((Get-Date) - $loopStart)) -ForegroundColor Magenta
+Write-Host ("`nLoop finished | total cost: `$$(Fmt $script:TotalCost 2) | wall time: {0:hh\:mm\:ss} | metrics: metrics.csv" -f ((Get-Date) - $loopStart)) -ForegroundColor Magenta
