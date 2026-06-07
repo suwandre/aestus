@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T005 — Configure ClickHouse container
+
+- Files: infra/docker-compose.yml (updated: added CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1)
+- Checks: `docker compose config --quiet` passes; clickhouse service has CLICKHOUSE_DB/USER/PASSWORD from env with defaults, named volume (clickhouse-data), HTTP port 8123 and native TCP port 9000 exposed; healthcheck polls /ping endpoint (no auth required); CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1 enables SQL-based user management needed at P04
+- Assumptions: clickhouse/clickhouse-server:24.8-alpine handles CLICKHOUSE_USER/PASSWORD/DB via built-in Docker entrypoint; no custom config.xml needed for single-node dev — image defaults are appropriate
+- Follow-ups: P04 — CREATE TABLE statements and any additional user grants go in ClickHouse migration scripts
+
 ### P02-T004 — Configure Postgres container
 
 - Files: infra/postgres/init.sql (new), infra/docker-compose.yml (updated: postgres mounts init script)

@@ -203,7 +203,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: Postgres healthcheck passes and extension init is documented.
 
-### [ ] P02-T005 - Configure ClickHouse container
+### [x] P02-T005 - Configure ClickHouse container
 
 - Agent action: Add ClickHouse with volume and basic user/password settings from env.
 
