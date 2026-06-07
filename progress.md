@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T001 — Create Docker Compose baseline
+
+- Files: infra/docker-compose.yml (new)
+- Checks: `docker compose -f infra/docker-compose.yml config --quiet` passes (YAML valid); app services placed under `profiles: ["app"]` so `docker compose up` starts only infra (postgres, redis, clickhouse, nats); all four infra services have healthchecks and named volumes
+- Assumptions: pgvector/pgvector:pg16 image used for Postgres to enable pgvector extension at P04; clickhouse/clickhouse-server:24.8-alpine used (24.8 is an LTS release); app services are placeholders that build from source context — they will fail until Dockerfiles are added at respective phases
+- Follow-ups: none
+
 ### P00 REVIEW — PASS
 
 Verified all 8 P00 tasks against the actual repo with zero trust in progress.md claims.

@@ -179,7 +179,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 Goal: Make the full stack runnable locally before real providers are connected.
 
-### [ ] P02-T001 - Create Docker Compose baseline
+### [x] P02-T001 - Create Docker Compose baseline
 
 - Agent action: Create `infra/docker-compose.yml` with Postgres, Redis, ClickHouse, NATS JetStream, API, web, ingestion, feature engine placeholders.
 

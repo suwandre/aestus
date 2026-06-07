@@ -1,0 +1,152 @@
+services:
+  # ─── Infrastructure ───────────────────────────────────────────────────────
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aestus-postgres
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aestus}
+      POSTGRES_USER: ${POSTGRES_USER:-aestus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aestus}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: aestus-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --appendfsync everysec
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8-alpine
+    container_name: aestus-clickhouse
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB:-aestus}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-aestus}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-aestus}
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8123/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  nats:
+    image: nats:2-alpine
+    container_name: aestus-nats
+    restart: unless-stopped
+    command: ["-js", "-sd", "/data/jetstream", "-p", "4222", "-m", "8222"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - nats-data:/data/jetstream
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8222/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── App services (profile: app) ─────────────────────────────────────────
+  # Start with: docker compose --profile app up
+
+  api:
+    build:
+      context: ../apps/api
+    container_name: aestus-api
+    restart: unless-stopped
+    profiles: ["app"]
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgres://${POSTGRES_USER:-aestus}:${POSTGRES_PASSWORD:-aestus}@postgres:5432/${POSTGRES_DB:-aestus}
+      REDIS_URL: redis://redis:6379
+      NATS_URL: nats://nats:4222
+      CLICKHOUSE_URL: http://${CLICKHOUSE_USER:-aestus}:${CLICKHOUSE_PASSWORD:-aestus}@clickhouse:8123
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  web:
+    build:
+      context: ../apps/web
+    container_name: aestus-web
+    restart: unless-stopped
+    profiles: ["app"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+  ingestion:
+    build:
+      context: ../services/ingestion
+    container_name: aestus-ingestion
+    restart: unless-stopped
+    profiles: ["app"]
+    environment:
+      NATS_URL: nats://nats:4222
+    depends_on:
+      nats:
+        condition: service_healthy
+
+  features:
+    build:
+      context: ../services/features
+    container_name: aestus-features
+    restart: unless-stopped
+    profiles: ["app"]
+    environment:
+      NATS_URL: nats://nats:4222
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      nats:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  redis-data:
+  clickhouse-data:
+  nats-data:
