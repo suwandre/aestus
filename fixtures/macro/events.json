@@ -1,0 +1,62 @@
+[
+  {
+    "event_id": "us-cpi-2026-06",
+    "region": "US",
+    "currency": "USD",
+    "title": "CPI (YoY)",
+    "scheduled_at": "2026-06-10T12:30:00.000Z",
+    "importance": "high",
+    "consensus": 3.1,
+    "previous": 3.4,
+    "actual": null,
+    "source": "te"
+  },
+  {
+    "event_id": "us-fomc-2026-06",
+    "region": "US",
+    "currency": "USD",
+    "title": "FOMC Interest Rate Decision",
+    "scheduled_at": "2026-06-17T18:00:00.000Z",
+    "importance": "high",
+    "consensus": 5.25,
+    "previous": 5.25,
+    "actual": null,
+    "source": "te"
+  },
+  {
+    "event_id": "us-nfp-2026-06",
+    "region": "US",
+    "currency": "USD",
+    "title": "Non-Farm Payrolls",
+    "scheduled_at": "2026-06-05T12:30:00.000Z",
+    "importance": "high",
+    "consensus": 185000,
+    "previous": 175000,
+    "actual": 206000,
+    "source": "te"
+  },
+  {
+    "event_id": "us-ppi-2026-06",
+    "region": "US",
+    "currency": "USD",
+    "title": "PPI (MoM)",
+    "scheduled_at": "2026-06-11T12:30:00.000Z",
+    "importance": "medium",
+    "consensus": 0.2,
+    "previous": 0.5,
+    "actual": null,
+    "source": "te"
+  },
+  {
+    "event_id": "us-jobless-claims-2026-06-04",
+    "region": "US",
+    "currency": "USD",
+    "title": "Initial Jobless Claims",
+    "scheduled_at": "2026-06-04T12:30:00.000Z",
+    "importance": "medium",
+    "consensus": 230000,
+    "previous": 229000,
+    "actual": 219000,
+    "source": "te"
+  }
+]

@@ -267,7 +267,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema is discriminated and supports deterministic validation.
 
-### [ ] P03-T005 - Create macro event schema
+### [x] P03-T005 - Create macro event schema
 
 - Agent action: Define economic calendar event fields: event_id, region, currency, title, scheduled_at, importance, consensus, previous, actual, source.
 

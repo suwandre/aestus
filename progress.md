@@ -300,3 +300,10 @@ No [!] tasks in P02. No failures.
 - Checks: All 8 variants (price_tick, trade, orderbook_delta, funding_rate, open_interest, liquidation, mark_price, index_price) parse via `z.discriminatedUnion("event_type", ...)`; `bun run typecheck` clean
 - Assumptions: Prices/sizes are numbers (not decimal strings) — normalization is where exact provider decimals become numeric inputs for feature math; exact bytes stay replayable via RawMarketEvent.raw_payload_hash. orderbook_delta uses `[price,size]` tuples with size 0 = level removal. Each variant shares a Base (venue, instrument_id, canonical_asset_id, timestamp, optional sequence).
 - Follow-ups: none
+
+### P03-T005 — Create macro event schema
+
+- Files: packages/contracts/src/macro.ts (new), packages/contracts/src/index.ts, fixtures/macro/events.json (new)
+- Checks: CPI, FOMC, NFP, PPI, jobless claims fixtures parse via `MacroEvent`; `bun run typecheck` clean
+- Assumptions: `consensus`/`previous`/`actual` are nullable numbers — `actual` is null until the print lands (CPI/FOMC/PPI fixtures show null actual; NFP/jobless show released actuals). importance enum low/medium/high. Numeric-only values (percentages stored as the bare number, counts as raw integers).
+- Follow-ups: none
