@@ -1,0 +1,35 @@
+[
+  {
+    "id": "trade-001",
+    "schema_version": 1,
+    "canonical_asset_id": "crypto:btc-usdt",
+    "side": "buy",
+    "entry": { "price": 67950, "at": "2026-06-07T12:15:00.000Z" },
+    "exit": { "price": 69500, "at": "2026-06-08T09:00:00.000Z" },
+    "size": 0.15,
+    "fees": 12.4,
+    "realized_pnl": 220.1,
+    "r_multiple": 1.5,
+    "outcome_status": "win",
+    "setup_tags": ["trend-follow", "swing"],
+    "regime_at_entry": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" },
+    "signal": "funding_spike",
+    "linked_briefing_id": "brief-001"
+  },
+  {
+    "id": "trade-002",
+    "schema_version": 1,
+    "canonical_asset_id": "crypto:eth-usdt",
+    "side": "sell",
+    "entry": { "price": 3550, "at": "2026-06-07T13:00:00.000Z" },
+    "exit": null,
+    "size": 2.0,
+    "fees": 4.2,
+    "realized_pnl": null,
+    "r_multiple": null,
+    "outcome_status": "open",
+    "setup_tags": ["mean-revert"],
+    "signal": "volume_anomaly",
+    "linked_briefing_id": null
+  }
+]

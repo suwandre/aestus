@@ -315,7 +315,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema supports act, skip, snooze, dismiss, and watch actions.
 
-### [ ] P03-T013 - Create journal trade schema
+### [x] P03-T013 - Create journal trade schema
 
 - Agent action: Define trade lifecycle fields: entry, exit, size, fees, realized_pnl, r_multiple, outcome_status, setup_tags, linked_briefing_id.
 

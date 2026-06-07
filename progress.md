@@ -356,3 +356,10 @@ No [!] tasks in P02. No failures.
 - Checks: act, skip, snooze, dismiss, watch decisions parse via `Decision`; `bun run typecheck` clean
 - Assumptions: Plan fields (planned_entry/planned_stop/planned_targets/risk_r) nullable/empty for non-act decisions; populated only on `act`. `briefing_id` is the informing-context link (hard rule #4). Added optional `snooze_until` for the snooze action. Per hard rule #1 these record intent only — no execution.
 - Follow-ups: none
+
+### P03-T013 — Create journal trade schema
+
+- Files: packages/contracts/src/journal.ts (new), packages/contracts/src/index.ts, fixtures/journal/trades.json (new)
+- Checks: A closed winning trade and an open trade parse via `JournalTrade`; `bun run typecheck` clean
+- Assumptions: entry/exit modeled as `TradeLeg {price, at}`; exit/realized_pnl/r_multiple null while open. To satisfy "analytics by setup/regime/signal" Done-when, added `setup_tags` (setup), optional `regime_at_entry` (reuses RegimeLabels), and optional `signal` (triggering anomaly type). `side` reuses Side enum. linked_briefing_id nullable (manual trades). Hard rule #1: records only, no execution.
+- Follow-ups: none
