@@ -4,10 +4,10 @@ Self-hosted, single-user, crypto-primary decision-support cockpit. **Not a tradi
 
 ## Source of truth (read before inventing anything)
 
-- `docs/specs/cockpit_spec.md` (or repo root until P00-T001 moves it) — product/system spec
+- `docs/specs/cockpit_spec.md` — product/system spec
 - `docs/specs/cockpit_ui_implementation.md` — presentation-layer contract
 - `docs/specs/cockpit_agentic_build_todo.md` — task backlog (P00–P30)
-- `cockpit.html` — pixel-level UI reference
+- `docs/specs/cockpit.html` — pixel-level UI reference
 
 Naming: product/brand = **Aestus**; "Cockpit" = main dashboard tab + concept ("cockpit, not autopilot"). Do not global-rename either direction.
 
