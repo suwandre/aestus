@@ -24,19 +24,19 @@ Purpose: give future coding agents a granular backlog where each task is small, 
 
 The loop runner selects the model per phase (`--model claude-sonnet-4-6` / `--model claude-opus-4-8`). Effort applies to Opus only; default high, max reserved for the few judgment-critical phases.
 
-| Phases | Model | Effort | Rationale |
-|---|---|---|---|
-| P00-P02 | Sonnet | - | docs, scaffolding, containers: mechanical |
-| P03-P05 | Opus | high | contracts/schemas/event bus: mistakes ripple through every later task |
-| P06-P08 | Sonnet | - | ingestion adapters and normalization: pattern-repetitive |
-| P09 | Sonnet | - | features are formula-specified and fixture-tested |
-| P10-P11 | Opus | high | anomaly detection design; context packet quality determines briefing quality |
-| P12-P13 | Opus | max | deterministic level engine + LLM boundaries: core differentiator and safety rails |
-| P14-P16 | Sonnet | - | API, realtime stream, frontend foundations: well-specified |
-| P17 | Sonnet | - | panels; escalate P17-T005 and P17-T006 to Opus high (pixel-parity-critical card + chart port) |
-| P18-P28 | Sonnet | - | remaining tabs, ops, testing, deploy docs |
-| P29 | Opus | high | security hardening needs adversarial thinking |
-| P30 | Opus | max | final acceptance and integration judgment |
+| Phases  | Model  | Effort | Rationale                                                                                     |
+| ------- | ------ | ------ | --------------------------------------------------------------------------------------------- |
+| P00-P02 | Sonnet | -      | docs, scaffolding, containers: mechanical                                                     |
+| P03-P05 | Opus   | high   | contracts/schemas/event bus: mistakes ripple through every later task                         |
+| P06-P08 | Sonnet | -      | ingestion adapters and normalization: pattern-repetitive                                      |
+| P09     | Sonnet | -      | features are formula-specified and fixture-tested                                             |
+| P10-P11 | Opus   | high   | anomaly detection design; context packet quality determines briefing quality                  |
+| P12-P13 | Opus   | max    | deterministic level engine + LLM boundaries: core differentiator and safety rails             |
+| P14-P16 | Sonnet | -      | API, realtime stream, frontend foundations: well-specified                                    |
+| P17     | Sonnet | -      | panels; escalate P17-T005 and P17-T006 to Opus high (pixel-parity-critical card + chart port) |
+| P18-P28 | Sonnet | -      | remaining tabs, ops, testing, deploy docs                                                     |
+| P29     | Opus   | high   | security hardening needs adversarial thinking                                                 |
+| P30     | Opus   | max    | final acceptance and integration judgment                                                     |
 
 Escalation rule: if a task fails its done-when criteria twice on Sonnet, retry once on Opus high before marking it `[!]`.
 
@@ -111,7 +111,6 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: Future agents can pick a task and know how to report completion.
 
-
 ## P01 - Monorepo foundation
 
 Goal: Create the repository shape and tooling so backend, frontend, shared contracts, and infra can evolve together.
@@ -140,7 +139,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: A contributor can see all common commands from the root README.
 
-### [ ] P01-T005 - Configure formatting
+### [x] P01-T005 - Configure formatting
 
 - Agent action: Add Prettier for TS/MD/JSON and rustfmt for Rust. Include a single root command to format all code.
 
@@ -175,7 +174,6 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 - Agent action: Create CI workflow that runs formatting, linting, typecheck, Rust check, and tests on pull requests.
 
 - Done when: CI file exists and would run the basic checks when repository is hosted.
-
 
 ## P02 - Local infrastructure and containers
 
@@ -240,7 +238,6 @@ Goal: Make the full stack runnable locally before real providers are connected.
 - Agent action: Add a destructive local reset script that drops volumes only after an explicit confirmation flag.
 
 - Done when: Reset script cannot accidentally delete data without a clear flag.
-
 
 ## P03 - Shared contracts and event schemas
 
@@ -341,7 +338,6 @@ Goal: Define typed data boundaries before implementing services so every agent k
 - Agent action: Write `docs/contracts_versioning.md` explaining breaking changes, migration notes, and event version fields.
 
 - Done when: Agents know how to evolve schemas safely.
-
 
 ## P04 - Storage schemas and migrations
 
@@ -455,7 +451,6 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Migration smoke test passes for Postgres and ClickHouse.
 
-
 ## P05 - Event bus and streaming backbone
 
 Goal: Implement the event backbone that connects ingestion, features, anomalies, context assembly, LLM jobs, API, and UI.
@@ -519,7 +514,6 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 - Agent action: Write doc explaining sequence handling, provider timestamps, received timestamps, and what ordering guarantees not to assume.
 
 - Done when: Agents avoid writing logic that depends on impossible cross-provider ordering.
-
 
 ## P06 - Crypto market ingestion MVP
 
@@ -621,7 +615,6 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Data tab and logs can reveal stale feeds.
 
-
 ## P07 - Macro, news, and on-chain ingestion MVP
 
 Goal: Add contextual feeds needed for briefings without relying on expensive providers.
@@ -698,7 +691,6 @@ Goal: Add contextual feeds needed for briefings without relying on expensive pro
 
 - Done when: Future provider decisions remain grounded in the low-cost constraint.
 
-
 ## P08 - Normalization and data quality layer
 
 Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale in the UI.
@@ -750,7 +742,6 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 - Agent action: Expose feed freshness, event counts, error counts, lag, and last-seen timestamps.
 
 - Done when: Frontend Data tab can render source health without scraping logs.
-
 
 ## P09 - Feature engine
 
@@ -851,7 +842,6 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 - Agent action: Create `docs/feature_formulas.md` with formulas, windows, thresholds, and known limitations.
 
 - Done when: Future agents can update formulas without guessing intent.
-
 
 ## P10 - Anomaly detection engine
 
@@ -965,7 +955,6 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Future agents can tune detectors without re-inferring behavior.
 
-
 ## P11 - Context packet builder
 
 Goal: Assemble the context around an anomaly so the LLM and user see more than a raw signal.
@@ -1054,7 +1043,6 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Agents do not silently omit missing data.
 
-
 ## P12 - Deterministic level and risk engine
 
 Goal: Produce entry, invalidation, target, size, and no-trade conditions deterministically, not by LLM invention.
@@ -1130,7 +1118,6 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 - Agent action: Use fixed candles/liquidation fixtures to assert stable entry/invalidation/target outputs.
 
 - Done when: LLM changes cannot alter deterministic numeric level tests.
-
 
 ## P13 - LLM orchestration and briefing generation
 
@@ -1219,7 +1206,6 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 - Agent action: Create `docs/llm_boundaries.md` covering narrative-only reasoning, deterministic numbers, no execution, cost controls, and data freshness warnings.
 
 - Done when: Future agents keep LLM logic inside intended boundaries.
-
 
 ## P14 - API layer and single-user auth
 
@@ -1315,7 +1301,6 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: API tests pass without live provider keys.
 
-
 ## P15 - Realtime API and UI event stream
 
 Goal: Make the frontend feel live with controlled, typed streaming updates rather than random polling.
@@ -1367,7 +1352,6 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 - Agent action: Test auth, heartbeat, event mapping, filtering, and disconnect cleanup.
 
 - Done when: Realtime endpoint is covered by automated tests.
-
 
 ## P16 - Frontend foundations
 
@@ -1475,7 +1459,6 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Design polish can happen independently from live data.
 
-
 ## P17 - Cockpit tab implementation
 
 Goal: Build the main high-density decision cockpit view from the UI spec.
@@ -1576,7 +1559,6 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Mobile/narrow view remains usable for away-from-desk checks.
 
-
 ## P18 - Markets tab implementation
 
 Goal: Build asset universe, per-asset market state, venue comparison, features, and cross-asset relationship views.
@@ -1641,7 +1623,6 @@ Goal: Build asset universe, per-asset market state, venue comparison, features, 
 
 - Done when: Copied JSON includes asset, venues, latest features, and freshness.
 
-
 ## P19 - Alerts tab implementation
 
 Goal: Build the workflow for reviewing, triaging, and configuring anomaly alerts.
@@ -1705,7 +1686,6 @@ Goal: Build the workflow for reviewing, triaging, and configuring anomaly alerts
 - Agent action: Show when alert was created, updated, snoozed, dismissed, or converted into a briefing/decision.
 
 - Done when: Alert lifecycle is transparent.
-
 
 ## P20 - Briefings tab implementation
 
@@ -1783,7 +1763,6 @@ Goal: Build the central thesis/proposal review experience with context and decis
 
 - Done when: Future versioning does not require UI redesign.
 
-
 ## P21 - Research tab implementation
 
 Goal: Build natural-language querying over the system data without letting chat dominate the cockpit.
@@ -1847,7 +1826,6 @@ Goal: Build natural-language querying over the system data without letting chat 
 - Agent action: Connect Cockpit Ask Mini Panel to Research backend or route with prefilled context.
 
 - Done when: Asking from Cockpit preserves focused asset and timeframe.
-
 
 ## P22 - Journal and learning loop MVP
 
@@ -1925,7 +1903,6 @@ Goal: Record decisions and outcomes so the system can learn which signals work f
 
 - Done when: Agents understand why logging is first-class.
 
-
 ## P23 - Analytics tab implementation
 
 Goal: Turn the journal and signal history into performance feedback for the trader.
@@ -1989,7 +1966,6 @@ Goal: Turn the journal and signal history into performance feedback for the trad
 - Agent action: Create `docs/analytics_formulas.md` defining win rate, expectancy, profit factor, drawdown, R multiple, setup edge.
 
 - Done when: Metrics are reproducible and auditable.
-
 
 ## P24 - Playbooks, Data, and Settings tabs
 
@@ -2079,7 +2055,6 @@ Goal: Implement the support tabs that make the cockpit configurable, observable,
 
 - Done when: Reload preserves settings state.
 
-
 ## P25 - Notifications and away-from-desk alerts
 
 Goal: Deliver anomaly/briefing alerts without becoming spammy or implying automatic execution.
@@ -2131,7 +2106,6 @@ Goal: Deliver anomaly/briefing alerts without becoming spammy or implying automa
 - Agent action: Connect bell/dropdown or panel to notification store and status actions.
 
 - Done when: Unread notifications are visible and actionable.
-
 
 ## P26 - Observability, cost control, and system health
 
@@ -2196,7 +2170,6 @@ Goal: Make the self-hosted system understandable and cheap to run.
 - Agent action: Create `docs/ops_runbook.md` for restart, backup, restore, feed stale, LLM provider down, disk full, high cost.
 
 - Done when: Single operator can recover common failures.
-
 
 ## P27 - Testing, fixtures, and replay workflows
 
@@ -2274,7 +2247,6 @@ Goal: Make the cockpit buildable by agents without needing live markets for ever
 
 - Done when: The core user journey works end-to-end in fixture mode.
 
-
 ## P28 - Deployment, backup, and self-hosting
 
 Goal: Package the system for a single modest server with safe persistence and no accidental public exposure.
@@ -2339,7 +2311,6 @@ Goal: Package the system for a single modest server with safe persistence and no
 
 - Done when: Future agents can deploy without improvising.
 
-
 ## P29 - Security, privacy, and safety hardening
 
 Goal: Keep the personal trading cockpit private, safe, and clearly non-executing.
@@ -2391,7 +2362,6 @@ Goal: Keep the personal trading cockpit private, safe, and clearly non-executing
 - Agent action: Document how to update dependencies and run tests before deployment.
 
 - Done when: Security updates can be applied without breaking stack.
-
 
 ## P30 - MVP stitching and acceptance
 
@@ -2463,7 +2433,6 @@ Goal: Validate that the first usable cockpit works as an integrated decision-sup
 
 - Done when: Repository has a clear MVP checkpoint.
 
-
 ---
 
 ## Deferred post-MVP backlog seeds
@@ -2471,46 +2440,57 @@ Goal: Validate that the first usable cockpit works as an integrated decision-sup
 These are intentionally not part of the initial MVP unless a human reprioritizes them.
 
 ### [ ] D01 - Full Bybit live adapter
+
 - Agent action: Replace fixture-only Bybit support with full public WebSocket/polling implementation for price, trade, funding, OI, liquidations, and orderbook where available.
 - Done when: Bybit streams pass the same ingestion and normalization tests as Binance.
 
 ### [ ] D02 - Full Hyperliquid live adapter
+
 - Agent action: Implement live Hyperliquid market data adapter and map instruments into canonical assets.
 - Done when: Hyperliquid BTC/ETH/SOL data appears in venue comparison and basis/funding views.
 
 ### [ ] D03 - Full OKX live adapter
+
 - Agent action: Implement OKX public market data adapter for MVP asset set.
 - Done when: OKX feed health and market states appear alongside Binance.
 
 ### [ ] D04 - Deribit options context
+
 - Agent action: Add Deribit options data ingestion for BTC/ETH implied volatility, skew, and large options flows.
 - Done when: Options context can appear in context packets and briefings.
 
 ### [ ] D05 - Mobile companion UI
+
 - Agent action: Build a mobile-first alert/briefing/journal workflow optimized for away-from-desk use.
 - Done when: User can triage alerts, read briefings, and log decisions from a phone.
 
 ### [ ] D06 - Earned automation research mode
+
 - Agent action: Create analysis-only tooling to identify candidate signal classes after months of journaled outcomes; do not place trades.
 - Done when: Playbooks can show automation eligibility metrics without any execution capability.
 
 ### [ ] D07 - Strategy simulation/backtesting
+
 - Agent action: Add offline replay/backtest module for validated signal classes using stored historical events and journal assumptions.
 - Done when: Backtest results are explicitly labeled hypothetical and separate from live briefings.
 
 ### [ ] D08 - Advanced historical analogue search
+
 - Agent action: Improve analogue retrieval using feature vectors and event similarity rather than simple anomaly-type matching.
 - Done when: Context packets include ranked analogues with similarity score and outcome distribution.
 
 ### [ ] D09 - Rich charting upgrades
+
 - Agent action: Add advanced chart interactions: multi-timeframe overlays, drawing tools, VPVR, liquidation heatmap, compare assets.
 - Done when: Chart remains fast and readable without turning into an execution terminal.
 
 ### [ ] D10 - Local/open-model experimentation
+
 - Agent action: Add local or low-cost open-model providers for extraction, scoring, and maybe briefing drafts.
 - Done when: Model routing can use local providers with comparable structured-output validation.
 
 ### [ ] D11 - Native kernel playground (C/Zig via FFI)
+
 - Agent action: After the Rust feature engine is complete, correct, and benchmarked, extract the hottest numerical inner loops (e.g., z-score, rolling correlation) into C (SIMD intrinsics) and Zig kernels called in-process via FFI (wired through build.rs). Benchmark Rust vs C vs Zig on identical fixtures.
 - Done when: Kernels are feature-flagged off by default, outputs match the pure-Rust implementation exactly on deterministic fixtures, a benchmark report compares all three implementations, and the system runs fully with kernels disabled.
 - Note: This is a deliberate learning indulgence, not a performance requirement (spec §11). End-to-end latency is network/LLM-dominated; do not start this before the pure-Rust baseline exists.

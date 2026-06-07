@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+target/
+.next/
+bun.lock
+Cargo.lock
+fixtures/
+*.generated.ts
+*.generated.json
+docs/specs/cockpit.html
+docs/specs/reference/

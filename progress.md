@@ -19,6 +19,7 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 ---
 
 ### DECISION — Runtime LLM providers (binding; informs P00 ADR + P13)
+
 - Provider: **Ollama Cloud** (subscription-billed API key, OpenAI/Anthropic-compatible). Chosen over per-token Anthropic API to fit the €10–30/mo flat-cost target. Claude subscriptions do not issue API keys for app embedding — not an option for runtime.
 - Top-tier reasoning (spec §183 — briefings, thesis synthesis, NL chat): **Kimi K2.6**.
 - High-volume narrow (spec §184 — entity extraction, relevance, sentiment, classification): **MiniMax M2.7**.
@@ -28,72 +29,91 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Full detail: `docs/credentials.md`.
 
 ### P00-T001 — Add source documents to repo docs
+
 - Files: README.md (new), docs/specs/cockpit_spec.md, docs/specs/cockpit_ui_implementation.md, docs/specs/cockpit_agentic_build_todo.md (pre-committed)
 - Checks: Verified README links to all three spec docs and cockpit.html reference; spec files confirmed present under docs/specs/
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
 ### P00-T008 — Define agent handoff protocol
+
 - Files: docs/agent_handoff.md (new)
 - Checks: Protocol covers startup checks (.stop, git status, progress.md, git log), per-task procedure (action, done-when verification, checkbox flip, progress entry, commit), blocked-task handling, commit conventions, and explicit do-not-do list; consistent with CLAUDE.md working protocol
 - Assumptions: none
 - Follow-ups: none
 
 ### P00-T007 — Write MVP scope boundary
+
 - Files: docs/mvp_scope.md (new)
 - Checks: First exchanges identified (Binance live, Bybit/Hyperliquid/OKX placeholder); first assets listed (BTC, ETH perps + macro proxies); all 10 tabs listed; deferred features explicitly called out; cost envelope stated
 - Assumptions: Bybit/Hyperliquid/OKX live feeds treated as post-P30 only; social firehose deferred per non_goals.md; macro proxy source (SPX, DXY, GOLD, VIX) confirmed at P06/P07 — noted as TBD
 - Follow-ups: P06/P07 — confirm free macro proxy sources for SPX/DXY/GOLD/VIX
 
 ### P00-T006 — Write ADR for chosen stack
+
 - Files: docs/adr/ADR-001-stack.md (new)
 - Checks: ADR covers all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); includes runtime LLM provider decision from progress.md DECISION entry (Ollama Cloud, Kimi K2.6, MiniMax M2.7); explicitly defers FFI kernels to D11; alternatives table present
 - Assumptions: Ollama Cloud model tag naming (e.g. kimi-k2.6:cloud) must be confirmed at P13 — noted in Consequences; pgvector image variant must be confirmed at P04 — noted in Consequences
 - Follow-ups: P13 — confirm Ollama Cloud model tags against live catalog before hardcoding
 
 ### P00-T005 — Create architecture decision log folder
+
 - Files: docs/adr/README.md (new)
 - Checks: README explains when to write an ADR, includes full template, and indexes ADR-001 (written in P00-T006)
 - Assumptions: ADR-001 pre-indexed in README because it is written immediately after in the same phase
 - Follow-ups: none
 
 ### P00-T004 — Create glossary
+
 - Files: docs/glossary.md (new)
 - Checks: All twelve required terms defined (asset, venue, market state, feature snapshot, anomaly, context packet, briefing, decision, setup, regime, R-multiple, invalidation); definitions cross-checked against todo task descriptions and principles.md for consistency
 - Assumptions: R-multiple formula shown for longs; sign convention for shorts noted inline
 - Follow-ups: none
 
 ### P00-T003 — Create non-goals doc
+
 - Files: docs/non_goals.md (new)
 - Checks: Verified doc explicitly prohibits automated order execution and auto-close logic; covers all five required absolute non-goals (no order execution, no HFT, no multi-tenant SaaS, no signal-selling, no premium feed dependency for MVP); deferred features section present
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T005 — Configure formatting
+
+- Files: .prettierrc (new), .prettierignore (new), rustfmt.toml (new), package.json (format script updated to include cargo fmt --all)
+- Checks: `bun run format` runs Prettier over TS/MD/JSON and cargo fmt over Rust workspace; `bun run format:check` passes clean; fixtures/ and *.generated.* excluded via .prettierignore; rustfmt.toml uses stable-only options (nightly-only imports_granularity/group_imports removed)
+- Assumptions: Prettier printWidth=100 to match Rust max_width=100; LF line endings enforced for cross-platform consistency
+- Follow-ups: none
+
 ### P01-T004 — Add root task runner commands
+
 - Files: README.md (updated — Common commands table added), package.json (scripts already present from P01-T002)
 - Checks: README table documents all required commands: dev, test, lint, typecheck, format, docker:up, docker:down, db:migrate plus Cargo equivalents
 - Assumptions: Cargo commands documented in README alongside Bun commands for discoverability; no separate task runner (Make/just) added — the spec says "root scripts" which is covered by package.json + README
 - Follow-ups: none
 
 ### P01-T003 — Initialize Rust workspace
+
 - Files: Cargo.toml (root workspace), crates/event_model/Cargo.toml, crates/event_model/src/lib.rs, crates/market_math/Cargo.toml, crates/market_math/src/lib.rs, services/ingestion/Cargo.toml, services/ingestion/src/main.rs, services/features/Cargo.toml, services/features/src/main.rs, Cargo.lock
 - Checks: `cargo check --workspace` passes; all 4 crates compile (event_model, market_math, ingestion, features)
 - Assumptions: services/context is TypeScript (per P11 spec) and excluded from Rust workspace; workspace.dependencies shared for all crates
 - Follow-ups: none
 
 ### P01-T002 — Initialize package manager for TypeScript workspaces
+
 - Files: package.json (root Bun workspace), apps/api/package.json, apps/web/package.json, packages/contracts/package.json, packages/ui/package.json, packages/config/package.json, apps/api/src/index.ts, packages/contracts/src/index.ts, packages/ui/src/index.ts, packages/config/src/index.ts, bun.lock
 - Checks: `bun install` succeeded (56 packages); `bun pm ls` shows all 5 workspace packages resolve at expected paths
 - Assumptions: apps/web placeholder entry point deferred — Next.js app structure created at P16-T001; bun.lock committed (standard lockfile practice)
 - Follow-ups: none
 
 ### P01-T001 — Create monorepo root structure
+
 - Files: apps/web/README.md, apps/api/README.md, services/ingestion/README.md, services/features/README.md, services/context/README.md, packages/contracts/README.md, packages/ui/README.md, packages/config/README.md, infra/README.md, fixtures/README.md (docs/ and scripts/ pre-existed)
 - Checks: All ten required new folders created with ownership READMEs; docs/ and scripts/ already present from P00
 - Assumptions: none
 - Follow-ups: none
 
 ### P00-T002 — Create implementation principles doc
+
 - Files: docs/principles.md (new)
 - Checks: Verified doc covers all six required topics from task spec: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost; no new product scope added
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria

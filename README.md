@@ -6,45 +6,45 @@ Self-hosted, single-user, crypto-primary decision-support cockpit. **Not a tradi
 
 These files are the binding product and implementation contracts. Read them before implementing anything.
 
-| File | Purpose |
-|------|---------|
-| [`docs/specs/cockpit_spec.md`](docs/specs/cockpit_spec.md) | Product and system specification — what the system is, data model, pipeline, behavior |
-| [`docs/specs/cockpit_ui_implementation.md`](docs/specs/cockpit_ui_implementation.md) | Presentation-layer contract — layout, tokens, components, interaction spec |
-| [`docs/specs/cockpit_agentic_build_todo.md`](docs/specs/cockpit_agentic_build_todo.md) | Agentic task backlog — every build task, phase routing, done-when criteria |
-| [`docs/specs/cockpit.html`](docs/specs/cockpit.html) | Pixel-level UI reference — canonical visual target for the Cockpit tab |
+| File                                                                                   | Purpose                                                                               |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`docs/specs/cockpit_spec.md`](docs/specs/cockpit_spec.md)                             | Product and system specification — what the system is, data model, pipeline, behavior |
+| [`docs/specs/cockpit_ui_implementation.md`](docs/specs/cockpit_ui_implementation.md)   | Presentation-layer contract — layout, tokens, components, interaction spec            |
+| [`docs/specs/cockpit_agentic_build_todo.md`](docs/specs/cockpit_agentic_build_todo.md) | Agentic task backlog — every build task, phase routing, done-when criteria            |
+| [`docs/specs/cockpit.html`](docs/specs/cockpit.html)                                   | Pixel-level UI reference — canonical visual target for the Cockpit tab                |
 
 ## Documentation index
 
-| File | Purpose |
-|------|---------|
-| [`docs/principles.md`](docs/principles.md) | Core implementation principles (cockpit not autopilot, deterministic levels, etc.) |
-| [`docs/non_goals.md`](docs/non_goals.md) | Explicit non-goals and out-of-scope items for MVP |
-| [`docs/glossary.md`](docs/glossary.md) | Term definitions used across specs and code |
-| [`docs/mvp_scope.md`](docs/mvp_scope.md) | MVP boundary — what is in, what is deferred |
-| [`docs/agent_handoff.md`](docs/agent_handoff.md) | Protocol for agentic build loop task execution |
-| [`docs/adr/`](docs/adr/) | Architecture decision records |
+| File                                             | Purpose                                                                            |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| [`docs/principles.md`](docs/principles.md)       | Core implementation principles (cockpit not autopilot, deterministic levels, etc.) |
+| [`docs/non_goals.md`](docs/non_goals.md)         | Explicit non-goals and out-of-scope items for MVP                                  |
+| [`docs/glossary.md`](docs/glossary.md)           | Term definitions used across specs and code                                        |
+| [`docs/mvp_scope.md`](docs/mvp_scope.md)         | MVP boundary — what is in, what is deferred                                        |
+| [`docs/agent_handoff.md`](docs/agent_handoff.md) | Protocol for agentic build loop task execution                                     |
+| [`docs/adr/`](docs/adr/)                         | Architecture decision records                                                      |
 
 ## Common commands
 
 All commands run from the **repo root**. Bun is the TypeScript package manager; Cargo handles Rust. Docker Compose manages local infrastructure.
 
-| Command | What it does |
-|---------|-------------|
-| `bun install` | Install all TypeScript workspace dependencies |
-| `bun run dev` | Start all TypeScript services in development mode (hot-reload) |
-| `bun run build` | Build all TypeScript workspaces |
-| `bun run test` | Run all TypeScript tests |
-| `bun run lint` | Run ESLint across all TypeScript workspaces |
-| `bun run typecheck` | Run `tsc --noEmit` across all TypeScript workspaces |
-| `bun run format` | Format all TS/JS/JSON/MD files with Prettier |
-| `bun run format:check` | Check formatting without writing (used in CI) |
-| `bun run docker:up` | Start local infrastructure (Postgres, Redis, ClickHouse, NATS) |
-| `bun run docker:down` | Stop local infrastructure containers |
-| `bun run db:migrate` | Run pending Postgres migrations |
-| `cargo check --workspace` | Type-check all Rust crates without full build |
-| `cargo test --workspace` | Run all Rust tests |
-| `cargo clippy --workspace` | Lint all Rust crates |
-| `cargo fmt --all` | Format all Rust source files |
+| Command                    | What it does                                                   |
+| -------------------------- | -------------------------------------------------------------- |
+| `bun install`              | Install all TypeScript workspace dependencies                  |
+| `bun run dev`              | Start all TypeScript services in development mode (hot-reload) |
+| `bun run build`            | Build all TypeScript workspaces                                |
+| `bun run test`             | Run all TypeScript tests                                       |
+| `bun run lint`             | Run ESLint across all TypeScript workspaces                    |
+| `bun run typecheck`        | Run `tsc --noEmit` across all TypeScript workspaces            |
+| `bun run format`           | Format all TS/JS/JSON/MD files with Prettier                   |
+| `bun run format:check`     | Check formatting without writing (used in CI)                  |
+| `bun run docker:up`        | Start local infrastructure (Postgres, Redis, ClickHouse, NATS) |
+| `bun run docker:down`      | Stop local infrastructure containers                           |
+| `bun run db:migrate`       | Run pending Postgres migrations                                |
+| `cargo check --workspace`  | Type-check all Rust crates without full build                  |
+| `cargo test --workspace`   | Run all Rust tests                                             |
+| `cargo clippy --workspace` | Lint all Rust crates                                           |
+| `cargo fmt --all`          | Format all Rust source files                                   |
 
 See `docs/local_dev.md` (created at P02-T008) for the full local boot sequence.
 

@@ -6,7 +6,7 @@
 
 The product is **Aestus**, a self-hosted, single-user crypto decision-support cockpit. The UI is a **high-density dark terminal**, not a generic SaaS dashboard and never an execution surface. No buy/sell/place-order affordances anywhere (see `docs/non_goals.md`).
 
-> **Naming:** "Aestus" is the product/brand (top-bar wordmark, page title, README, app icon). "Cockpit" is retained as the name of the **main dashboard tab/view** and as the product *concept* ("cockpit, not autopilot"). Do not find-and-replace "cockpit" → "aestus" globally — it would rename the tab and break the P17 references. Rename brand-facing surfaces only.
+> **Naming:** "Aestus" is the product/brand (top-bar wordmark, page title, README, app icon). "Cockpit" is retained as the name of the **main dashboard tab/view** and as the product _concept_ ("cockpit, not autopilot"). Do not find-and-replace "cockpit" → "aestus" globally — it would rename the tab and break the P17 references. Rename brand-facing surfaces only.
 
 ### Brand identity
 
@@ -34,39 +34,41 @@ Extract verbatim into `packages/ui` (or equivalent). These are the exact values 
 ### 2.1 Color
 
 ```css
-:root{
+:root {
   /* surfaces */
-  --bg:#070a0f;          /* app background, behind everything */
-  --panel:#0d1119;       /* default panel fill */
-  --panel-2:#0a0e15;     /* inset fills: top bar, sidebar, inputs, dropdowns */
-  --panel-hl:#11161f;    /* row hover, active tab/timeframe background */
+  --bg: #070a0f; /* app background, behind everything */
+  --panel: #0d1119; /* default panel fill */
+  --panel-2: #0a0e15; /* inset fills: top bar, sidebar, inputs, dropdowns */
+  --panel-hl: #11161f; /* row hover, active tab/timeframe background */
 
   /* borders */
-  --border:#1a212d;      /* panel outline, control outline */
-  --border-soft:#141a24; /* internal dividers, row separators */
+  --border: #1a212d; /* panel outline, control outline */
+  --border-soft: #141a24; /* internal dividers, row separators */
 
   /* text scale (strong -> faint) */
-  --text-strong:#e8edf3; /* primary values, headings */
-  --text:#cdd4de;        /* body text */
-  --text-dim:#69737f;    /* labels, secondary */
-  --text-faint:#4a525d;  /* captions, timestamps, axis, dashes */
+  --text-strong: #e8edf3; /* primary values, headings */
+  --text: #cdd4de; /* body text */
+  --text-dim: #69737f; /* labels, secondary */
+  --text-faint: #4a525d; /* captions, timestamps, axis, dashes */
 
   /* semantic */
-  --green:#26c281;  --green-d:#1f9c68;   /* up / bullish / bid / Active / buy */
-  --red:#e35d5b;    --red-d:#c44b49;     /* down / bearish / ask / high importance */
-  --orange:#e0a13e;                      /* amber: POC, medium importance, mid conviction, "High" funding tag */
-  --purple:#7b6cf6;                      /* violet: brand, avatar, active nav, derivatives/regulatory tag */
-  --blue:#4f8df7;                        /* macro source tag */
-  --pink:#e368a8;                        /* institutions source tag */
-  --teal:#3fb6c4;                        /* cyan: volume-anomaly icon */
+  --green: #26c281;
+  --green-d: #1f9c68; /* up / bullish / bid / Active / buy */
+  --red: #e35d5b;
+  --red-d: #c44b49; /* down / bearish / ask / high importance */
+  --orange: #e0a13e; /* amber: POC, medium importance, mid conviction, "High" funding tag */
+  --purple: #7b6cf6; /* violet: brand, avatar, active nav, derivatives/regulatory tag */
+  --blue: #4f8df7; /* macro source tag */
+  --pink: #e368a8; /* institutions source tag */
+  --teal: #3fb6c4; /* cyan: volume-anomaly icon */
 
   /* brand (identity only - logo, avatar, splash; NOT functional UI accent) */
-  --brand:#a826ec;                       /* AESTUS logo gradient, top */
-  --brand-2:#7a14d4;                     /* AESTUS logo gradient, bottom */
+  --brand: #a826ec; /* AESTUS logo gradient, top */
+  --brand-2: #7a14d4; /* AESTUS logo gradient, bottom */
 
   /* type */
-  --sans:'IBM Plex Sans',sans-serif;
-  --mono:'IBM Plex Mono',monospace;
+  --sans: "IBM Plex Sans", sans-serif;
+  --mono: "IBM Plex Mono", monospace;
 }
 ```
 
@@ -103,9 +105,11 @@ Tinted fills (badges, depth bars, conviction tracks) are the semantic color at l
 CSS Grid, 5 column tracks, 3 area rows:
 
 ```css
-.dashboard{
-  display:grid; gap:9px; padding:9px;
-  grid-template-columns:262fr 380fr 400fr 196fr 224fr;
+.dashboard {
+  display: grid;
+  gap: 9px;
+  padding: 9px;
+  grid-template-columns: 262fr 380fr 400fr 196fr 224fr;
   grid-template-areas:
     "left opp   chart  chart   flow"
     "left news  events onchain onchain"
@@ -143,19 +147,19 @@ Build these once (P16-T010) so panels compose them.
 
 Each maps to a P17 task; build to the reference markup/classes.
 
-| Panel | Task | Contents |
-|---|---|---|
-| Watchlist | P17-T002 | Rows: coin glyph · symbol · mono price · 24h % (green/red) · alert-count badge (red tint) or `—`. Header dropdown ("Main Watchlist"). Selecting a row sets focused asset. |
-| Market State | P17-T003 | Key/value rows: Risk Regime (▲ Risk-On green), Volatility Regime, BTC 30D Vol + Δ, Funding + "High" tag, Open Interest + Δ, Market Breadth + "Bullish" tag. |
-| Correlation Matrix | P17-T004 | 6×6 grid (BTC/ETH/SPX/DXY/GOLD/Oil). Cell bg = green tint for +, red tint for −, alpha ∝ |value|; diagonal 1.00 strongest. Footer: source + updated time. |
-| Top Opportunity | P17-T005 | "High Conviction" badge + timestamp. Title row w/ ↗. Stat strip: Conviction Score `72/100`, Time Horizon, Status (Active w/ green dot). Sections: Thesis, Key Factors (green chips), Invalidation, Entry Considerations. Footer: generated time + "View Full Briefing →". **Must support long / short / no-trade.** |
-| Main Chart | P17-T006 | See §6. |
-| Order Flow | P17-T007 | Venue + timeframe dropdowns. Ladder: PRICE / SIZE (BTC) / SUM, asks (red) above, mid price (large green) center, bids (green) below; depth bars by cumulative SUM. Footer: Imbalance % + buy/sell tag. |
-| Recent News | P17-T008 | Tabs All/News/On-Chain/Social. Rows: relative time · headline · source-type tag (on-chain=green, macro=blue, derivatives/regulatory=violet, institutions=pink). Filters to focused asset. |
-| Upcoming Events | P17-T009 | Rows: time-to-event · event · currency · clock time · importance (High=red 2 dots, Medium=amber 1 dot). High events visually prominent. |
-| On-Chain Insights | P17-T010 | Rows: metric · mono value + direction arrow · signal tag (Bullish green / Neutral amber / High red). Mark source confidence + staleness. |
-| Active Alerts | P17-T011 | Table: Time · Type (icon+label, color by type) · Asset · Title · Context · Conviction bar · Status badge. Row click → anomaly detail drawer. Tabs: Alerts(count)/Signals/System/Journal Activity. |
-| Ask mini | P17-T012 | Recent question, bulleted answer (violet bullets), "View Full Analysis →", and an "Ask anything…" input with send button. Submit routes to Research. |
+| Panel              | Task     | Contents                                                                                                                                                                                                                                                                                                            |
+| ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | --------------------------------------------------------- |
+| Watchlist          | P17-T002 | Rows: coin glyph · symbol · mono price · 24h % (green/red) · alert-count badge (red tint) or `—`. Header dropdown ("Main Watchlist"). Selecting a row sets focused asset.                                                                                                                                           |
+| Market State       | P17-T003 | Key/value rows: Risk Regime (▲ Risk-On green), Volatility Regime, BTC 30D Vol + Δ, Funding + "High" tag, Open Interest + Δ, Market Breadth + "Bullish" tag.                                                                                                                                                         |
+| Correlation Matrix | P17-T004 | 6×6 grid (BTC/ETH/SPX/DXY/GOLD/Oil). Cell bg = green tint for +, red tint for −, alpha ∝                                                                                                                                                                                                                            | value | ; diagonal 1.00 strongest. Footer: source + updated time. |
+| Top Opportunity    | P17-T005 | "High Conviction" badge + timestamp. Title row w/ ↗. Stat strip: Conviction Score `72/100`, Time Horizon, Status (Active w/ green dot). Sections: Thesis, Key Factors (green chips), Invalidation, Entry Considerations. Footer: generated time + "View Full Briefing →". **Must support long / short / no-trade.** |
+| Main Chart         | P17-T006 | See §6.                                                                                                                                                                                                                                                                                                             |
+| Order Flow         | P17-T007 | Venue + timeframe dropdowns. Ladder: PRICE / SIZE (BTC) / SUM, asks (red) above, mid price (large green) center, bids (green) below; depth bars by cumulative SUM. Footer: Imbalance % + buy/sell tag.                                                                                                              |
+| Recent News        | P17-T008 | Tabs All/News/On-Chain/Social. Rows: relative time · headline · source-type tag (on-chain=green, macro=blue, derivatives/regulatory=violet, institutions=pink). Filters to focused asset.                                                                                                                           |
+| Upcoming Events    | P17-T009 | Rows: time-to-event · event · currency · clock time · importance (High=red 2 dots, Medium=amber 1 dot). High events visually prominent.                                                                                                                                                                             |
+| On-Chain Insights  | P17-T010 | Rows: metric · mono value + direction arrow · signal tag (Bullish green / Neutral amber / High red). Mark source confidence + staleness.                                                                                                                                                                            |
+| Active Alerts      | P17-T011 | Table: Time · Type (icon+label, color by type) · Asset · Title · Context · Conviction bar · Status badge. Row click → anomaly detail drawer. Tabs: Alerts(count)/Signals/System/Journal Activity.                                                                                                                   |
+| Ask mini           | P17-T012 | Recent question, bulleted answer (violet bullets), "View Full Analysis →", and an "Ask anything…" input with send button. Submit routes to Research.                                                                                                                                                                |
 
 ---
 
@@ -181,16 +185,16 @@ Port the reference SVG renderer (`#chart-svg` in `cockpit.html`). Keep **renderi
 
 ## 7. Semantic color map (quick reference)
 
-| Meaning | Token |
-|---|---|
-| Up / bullish / bid / Active / buy | `--green` |
-| Down / bearish / ask / high importance | `--red` |
-| Neutral-watch / medium importance / POC / mid conviction / "High" funding | `--orange` |
-| Brand / avatar / active nav / derivatives + regulatory source | `--purple` |
-| Macro source tag | `--blue` |
-| Institutions source tag | `--pink` |
-| Volume-anomaly icon | `--teal` |
-| Missing / stale feed | amber dot or strip (never silent) |
+| Meaning                                                                   | Token                             |
+| ------------------------------------------------------------------------- | --------------------------------- |
+| Up / bullish / bid / Active / buy                                         | `--green`                         |
+| Down / bearish / ask / high importance                                    | `--red`                           |
+| Neutral-watch / medium importance / POC / mid conviction / "High" funding | `--orange`                        |
+| Brand / avatar / active nav / derivatives + regulatory source             | `--purple`                        |
+| Macro source tag                                                          | `--blue`                          |
+| Institutions source tag                                                   | `--pink`                          |
+| Volume-anomaly icon                                                       | `--teal`                          |
+| Missing / stale feed                                                      | amber dot or strip (never silent) |
 
 ---
 

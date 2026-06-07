@@ -17,9 +17,9 @@ Both tiers go behind the §182 provider-agnostic abstraction — model strings a
 swappable in one line. Confirm exact `:cloud` model tags against the Ollama Cloud catalog
 when P13 is implemented (the names below are the intended choices, not verified tags).
 
-| Tier | Spec | Use | Model (intended) |
-|---|---|---|---|
-| Top-tier reasoning | §183 | Briefing synthesis, trade-thesis generation, NL chat | **Kimi K2.6** (`kimi-k2.6:cloud`) |
+| Tier                 | Spec | Use                                                                  | Model (intended)                        |
+| -------------------- | ---- | -------------------------------------------------------------------- | --------------------------------------- |
+| Top-tier reasoning   | §183 | Briefing synthesis, trade-thesis generation, NL chat                 | **Kimi K2.6** (`kimi-k2.6:cloud`)       |
 | High-volume / narrow | §184 | News entity extraction, relevance scoring, sentiment, classification | **MiniMax M2.7** (`minimax-m2.7:cloud`) |
 
 Rationale: K2.6 leads the candidates (Kimi K2.6 / MiniMax M3 / GLM 5.1) on long-context
@@ -27,6 +27,7 @@ synthesis and instruction-following, which is what briefing assembly demands. M2
 cheap/fast tier for the constant background grind, preserving K2.6 quota for briefings.
 
 ### Required env (runtime)
+
 - `OLLAMA_API_KEY` — Ollama Cloud subscription key. Never committed; lives only in the
   VPS `.env` (and local `.env` for dev). `.env*` is gitignored and `Read`-denied.
 - `OLLAMA_BASE_URL` — Ollama Cloud endpoint (or `http://localhost:11434` for a local
@@ -37,13 +38,13 @@ LLM key present. The key is only needed for live briefing generation.
 
 ## Other runtime credentials
 
-| Key | For | Required? | Notes |
-|---|---|---|---|
-| Crypto market feeds (Binance/Bybit/Hyperliquid/OKX) | price/funding/OI/liquidations | none | public WebSocket — no key |
-| RSS news feeds | news ingestion | none | no key |
-| On-chain (Etherscan / Glassnode / Arkham) | whale flows, exchange netflow | optional | fixtures cover it; mark `[!]` if absent |
-| Deribit | options data | optional | deferrable |
-| Push (ntfy / Telegram bot) | away-from-desk alerts (P25) | optional | ntfy = no key; Telegram = free bot token |
+| Key                                                 | For                           | Required? | Notes                                    |
+| --------------------------------------------------- | ----------------------------- | --------- | ---------------------------------------- |
+| Crypto market feeds (Binance/Bybit/Hyperliquid/OKX) | price/funding/OI/liquidations | none      | public WebSocket — no key                |
+| RSS news feeds                                      | news ingestion                | none      | no key                                   |
+| On-chain (Etherscan / Glassnode / Arkham)           | whale flows, exchange netflow | optional  | fixtures cover it; mark `[!]` if absent  |
+| Deribit                                             | options data                  | optional  | deferrable                               |
+| Push (ntfy / Telegram bot)                          | away-from-desk alerts (P25)   | optional  | ntfy = no key; Telegram = free bot token |
 
 ## Deploy (post-P28, manual — human action)
 

@@ -60,15 +60,15 @@ Single-page app with strict TypeScript, shared contracts from `packages/contract
 
 ## Alternatives considered
 
-| Alternative | Reason not chosen |
-|---|---|
-| Kafka instead of NATS | Over-engineered for single-node; higher ops burden; no advantage at this scale |
-| Go instead of Rust for ingestion | Rust is preferred for zero-cost abstractions and memory safety without GC in hot path |
-| Node.js instead of Bun | Slower startup; Bun's TypeScript-native tooling reduces build steps |
-| SQLite instead of Postgres | Limited vector support; less flexible for concurrent readers/writers |
-| TimescaleDB instead of ClickHouse | ClickHouse is more efficient for columnar time-series scans at this event volume |
+| Alternative                               | Reason not chosen                                                                                             |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Kafka instead of NATS                     | Over-engineered for single-node; higher ops burden; no advantage at this scale                                |
+| Go instead of Rust for ingestion          | Rust is preferred for zero-cost abstractions and memory safety without GC in hot path                         |
+| Node.js instead of Bun                    | Slower startup; Bun's TypeScript-native tooling reduces build steps                                           |
+| SQLite instead of Postgres                | Limited vector support; less flexible for concurrent readers/writers                                          |
+| TimescaleDB instead of ClickHouse         | ClickHouse is more efficient for columnar time-series scans at this event volume                              |
 | Anthropic API (per-token) for runtime LLM | Incompatible with €10–30/month flat-cost target; Claude subscriptions do not issue API keys for app embedding |
-| C/Zig FFI kernels in Rust for P00–P30 | Deferred: pure-Rust baseline covers MVP performance; FFI adds complexity and platform-specific build steps |
+| C/Zig FFI kernels in Rust for P00–P30     | Deferred: pure-Rust baseline covers MVP performance; FFI adds complexity and platform-specific build steps    |
 
 ## Consequences
 

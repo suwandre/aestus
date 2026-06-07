@@ -1,6 +1,6 @@
 # Aestus — System Specification
 
-> **Scope note.** This document describes *what the system is, the data it works with, and how it behaves*. It deliberately contains **no UI, layout, navigation, or visual-design decisions**. Presentation truth lives in `cockpit_ui_implementation.md` (written contract) and `cockpit.html` (pixel-level reference). Do not invent UI from this document alone.
+> **Scope note.** This document describes _what the system is, the data it works with, and how it behaves_. It deliberately contains **no UI, layout, navigation, or visual-design decisions**. Presentation truth lives in `cockpit_ui_implementation.md` (written contract) and `cockpit.html` (pixel-level reference). Do not invent UI from this document alone.
 
 > **Naming.** The product/brand is **Aestus**. "Cockpit" is retained as the name of the main dashboard tab and as the product concept ("cockpit, not autopilot"). See the naming note in `cockpit_ui_implementation.md`; do not global-rename in either direction.
 
@@ -19,9 +19,9 @@ Think of it as a private, crypto-native, LLM-augmented research terminal for one
 ## 2. Core Philosophy
 
 - **Cockpit, not autopilot.** The system surfaces opportunities and explains them. The human decides and executes. Automated order execution is explicitly out of scope for the initial system (see §13).
-- **Context over signals.** A raw alert ("funding spiked") is low value. The value is in the *assembled context* around it — what else is happening, what's correlated, what news preceded it, what macro event is imminent — and a synthesized interpretation of that context.
+- **Context over signals.** A raw alert ("funding spiked") is low value. The value is in the _assembled context_ around it — what else is happening, what's correlated, what news preceded it, what macro event is imminent — and a synthesized interpretation of that context.
 - **Honesty about edge.** The system is expected to frequently conclude "no trade." Talking the user out of a bad setup is as valuable as finding a good one.
-- **A learning loop.** Every decision the user makes (act, skip, dismiss) is recorded with the context that informed it and the eventual outcome. Over time this reveals which kinds of signals actually produce profit *for this specific user*.
+- **A learning loop.** Every decision the user makes (act, skip, dismiss) is recorded with the context that informed it and the eventual outcome. Over time this reveals which kinds of signals actually produce profit _for this specific user_.
 - **Earned automation.** Long-term, individual well-validated strategies may be automated in a narrow, bounded way — but only after months of manual use prove a given signal class is reliable. The system is designed so this is a later, optional evolution, not a starting assumption.
 
 ---
@@ -65,21 +65,26 @@ A single, technically sophisticated, discretionary trader who:
 ## 5. Data Sources / Inputs
 
 **Market data (real-time, primary):**
+
 - Per-exchange order/price data, mark price, funding rates, open interest, and liquidation events across multiple crypto venues (e.g., Binance, Bybit, Hyperliquid, dYdX, OKX) via public WebSocket feeds.
 - Options data (e.g., Deribit) where relevant.
 
 **Cross-market / macro:**
+
 - Equity indices and macro instruments (e.g., SPX, DXY, gold, oil, treasury yields, VIX) for correlation context.
 - Economic calendar (FOMC, CPI, NFP, earnings, etc.) with event times and consensus expectations.
 
 **On-chain:**
+
 - Large wallet movements / whale flows, exchange inflows/outflows, token unlock schedules, stablecoin mint/burn, abnormal DEX activity.
 
 **News / narrative:**
+
 - Crypto and financial news via RSS and aggregators, with entity extraction (which assets/people/protocols are mentioned) and relevance scoring.
 - Lower-cost social/sentiment sources (e.g., Reddit, Farcaster) where economical.
 
 **User-generated:**
+
 - Watchlist membership, alert rules, the trade journal (entries, exits, sizes, tags, outcomes), and configuration.
 
 All external feeds are chosen to be free or low-cost. High-cost feeds (e.g., paid social firehoses, premium news) are deliberately avoided in favor of substitutes.
@@ -127,7 +132,7 @@ These are the artifacts the system produces. (How they are presented is intentio
 
 A briefing is the system's central output. Each briefing is associated with one asset (or relationship) and one triggering context, and contains:
 
-- **Direction / stance** — long bias, short bias, or explicitly *no trade*.
+- **Direction / stance** — long bias, short bias, or explicitly _no trade_.
 - **Thesis** — a few sentences of plain-language reasoning explaining what is happening and why it may matter.
 - **Suggested entry zone** — a price range (when directional).
 - **Invalidation level** — the price/condition at which the thesis is wrong (the basis for a stop).
@@ -140,6 +145,7 @@ A briefing is the system's central output. Each briefing is associated with one 
 - **Cost/observability metadata** — token usage, cache hit rate, number of feeds/signals consulted.
 
 Important behavioral notes:
+
 - Price levels (entry, invalidation, targets) are derived from deterministic logic (recent swing structure, ATR/volatility bands, liquidation clusters, support/resistance), **not** invented by the LLM. The LLM supplies narrative and judgment; the math supplies the numbers.
 - Briefings are **proposals with reasoning**, never commands. The user can act, snooze, or dismiss; each action is recorded.
 - The system may also watch an open position's invalidation conditions and notify the user if the thesis breaks, but it does not close positions.
@@ -175,11 +181,13 @@ The user can query the system conversationally and get answers grounded in its o
 **Messaging:** A lightweight event bus (NATS JetStream) carries the real-time stream of ticks and anomaly events between services with persistence and replay. A Redis-backed job queue (BullMQ) handles discrete, retryable background work such as generating a briefing, sending an alert, or running scheduled batch tasks.
 
 **Storage:**
+
 - Redis — hot cache and job-queue backend.
 - PostgreSQL with a vector extension — metadata, the news corpus, embeddings for semantic retrieval, and the trade journal.
 - ClickHouse — high-volume tick and feature time-series.
 
 **LLM providers (network calls; provider-agnostic abstraction):**
+
 - A top-tier reasoning provider for synthesis, briefings, and conversational queries.
 - A lower-cost/open-model provider for high-volume narrow tasks and experimentation.
 

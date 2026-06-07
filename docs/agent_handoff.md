@@ -48,6 +48,7 @@ Rules for any coding agent (automated or human-assisted) picking up a task from 
 4. **Commit** using a conventional commit message that references the task ID. Include the updated todo file and `progress.md` in the same commit as the task deliverables.
 
    Commit message format:
+
    ```
    <type>(P00-T001): <short description>
 
@@ -73,12 +74,12 @@ Do not attempt workarounds that cross non-goal boundaries or require scope expan
 
 ## Task status legend
 
-| Symbol | Meaning |
-|--------|---------|
-| `[ ]` | Not started |
-| `[~]` | In progress (set this before starting if you expect a long task) |
-| `[x]` | Done |
-| `[!]` | Blocked — needs human decision |
+| Symbol | Meaning                                                          |
+| ------ | ---------------------------------------------------------------- |
+| `[ ]`  | Not started                                                      |
+| `[~]`  | In progress (set this before starting if you expect a long task) |
+| `[x]`  | Done                                                             |
+| `[!]`  | Blocked — needs human decision                                   |
 
 ---
 
