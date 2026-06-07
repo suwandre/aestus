@@ -105,7 +105,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: MVP scope identifies the first exchanges, first assets, first tabs, and deferred providers without ambiguity.
 
-### [ ] P00-T008 - Define agent handoff protocol
+### [x] P00-T008 - Define agent handoff protocol
 
 - Agent action: Create `docs/agent_handoff.md` with rules: complete one task ID at a time, update checkbox/status, include tests, record assumptions, avoid scope expansion.
 

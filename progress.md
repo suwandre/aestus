@@ -33,6 +33,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
+### P00-T008 — Define agent handoff protocol
+- Files: docs/agent_handoff.md (new)
+- Checks: Protocol covers startup checks (.stop, git status, progress.md, git log), per-task procedure (action, done-when verification, checkbox flip, progress entry, commit), blocked-task handling, commit conventions, and explicit do-not-do list; consistent with CLAUDE.md working protocol
+- Assumptions: none
+- Follow-ups: none
+
 ### P00-T007 — Write MVP scope boundary
 - Files: docs/mvp_scope.md (new)
 - Checks: First exchanges identified (Binance live, Bybit/Hyperliquid/OKX placeholder); first assets listed (BTC, ETH perps + macro proxies); all 10 tabs listed; deferred features explicitly called out; cost envelope stated
