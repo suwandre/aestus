@@ -33,6 +33,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
+### P00-T003 — Create non-goals doc
+- Files: docs/non_goals.md (new)
+- Checks: Verified doc explicitly prohibits automated order execution and auto-close logic; covers all five required absolute non-goals (no order execution, no HFT, no multi-tenant SaaS, no signal-selling, no premium feed dependency for MVP); deferred features section present
+- Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
+- Follow-ups: none
+
 ### P00-T002 — Create implementation principles doc
 - Files: docs/principles.md (new)
 - Checks: Verified doc covers all six required topics from task spec: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost; no new product scope added

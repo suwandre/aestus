@@ -75,7 +75,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: Principles doc exists and mirrors the specs without adding new product scope.
 
-### [ ] P00-T003 - Create non-goals doc
+### [x] P00-T003 - Create non-goals doc
 
 - Agent action: Write `docs/non_goals.md` listing no automated order execution, no HFT, no multi-tenant SaaS, no signal-selling service, no premium-feed dependency for MVP.
 
