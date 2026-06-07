@@ -249,7 +249,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema validates BTCUSDT, ETHUSDT, SPX, DXY, GOLD, and VIX fixtures.
 
-### [ ] P03-T002 - Create venue schema
+### [x] P03-T002 - Create venue schema
 
 - Agent action: Define `Venue` and `VenueInstrument` with venue_id, market_type, instrument_id, canonical_asset_id, tick_size, lot_size, quote_currency.
 

@@ -279,3 +279,10 @@ No [!] tasks in P02. No failures.
 - Checks: All 6 required fixtures (BTCUSDT, ETHUSDT, SPX, DXY, GOLD, VIX) parse via `AssetIdentity.parse`; `bun run typecheck` clean
 - Assumptions: Contracts use `zod/v4` (bundled in zod 3.25.76) for native `z.toJSONSchema` at T014. `base`/`quote` made optional so non-pair macro proxies (SPX/DXY/GOLD/VIX) validate. Added `rates` to AssetClass for future coverage; macro proxies use `macro:<sym>` canonical_id prefix, crypto uses `crypto:<base>-<quote>`. SCHEMA_VERSION=1 constant in common.ts (informs T016).
 - Follow-ups: none
+
+### P03-T002 — Create venue schema
+
+- Files: packages/contracts/src/venue.ts (new), packages/contracts/src/index.ts, fixtures/venues/venues.json (new), fixtures/venues/instruments.json (new)
+- Checks: Binance perp+spot, Bybit perp, Hyperliquid perp, OKX perp, and a macro proxy (SPX) all parse via `Venue`/`VenueInstrument`; `bun run typecheck` clean
+- Assumptions: `tick_size`/`lot_size` typed as decimal strings (not numbers) to avoid float precision loss. Added `option`/`futures` to MarketType for future coverage; `macro_proxy` market type represents non-exchange feeds. VenueInstrument.canonical_asset_id is the FK to AssetIdentity.canonical_id.
+- Follow-ups: none

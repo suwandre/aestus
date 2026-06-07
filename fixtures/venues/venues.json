@@ -1,0 +1,7 @@
+[
+  { "venue_id": "binance", "display_name": "Binance", "market_types": ["perp", "spot"] },
+  { "venue_id": "bybit", "display_name": "Bybit", "market_types": ["perp", "spot"] },
+  { "venue_id": "hyperliquid", "display_name": "Hyperliquid", "market_types": ["perp"] },
+  { "venue_id": "okx", "display_name": "OKX", "market_types": ["perp", "spot"] },
+  { "venue_id": "macro", "display_name": "Macro Proxies", "market_types": ["macro_proxy"] }
+]
