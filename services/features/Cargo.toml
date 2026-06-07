@@ -1,0 +1,14 @@
+[package]
+name = "features"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+event_model = { path = "../../crates/event_model" }
+market_math = { path = "../../crates/market_math" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

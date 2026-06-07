@@ -128,7 +128,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: `bun install` works and workspace packages resolve locally.
 
-### [ ] P01-T003 - Initialize Rust workspace
+### [x] P01-T003 - Initialize Rust workspace
 
 - Agent action: Create a Rust workspace for `services/ingestion`, `services/features`, and shared Rust crates such as `crates/event_model` and `crates/market_math`.
 
