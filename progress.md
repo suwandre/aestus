@@ -77,6 +77,13 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T009 — Create conventional commit/task branch guidance
+
+- Files: docs/dev_workflow.md (new)
+- Checks: Doc covers branch naming (task/P03-T004-clickhouse-schema format), commit types/scope/rules, PR checklist with all required checks, agent loop summary; example branch name matches done-when criterion
+- Assumptions: Doc intentionally overlaps with agent_handoff.md for PR/human workflow clarity — no duplication removal needed
+- Follow-ups: none
+
 ### P01-T008 — Add environment variable templates
 
 - Files: .env.example (root, new), apps/api/.env.example, apps/web/.env.example, services/ingestion/.env.example, infra/.env.example (all new)

@@ -163,7 +163,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: All required env vars are documented with safe example values.
 
-### [ ] P01-T009 - Create conventional commit/task branch guidance
+### [x] P01-T009 - Create conventional commit/task branch guidance
 
 - Agent action: Add `docs/dev_workflow.md` explaining branch naming by task ID, commit style, and PR checklist.
 
