@@ -1,0 +1,52 @@
+{
+  "$id": "VenueInstrument.schema.json",
+  "title": "VenueInstrument",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "venue_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "market_type": {
+      "type": "string",
+      "enum": [
+        "perp",
+        "spot",
+        "futures",
+        "option",
+        "macro_proxy"
+      ]
+    },
+    "instrument_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tick_size": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lot_size": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quote_currency": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "venue_id",
+    "market_type",
+    "instrument_id",
+    "canonical_asset_id",
+    "tick_size",
+    "lot_size",
+    "quote_currency"
+  ],
+  "additionalProperties": false
+}

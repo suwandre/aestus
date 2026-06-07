@@ -363,3 +363,10 @@ No [!] tasks in P02. No failures.
 - Checks: A closed winning trade and an open trade parse via `JournalTrade`; `bun run typecheck` clean
 - Assumptions: entry/exit modeled as `TradeLeg {price, at}`; exit/realized_pnl/r_multiple null while open. To satisfy "analytics by setup/regime/signal" Done-when, added `setup_tags` (setup), optional `regime_at_entry` (reuses RegimeLabels), and optional `signal` (triggering anomaly type). `side` reuses Side enum. linked_briefing_id nullable (manual trades). Hard rule #1: records only, no execution.
 - Follow-ups: none
+
+### P03-T014 — Generate JSON Schema from contracts
+
+- Files: packages/contracts/scripts/gen-schema.ts (new), packages/contracts/schema/*.schema.json (15 generated), packages/contracts/package.json (+gen:schema script, +ajv devDep), bun.lock
+- Checks: `bun run gen:schema` writes 15 draft-2020-12 schema files; verified an anomaly fixture validates against the generated JSON Schema via ajv with NO zod/runtime import (proves Done-when). `bun run typecheck` clean
+- Assumptions: Used zod v4 native `z.toJSONSchema(schema, { target: "draft-2020-12" })` (no extra codegen dep). Added `ajv@8` as devDep — the standard draft-2020-12 validator, used here for verification and by the T015 fixture test, demonstrating consumers validate without importing zod. Discriminated unions serialize to `anyOf` with `const` discriminators (validator-portable). scripts/ excluded from tsc include so the Node-API generator doesn't need @types/node in the typecheck.
+- Follow-ups: none

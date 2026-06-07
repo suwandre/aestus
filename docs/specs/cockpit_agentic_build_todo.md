@@ -321,7 +321,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema supports later analytics by setup/regime/signal.
 
-### [ ] P03-T014 - Generate JSON Schema from contracts
+### [x] P03-T014 - Generate JSON Schema from contracts
 
 - Agent action: Export JSON Schema files for all public contract types into `packages/contracts/schema`.
 

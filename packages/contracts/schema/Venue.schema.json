@@ -1,0 +1,36 @@
+{
+  "$id": "Venue.schema.json",
+  "title": "Venue",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "venue_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "market_types": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "perp",
+          "spot",
+          "futures",
+          "option",
+          "macro_proxy"
+        ]
+      }
+    }
+  },
+  "required": [
+    "venue_id",
+    "display_name",
+    "market_types"
+  ],
+  "additionalProperties": false
+}

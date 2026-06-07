@@ -1,0 +1,182 @@
+{
+  "$id": "Briefing.schema.json",
+  "title": "Briefing",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "context_packet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-]\\d{2}:\\d{2})))$"
+    },
+    "stance": {
+      "type": "string",
+      "enum": [
+        "long",
+        "short",
+        "no_trade"
+      ]
+    },
+    "thesis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entry_zone": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "low": {
+              "type": "number"
+            },
+            "high": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "low",
+            "high"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "invalidation": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "targets": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "size_suggestion": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "risk_pct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "notional": {
+              "type": "number",
+              "minimum": 0
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "timeframe": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supporting_context": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cost_metadata": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "total_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "prompt_tokens",
+        "completion_tokens",
+        "total_tokens",
+        "cost_usd"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "schema_version",
+    "context_packet_id",
+    "generated_at",
+    "stance",
+    "thesis",
+    "entry_zone",
+    "invalidation",
+    "targets",
+    "size_suggestion",
+    "timeframe",
+    "confidence",
+    "model",
+    "supporting_context",
+    "cost_metadata"
+  ],
+  "additionalProperties": false
+}

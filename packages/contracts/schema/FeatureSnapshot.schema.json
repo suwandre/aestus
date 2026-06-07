@@ -1,0 +1,180 @@
+{
+  "$id": "FeatureSnapshot.schema.json",
+  "title": "FeatureSnapshot",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "canonical_asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-]\\d{2}:\\d{2})))$"
+    },
+    "returns": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "volatility": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "z_scores": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "funding_z": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "oi_delta": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "volume_z": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "correlation_set": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "minLength": 1
+          },
+          "correlation": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          },
+          "window": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "asset",
+          "correlation",
+          "window"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "basis": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "basis_bps": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "reference",
+          "basis_bps"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "regime": {
+      "type": "object",
+      "properties": {
+        "trend": {
+          "type": "string",
+          "enum": [
+            "trending_up",
+            "trending_down",
+            "ranging",
+            "mean_reverting"
+          ]
+        },
+        "volatility": {
+          "type": "string",
+          "enum": [
+            "low",
+            "normal",
+            "high",
+            "spike"
+          ]
+        },
+        "risk": {
+          "type": "string",
+          "enum": [
+            "risk_on",
+            "risk_off",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "trend",
+        "volatility",
+        "risk"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "canonical_asset_id",
+    "timestamp",
+    "returns",
+    "volatility",
+    "z_scores",
+    "funding_z",
+    "oi_delta",
+    "volume_z",
+    "correlation_set",
+    "basis",
+    "regime"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,182 @@
+{
+  "$id": "JournalTrade.schema.json",
+  "title": "JournalTrade",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "canonical_asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "side": {
+      "type": "string",
+      "enum": [
+        "buy",
+        "sell"
+      ]
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-]\\d{2}:\\d{2})))$"
+        }
+      },
+      "required": [
+        "price",
+        "at"
+      ],
+      "additionalProperties": false
+    },
+    "exit": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "price": {
+              "type": "number"
+            },
+            "at": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-]\\d{2}:\\d{2})))$"
+            }
+          },
+          "required": [
+            "price",
+            "at"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "size": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "fees": {
+      "type": "number",
+      "minimum": 0
+    },
+    "realized_pnl": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "r_multiple": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outcome_status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "win",
+        "loss",
+        "breakeven"
+      ]
+    },
+    "setup_tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "regime_at_entry": {
+      "type": "object",
+      "properties": {
+        "trend": {
+          "type": "string",
+          "enum": [
+            "trending_up",
+            "trending_down",
+            "ranging",
+            "mean_reverting"
+          ]
+        },
+        "volatility": {
+          "type": "string",
+          "enum": [
+            "low",
+            "normal",
+            "high",
+            "spike"
+          ]
+        },
+        "risk": {
+          "type": "string",
+          "enum": [
+            "risk_on",
+            "risk_off",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "trend",
+        "volatility",
+        "risk"
+      ],
+      "additionalProperties": false
+    },
+    "signal": {
+      "type": "string"
+    },
+    "linked_briefing_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "schema_version",
+    "canonical_asset_id",
+    "side",
+    "entry",
+    "exit",
+    "size",
+    "fees",
+    "realized_pnl",
+    "r_multiple",
+    "outcome_status",
+    "setup_tags",
+    "linked_briefing_id"
+  ],
+  "additionalProperties": false
+}

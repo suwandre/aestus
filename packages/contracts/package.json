@@ -10,9 +10,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "gen:schema": "bun run scripts/gen-schema.ts"
   },
   "devDependencies": {
+    "ajv": "^8.20.0",
     "typescript": "^5.5.0"
   },
   "dependencies": {

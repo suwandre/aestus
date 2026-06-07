@@ -1,0 +1,75 @@
+{
+  "$id": "DeterministicLevels.schema.json",
+  "title": "DeterministicLevels",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "reference_price": {
+      "type": "number"
+    },
+    "entry_zone": {
+      "type": "object",
+      "properties": {
+        "low": {
+          "type": "number"
+        },
+        "high": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "low",
+        "high"
+      ],
+      "additionalProperties": false
+    },
+    "invalidation": {
+      "type": "number"
+    },
+    "targets": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "supports": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "resistances": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "atr": {
+      "type": "number",
+      "minimum": 0
+    },
+    "liquidation_clusters": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "method_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "reference_price",
+    "entry_zone",
+    "invalidation",
+    "targets",
+    "supports",
+    "resistances",
+    "liquidation_clusters"
+  ],
+  "additionalProperties": false
+}

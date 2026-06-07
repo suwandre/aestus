@@ -1,0 +1,59 @@
+{
+  "$id": "AssetIdentity.schema.json",
+  "title": "AssetIdentity",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "symbol": {
+      "type": "string",
+      "minLength": 1
+    },
+    "base": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quote": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset_class": {
+      "type": "string",
+      "enum": [
+        "crypto",
+        "equity_index",
+        "fx",
+        "commodity",
+        "volatility",
+        "rates"
+      ]
+    },
+    "canonical_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "icon_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "symbol",
+    "asset_class",
+    "canonical_id",
+    "display_name",
+    "icon_key",
+    "tags"
+  ],
+  "additionalProperties": false
+}
