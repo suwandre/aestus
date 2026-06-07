@@ -8,5 +8,6 @@ Cargo.lock
 fixtures/
 *.generated.ts
 *.generated.json
+packages/contracts/schema/
 docs/specs/cockpit.html
 docs/specs/reference/

@@ -366,7 +366,14 @@ No [!] tasks in P02. No failures.
 
 ### P03-T014 — Generate JSON Schema from contracts
 
-- Files: packages/contracts/scripts/gen-schema.ts (new), packages/contracts/schema/*.schema.json (15 generated), packages/contracts/package.json (+gen:schema script, +ajv devDep), bun.lock
+- Files: packages/contracts/scripts/gen-schema.ts (new), packages/contracts/schema/\*.schema.json (15 generated), packages/contracts/package.json (+gen:schema script, +ajv devDep), bun.lock
 - Checks: `bun run gen:schema` writes 15 draft-2020-12 schema files; verified an anomaly fixture validates against the generated JSON Schema via ajv with NO zod/runtime import (proves Done-when). `bun run typecheck` clean
 - Assumptions: Used zod v4 native `z.toJSONSchema(schema, { target: "draft-2020-12" })` (no extra codegen dep). Added `ajv@8` as devDep — the standard draft-2020-12 validator, used here for verification and by the T015 fixture test, demonstrating consumers validate without importing zod. Discriminated unions serialize to `anyOf` with `const` discriminators (validator-portable). scripts/ excluded from tsc include so the Node-API generator doesn't need @types/node in the typecheck.
+- Follow-ups: none
+
+### P03-T015 — Add fixture validation test
+
+- Files: packages/contracts/test/fixtures.test.ts (new), .prettierignore (exclude generated schema dir), progress.md (prettier-formatted)
+- Checks: `bun test` in packages/contracts → 16 pass / 0 fail. Test loads every `.json` under fixtures/ and validates each item against its mapped contract via `.parse` (throws → fails CI). Includes a coverage test (any unmapped fixture fails CI) and a negative test (a malformed AssetIdentity is rejected). `bun run format:check` and `bunx eslint .` both clean.
+- Assumptions: Test validates against the runtime contracts (zod) per Done-when wording ("validate against the contracts"); the T014 JSON-Schema path is the no-runtime alternative. Added a coverage guard so a new fixture without a contract mapping fails CI. Added `packages/contracts/schema/` to `.prettierignore` — generated artifacts are not hand-formatted (this also keeps the T014-generated files out of format:check); regenerate via `bun run gen:schema`.
 - Follow-ups: none

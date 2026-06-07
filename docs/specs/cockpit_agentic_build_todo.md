@@ -327,7 +327,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Backend and frontend can validate fixtures without importing runtime code.
 
-### [ ] P03-T015 - Add fixture validation test
+### [x] P03-T015 - Add fixture validation test
 
 - Agent action: Create tests that load every fixture in `fixtures/` and validate against the contracts.
 
