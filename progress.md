@@ -328,3 +328,10 @@ No [!] tasks in P02. No failures.
 - Checks: BTC snapshot (full funding/oi/volume features) and SPX macro snapshot (funding_z/oi_delta null) parse via `FeatureSnapshot`; `bun run typecheck` clean
 - Assumptions: `returns`/`volatility`/`z_scores` are horizon-keyed numeric maps (`Record<string,number>`) for flexibility across assets. `funding_z`/`oi_delta`/`volume_z` nullable (macro/spot-only assets lack funding/OI). `regime` mirrors spec §113: trend/volatility/risk sub-labels. correlation_set + basis are arrays of typed entries. These three z-scores are the anomaly-engine inputs (spec §100).
 - Follow-ups: none
+
+### P03-T009 — Create anomaly event schema
+
+- Files: packages/contracts/src/anomaly.ts (new), packages/contracts/src/index.ts, fixtures/anomalies/events.json (new)
+- Checks: All 7 types (funding_spike, oi_surge, volume_anomaly, correlation_break, basis_dislocation, whale_flow, macro_approaching) parse via `AnomalyEvent`; `bun run typecheck` clean
+- Assumptions: `sigma` nullable — schedule-driven types (macro_approaching, whale_flow) have null sigma. AnomalyType enum matches spec §117 taxonomy. status lifecycle: active/acknowledged/resolved/expired/dismissed. context_refs are free-form ref strings (feature:/onchain:/macro: prefixes) linking supporting evidence; rule_ref optional for rule-based detections.
+- Follow-ups: none

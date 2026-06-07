@@ -291,7 +291,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema covers UI feature stack and anomaly detection inputs.
 
-### [ ] P03-T009 - Create anomaly event schema
+### [x] P03-T009 - Create anomaly event schema
 
 - Agent action: Define anomaly fields: id, type, severity, sigma, assets, venues, title, description, detected_at, status, context_refs, rule_ref.
 

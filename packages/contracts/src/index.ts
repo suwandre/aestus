@@ -7,3 +7,4 @@ export * from "./macro";
 export * from "./news";
 export * from "./onchain";
 export * from "./feature-snapshot";
+export * from "./anomaly";
