@@ -77,6 +77,13 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T007 — Configure TypeScript strict mode
+
+- Files: tsconfig.base.json (new), apps/api/tsconfig.json, apps/web/tsconfig.json, packages/contracts/tsconfig.json, packages/ui/tsconfig.json, packages/config/tsconfig.json (all new), apps/web/src/index.ts (placeholder added to satisfy no-inputs check)
+- Checks: `bun run typecheck` passes all 5 workspace packages; verified implicit-any is rejected (TS7006 on untyped param); noUnusedLocals/noUnusedParameters enforced via strict:true + individual flags
+- Assumptions: apps/web tsconfig uses Next.js plugin and dom lib ahead of P16 — these are forward-compatible; apps/web src placeholder matches pattern of other packages
+- Follow-ups: none
+
 ### P01-T006 — Configure linting
 
 - Files: eslint.config.js (new), package.json (lint script + type:module + eslint/typescript-eslint devDeps), Cargo.toml (workspace.lints section), services/ingestion/Cargo.toml, services/features/Cargo.toml, crates/event_model/Cargo.toml, crates/market_math/Cargo.toml (lints.workspace = true added to all members)

@@ -151,7 +151,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: Lint command runs successfully on placeholder code.
 
-### [ ] P01-T007 - Configure TypeScript strict mode
+### [x] P01-T007 - Configure TypeScript strict mode
 
 - Agent action: Set strict TS configs for API, web, contracts, and UI packages.
 
