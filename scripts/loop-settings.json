@@ -1,0 +1,12 @@
+{
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": false,
+    "caveman@caveman": false,
+    "context-mode@context-mode": false,
+    "compound-engineering@compound-engineering-plugin": false,
+    "code-foundations@rtd": false
+  },
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  }
+}
