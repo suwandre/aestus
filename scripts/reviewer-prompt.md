@@ -9,7 +9,7 @@ Your job: verify, with fresh eyes and zero trust, that every task in phase {PHAS
 3. Tasks marked `[!]` are out of scope — note them but do not fail the review for them.
 4. Append a review entry to `progress.md`:
    `### {PHASE} REVIEW — PASS` (or `FAIL`) followed by one line per failed criterion (task ID + what is missing).
-5. Commit only the `progress.md` change with message `chore({PHASE}): phase review`.
+5. Commit only the `progress.md` change with message `chore({PHASE}): phase review`, then `git push`.
 6. Do NOT fix anything. Review only.
 
 ## Final report (your last message)

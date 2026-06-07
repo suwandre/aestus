@@ -17,6 +17,7 @@ For each task in phase {PHASE} with an unchecked box `[ ]`, in order:
 4. Flip the task's checkbox `[ ]` → `[x]` in the todo file.
 5. Append a `progress.md` entry in the format documented at the top of that file.
 6. Commit: conventional commit message referencing the task ID (e.g. `feat(P01-T003): initialize Rust workspace`). Include the todo and progress.md changes in the same commit.
+7. Push immediately: `git push`. If the push fails (network/remote issue), note it in your final report and keep going — the commit is safe locally and a later push will catch up; never block a task on a failed push.
 
 If a task cannot be completed or needs a human decision: mark it `[!]`, log the reason in `progress.md`, commit, and stop the phase — report the blocker clearly.
 
