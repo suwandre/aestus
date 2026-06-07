@@ -27,10 +27,11 @@ services:
     image: redis:7-alpine
     container_name: aestus-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --appendfsync everysec
+    command: redis-server /etc/redis/redis.conf
     ports:
       - "6379:6379"
     volumes:
+      - ./redis/redis.conf:/etc/redis/redis.conf:ro
       - redis-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]

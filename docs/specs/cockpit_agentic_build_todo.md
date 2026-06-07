@@ -191,7 +191,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: NATS starts with JetStream enabled and persists streams across restarts.
 
-### [ ] P02-T003 - Configure Redis container
+### [x] P02-T003 - Configure Redis container
 
 - Agent action: Add Redis with append-only persistence for BullMQ and hot cache development.
 

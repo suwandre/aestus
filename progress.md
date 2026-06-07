@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T003 — Configure Redis container
+
+- Files: infra/redis/redis.conf (new), infra/docker-compose.yml (updated: redis mounts config file)
+- Checks: `docker compose config --quiet` passes; appendonly=yes and appendfsync=everysec confirmed in redis.conf; redis-data named volume ensures AOF file survives container restart; healthcheck via redis-cli ping present
+- Assumptions: No password for local dev (requirepass commented out); maxmemory-policy allkeys-lru suitable for BullMQ hot-cache mix — jobs are re-enqueued on start if evicted
+- Follow-ups: none
+
 ### P02-T002 — Configure NATS JetStream container
 
 - Files: infra/nats/nats-server.conf (new), infra/docker-compose.yml (updated: nats service uses config file)
