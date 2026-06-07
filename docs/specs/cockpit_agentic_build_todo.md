@@ -221,7 +221,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: Running the script clearly reports pass/fail for each dependency.
 
-### [ ] P02-T008 - Document local boot sequence
+### [x] P02-T008 - Document local boot sequence
 
 - Agent action: Write `docs/local_dev.md` with steps to install Bun/Rust/Docker, copy env files, start infra, run API, run web.
 

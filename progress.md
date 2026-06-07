@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T008 — Document local boot sequence
+
+- Files: docs/local_dev.md (new)
+- Checks: Doc covers all required steps: install Bun/Rust/Docker, copy env files, start infra, run API, run web; includes infra-health.sh usage, db:migrate note, Rust service build, docker compose down, reset-local reference, Makefile shortcuts, and troubleshooting table; WSL 2 note for Windows users
+- Assumptions: db:migrate step documented as "not yet wired until P04" to avoid confusion; Makefile aliases referenced here and implemented in P02-T009
+- Follow-ups: none
+
 ### P02-T007 — Create infra health script
 
 - Files: scripts/infra-health.sh (new)
