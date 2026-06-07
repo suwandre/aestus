@@ -170,3 +170,18 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 - P01-T010: .github/workflows/ci.yml present; two jobs (ts-checks, rust-checks) covering format-check, lint, typecheck, and test for both TS and Rust on PR/push to main.
 
 No [!] tasks in P01. No failures.
+
+### P00 REVIEW — PASS
+
+Verified all 8 P00 tasks against the actual repo with zero trust in progress.md claims.
+
+- P00-T001: docs/specs/cockpit_spec.md, cockpit_ui_implementation.md, cockpit_agentic_build_todo.md all present; README links to all three plus cockpit.html.
+- P00-T002: docs/principles.md present; covers all six required topics (cockpit not autopilot, context over raw signal, no-trade valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost); no new product scope added.
+- P00-T003: docs/non_goals.md present; first section explicitly prohibits automated order execution and auto-close logic; all five required absolute non-goals stated.
+- P00-T004: docs/glossary.md present; all 12 required terms defined (asset, venue, market state, feature snapshot, anomaly, context packet, briefing, decision, setup, regime, R-multiple, invalidation); consistent with spec terminology.
+- P00-T005: docs/adr/README.md present; includes full ADR template and indexes ADR-001.
+- P00-T006: docs/adr/ADR-001-stack.md present; states all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); rationale tied to latency/cost/self-hosting constraints; FFI deferral to D11 explicit.
+- P00-T007: docs/mvp_scope.md present; first exchanges (Binance live, Bybit/Hyperliquid/OKX fixture-only), first assets (BTC/ETH perps + macro proxies SPX/DXY/GOLD/VIX/OIL), all 10 tabs listed by phase, deferred features and providers explicitly enumerated.
+- P00-T008: docs/agent_handoff.md present; covers startup checks, per-task procedure, done-when verification, checkbox flip, progress entry format, blocked-task handling, commit conventions, and explicit do-not-do list.
+
+No [!] tasks in P00. No failures.
