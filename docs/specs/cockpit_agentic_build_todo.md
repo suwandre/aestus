@@ -99,7 +99,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: ADR states the chosen stack and why it matches latency/cost/self-hosting constraints.
 
-### [ ] P00-T007 - Write MVP scope boundary
+### [x] P00-T007 - Write MVP scope boundary
 
 - Agent action: Create `docs/mvp_scope.md` with included MVP capabilities and explicitly deferred features.
 

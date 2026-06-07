@@ -33,6 +33,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
+### P00-T007 — Write MVP scope boundary
+- Files: docs/mvp_scope.md (new)
+- Checks: First exchanges identified (Binance live, Bybit/Hyperliquid/OKX placeholder); first assets listed (BTC, ETH perps + macro proxies); all 10 tabs listed; deferred features explicitly called out; cost envelope stated
+- Assumptions: Bybit/Hyperliquid/OKX live feeds treated as post-P30 only; social firehose deferred per non_goals.md; macro proxy source (SPX, DXY, GOLD, VIX) confirmed at P06/P07 — noted as TBD
+- Follow-ups: P06/P07 — confirm free macro proxy sources for SPX/DXY/GOLD/VIX
+
 ### P00-T006 — Write ADR for chosen stack
 - Files: docs/adr/ADR-001-stack.md (new)
 - Checks: ADR covers all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); includes runtime LLM provider decision from progress.md DECISION entry (Ollama Cloud, Kimi K2.6, MiniMax M2.7); explicitly defers FFI kernels to D11; alternatives table present
