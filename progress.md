@@ -69,6 +69,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T001 — Create monorepo root structure
+- Files: apps/web/README.md, apps/api/README.md, services/ingestion/README.md, services/features/README.md, services/context/README.md, packages/contracts/README.md, packages/ui/README.md, packages/config/README.md, infra/README.md, fixtures/README.md (docs/ and scripts/ pre-existed)
+- Checks: All ten required new folders created with ownership READMEs; docs/ and scripts/ already present from P00
+- Assumptions: none
+- Follow-ups: none
+
 ### P00-T002 — Create implementation principles doc
 - Files: docs/principles.md (new)
 - Checks: Verified doc covers all six required topics from task spec: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost; no new product scope added

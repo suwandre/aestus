@@ -116,7 +116,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 Goal: Create the repository shape and tooling so backend, frontend, shared contracts, and infra can evolve together.
 
-### [ ] P01-T001 - Create monorepo root structure
+### [x] P01-T001 - Create monorepo root structure
 
 - Agent action: Create folders: `apps/web`, `apps/api`, `services/ingestion`, `services/features`, `services/context`, `packages/contracts`, `packages/ui`, `packages/config`, `infra`, `docs`, `fixtures`, `scripts`.
 
