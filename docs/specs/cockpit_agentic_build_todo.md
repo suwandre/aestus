@@ -285,7 +285,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema can represent BTC exchange netflow and whale accumulation fixture.
 
-### [ ] P03-T008 - Create feature snapshot schema
+### [x] P03-T008 - Create feature snapshot schema
 
 - Agent action: Define rolling features: returns, volatility, z_scores, funding_z, oi_delta, volume_z, correlation_set, basis, regime labels.
 

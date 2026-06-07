@@ -1,0 +1,36 @@
+[
+  {
+    "schema_version": 1,
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "returns": { "1h": 0.004, "24h": 0.021, "7d": -0.018 },
+    "volatility": { "24h": 0.032, "7d": 0.041 },
+    "z_scores": { "price": 1.4, "spread": -0.3 },
+    "funding_z": 2.6,
+    "oi_delta": 0.085,
+    "volume_z": 1.9,
+    "correlation_set": [
+      { "asset": "macro:spx", "correlation": 0.42, "window": "30d" },
+      { "asset": "macro:dxy", "correlation": -0.55, "window": "30d" }
+    ],
+    "basis": [
+      { "reference": "binance-spot", "basis_bps": 12.5 },
+      { "reference": "okx-perp", "basis_bps": 8.1 }
+    ],
+    "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" }
+  },
+  {
+    "schema_version": 1,
+    "canonical_asset_id": "macro:spx",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "returns": { "1d": -0.006 },
+    "volatility": { "30d": 0.012 },
+    "z_scores": { "price": -0.8 },
+    "funding_z": null,
+    "oi_delta": null,
+    "volume_z": 0.4,
+    "correlation_set": [{ "asset": "crypto:btc-usdt", "correlation": 0.42, "window": "30d" }],
+    "basis": [],
+    "regime": { "trend": "ranging", "volatility": "normal", "risk": "neutral" }
+  }
+]

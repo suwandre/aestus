@@ -321,3 +321,10 @@ No [!] tasks in P02. No failures.
 - Checks: BTC exchange netflow (exchange_flow, direction=net, signed amount) and whale accumulation (whale_transfer, classification=accumulation) fixtures parse via `z.discriminatedUnion("event_type", ...)`; stablecoin mint also included; `bun run typecheck` clean
 - Assumptions: 5 variants exchange_flow/whale_transfer/stablecoin_mint_burn/token_unlock/dex_activity. exchange_flow `net` direction allows signed amount (negative = net outflow / off-exchange accumulation). whale_transfer carries optional `classification` (accumulation/distribution/neutral) to satisfy the accumulation fixture. amount in asset units, amount_usd optional.
 - Follow-ups: none
+
+### P03-T008 — Create feature snapshot schema
+
+- Files: packages/contracts/src/feature-snapshot.ts (new), packages/contracts/src/index.ts, fixtures/features/snapshots.json (new)
+- Checks: BTC snapshot (full funding/oi/volume features) and SPX macro snapshot (funding_z/oi_delta null) parse via `FeatureSnapshot`; `bun run typecheck` clean
+- Assumptions: `returns`/`volatility`/`z_scores` are horizon-keyed numeric maps (`Record<string,number>`) for flexibility across assets. `funding_z`/`oi_delta`/`volume_z` nullable (macro/spot-only assets lack funding/OI). `regime` mirrors spec §113: trend/volatility/risk sub-labels. correlation_set + basis are arrays of typed entries. These three z-scores are the anomaly-engine inputs (spec §100).
+- Follow-ups: none
