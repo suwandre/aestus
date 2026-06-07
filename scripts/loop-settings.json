@@ -1,4 +1,5 @@
 {
+  "includeCoAuthoredBy": false,
   "enabledPlugins": {
     "superpowers@claude-plugins-official": false,
     "caveman@caveman": false,
