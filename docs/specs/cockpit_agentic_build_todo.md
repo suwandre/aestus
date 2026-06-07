@@ -87,7 +87,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: Glossary exists and uses consistent terms from both specs.
 
-### [ ] P00-T005 - Create architecture decision log folder
+### [x] P00-T005 - Create architecture decision log folder
 
 - Agent action: Create `docs/adr/README.md` explaining that every major infra/provider choice gets a short ADR.
 

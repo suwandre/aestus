@@ -33,6 +33,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
+### P00-T005 — Create architecture decision log folder
+- Files: docs/adr/README.md (new)
+- Checks: README explains when to write an ADR, includes full template, and indexes ADR-001 (written in P00-T006)
+- Assumptions: ADR-001 pre-indexed in README because it is written immediately after in the same phase
+- Follow-ups: none
+
 ### P00-T004 — Create glossary
 - Files: docs/glossary.md (new)
 - Checks: All twelve required terms defined (asset, venue, market state, feature snapshot, anomaly, context packet, briefing, decision, setup, regime, R-multiple, invalidation); definitions cross-checked against todo task descriptions and principles.md for consistency
