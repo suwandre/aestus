@@ -1,0 +1,67 @@
+[
+  {
+    "id": "dec-001",
+    "schema_version": 1,
+    "briefing_id": "brief-001",
+    "decision_type": "act",
+    "rationale": "Trend intact, like the entry against the swing low.",
+    "planned_entry": 67950,
+    "planned_stop": 66900,
+    "planned_targets": [69500, 71000],
+    "risk_r": 2.4,
+    "tags": ["swing", "btc", "trend-follow"],
+    "decided_at": "2026-06-07T12:01:00.000Z"
+  },
+  {
+    "id": "dec-002",
+    "schema_version": 1,
+    "briefing_id": "brief-002",
+    "decision_type": "skip",
+    "rationale": "Counter-trend, not my setup.",
+    "planned_entry": null,
+    "planned_stop": null,
+    "planned_targets": [],
+    "risk_r": null,
+    "tags": ["counter-trend"],
+    "decided_at": "2026-06-07T12:06:00.000Z"
+  },
+  {
+    "id": "dec-003",
+    "schema_version": 1,
+    "briefing_id": "brief-002",
+    "decision_type": "snooze",
+    "planned_entry": null,
+    "planned_stop": null,
+    "planned_targets": [],
+    "risk_r": null,
+    "snooze_until": "2026-06-07T16:00:00.000Z",
+    "tags": [],
+    "decided_at": "2026-06-07T12:07:00.000Z"
+  },
+  {
+    "id": "dec-004",
+    "schema_version": 1,
+    "briefing_id": "brief-003",
+    "decision_type": "dismiss",
+    "rationale": "No-trade is correct, dismissing.",
+    "planned_entry": null,
+    "planned_stop": null,
+    "planned_targets": [],
+    "risk_r": null,
+    "tags": [],
+    "decided_at": "2026-06-07T12:11:00.000Z"
+  },
+  {
+    "id": "dec-005",
+    "schema_version": 1,
+    "briefing_id": "brief-001",
+    "decision_type": "watch",
+    "rationale": "Want to see if it pulls into the zone before committing.",
+    "planned_entry": null,
+    "planned_stop": null,
+    "planned_targets": [],
+    "risk_r": null,
+    "tags": ["watchlist"],
+    "decided_at": "2026-06-07T12:02:30.000Z"
+  }
+]

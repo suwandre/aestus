@@ -349,3 +349,10 @@ No [!] tasks in P02. No failures.
 - Checks: long, short, and no_trade briefings parse via `Briefing`; `bun run typecheck` clean
 - Assumptions: For `no_trade`, entry_zone/invalidation/size_suggestion are null and targets empty (made nullable). entry_zone reuses `EntryZone` from levels.ts and is copied from the context packet's deterministic_levels (hard rule #2 — LLM never invents levels). Added `CostMetadata` (provider/model/tokens/cost_usd) per hard rule #7 cost visibility; cost_usd=0.0 reflects Ollama Cloud flat-subscription billing (see DECISION entry). `model` field is the LLM id. supporting_context holds evidence ref strings.
 - Follow-ups: none
+
+### P03-T012 — Create decision schema
+
+- Files: packages/contracts/src/decision.ts (new), packages/contracts/src/index.ts, fixtures/decisions/decisions.json (new)
+- Checks: act, skip, snooze, dismiss, watch decisions parse via `Decision`; `bun run typecheck` clean
+- Assumptions: Plan fields (planned_entry/planned_stop/planned_targets/risk_r) nullable/empty for non-act decisions; populated only on `act`. `briefing_id` is the informing-context link (hard rule #4). Added optional `snooze_until` for the snooze action. Per hard rule #1 these record intent only — no execution.
+- Follow-ups: none

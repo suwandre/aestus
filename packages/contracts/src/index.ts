@@ -11,3 +11,4 @@ export * from "./anomaly";
 export * from "./levels";
 export * from "./context-packet";
 export * from "./briefing";
+export * from "./decision";

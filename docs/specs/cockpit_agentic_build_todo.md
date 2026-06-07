@@ -309,7 +309,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema supports long, short, and no_trade stances.
 
-### [ ] P03-T012 - Create decision schema
+### [x] P03-T012 - Create decision schema
 
 - Agent action: Define decision fields: briefing_id, decision_type, rationale, planned_entry, planned_stop, planned_targets, risk_r, tags, decided_at.
 
