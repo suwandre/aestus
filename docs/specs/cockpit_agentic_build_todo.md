@@ -243,7 +243,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 Goal: Define typed data boundaries before implementing services so every agent knows the exact shapes.
 
-### [ ] P03-T001 - Create asset identity schema
+### [x] P03-T001 - Create asset identity schema
 
 - Agent action: In `packages/contracts`, define `AssetIdentity` with symbol, base, quote, asset_class, canonical_id, display_name, icon_key, tags.
 

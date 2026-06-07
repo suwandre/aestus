@@ -1,0 +1,54 @@
+[
+  {
+    "symbol": "BTCUSDT",
+    "base": "BTC",
+    "quote": "USDT",
+    "asset_class": "crypto",
+    "canonical_id": "crypto:btc-usdt",
+    "display_name": "Bitcoin / Tether",
+    "icon_key": "btc",
+    "tags": ["major", "perp"]
+  },
+  {
+    "symbol": "ETHUSDT",
+    "base": "ETH",
+    "quote": "USDT",
+    "asset_class": "crypto",
+    "canonical_id": "crypto:eth-usdt",
+    "display_name": "Ethereum / Tether",
+    "icon_key": "eth",
+    "tags": ["major", "perp"]
+  },
+  {
+    "symbol": "SPX",
+    "asset_class": "equity_index",
+    "canonical_id": "macro:spx",
+    "display_name": "S&P 500 Index",
+    "icon_key": "spx",
+    "tags": ["macro", "proxy"]
+  },
+  {
+    "symbol": "DXY",
+    "asset_class": "fx",
+    "canonical_id": "macro:dxy",
+    "display_name": "US Dollar Index",
+    "icon_key": "dxy",
+    "tags": ["macro", "proxy"]
+  },
+  {
+    "symbol": "GOLD",
+    "asset_class": "commodity",
+    "canonical_id": "macro:gold",
+    "display_name": "Gold (XAU/USD)",
+    "icon_key": "gold",
+    "tags": ["macro", "proxy"]
+  },
+  {
+    "symbol": "VIX",
+    "asset_class": "volatility",
+    "canonical_id": "macro:vix",
+    "display_name": "CBOE Volatility Index",
+    "icon_key": "vix",
+    "tags": ["macro", "proxy"]
+  }
+]

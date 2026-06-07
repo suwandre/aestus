@@ -272,3 +272,10 @@ Verified all 10 P02 tasks against the actual repo with zero trust in progress.md
 - P02-T010: scripts/reset-local.sh requires `--confirm` as first argument; exits 1 with explicit warning listing all data that will be deleted when flag is absent.
 
 No [!] tasks in P02. No failures.
+
+### P03-T001 — Create asset identity schema
+
+- Files: packages/contracts/src/common.ts (new), packages/contracts/src/asset.ts (new), packages/contracts/src/index.ts (re-export), fixtures/assets/identities.json (new)
+- Checks: All 6 required fixtures (BTCUSDT, ETHUSDT, SPX, DXY, GOLD, VIX) parse via `AssetIdentity.parse`; `bun run typecheck` clean
+- Assumptions: Contracts use `zod/v4` (bundled in zod 3.25.76) for native `z.toJSONSchema` at T014. `base`/`quote` made optional so non-pair macro proxies (SPX/DXY/GOLD/VIX) validate. Added `rates` to AssetClass for future coverage; macro proxies use `macro:<sym>` canonical_id prefix, crypto uses `crypto:<base>-<quote>`. SCHEMA_VERSION=1 constant in common.ts (informs T016).
+- Follow-ups: none
