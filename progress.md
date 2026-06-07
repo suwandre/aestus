@@ -33,6 +33,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
 
+### P00-T006 — Write ADR for chosen stack
+- Files: docs/adr/ADR-001-stack.md (new)
+- Checks: ADR covers all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); includes runtime LLM provider decision from progress.md DECISION entry (Ollama Cloud, Kimi K2.6, MiniMax M2.7); explicitly defers FFI kernels to D11; alternatives table present
+- Assumptions: Ollama Cloud model tag naming (e.g. kimi-k2.6:cloud) must be confirmed at P13 — noted in Consequences; pgvector image variant must be confirmed at P04 — noted in Consequences
+- Follow-ups: P13 — confirm Ollama Cloud model tags against live catalog before hardcoding
+
 ### P00-T005 — Create architecture decision log folder
 - Files: docs/adr/README.md (new)
 - Checks: README explains when to write an ADR, includes full template, and indexes ADR-001 (written in P00-T006)

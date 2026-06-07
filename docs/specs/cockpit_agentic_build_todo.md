@@ -93,7 +93,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: ADR folder exists with template and first README.
 
-### [ ] P00-T006 - Write ADR for chosen stack
+### [x] P00-T006 - Write ADR for chosen stack
 
 - Agent action: Create ADR confirming Rust ingestion/features, TypeScript/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+vector, ClickHouse, single VPS containers. Record that native C/Zig FFI kernels are intentionally deferred to D11 (post-MVP learning optimization, pure-Rust baseline first).
 
