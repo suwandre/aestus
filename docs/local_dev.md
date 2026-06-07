@@ -7,11 +7,11 @@ starting the infrastructure, and running the API and web app.
 
 ## Prerequisites
 
-| Tool | Minimum version | Install |
-|------|-----------------|---------|
-| [Bun](https://bun.sh) | 1.1+ | `curl -fsSL https://bun.sh/install \| bash` |
-| [Rust + Cargo](https://rustup.rs) | 1.77+ | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
-| [Docker + Compose plugin](https://docs.docker.com/get-docker/) | Docker 24+, Compose v2 | Platform installer |
+| Tool                                                           | Minimum version        | Install                                                           |
+| -------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------- |
+| [Bun](https://bun.sh)                                          | 1.1+                   | `curl -fsSL https://bun.sh/install \| bash`                       |
+| [Rust + Cargo](https://rustup.rs)                              | 1.77+                  | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
+| [Docker + Compose plugin](https://docs.docker.com/get-docker/) | Docker 24+, Compose v2 | Platform installer                                                |
 
 All commands assume a POSIX shell (bash/zsh). Windows users: use WSL 2.
 
@@ -152,10 +152,10 @@ make reset-local # guided volume reset (prompts for --confirm)
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| `port already in use` | Check if a previous run left containers up: `docker ps` |
-| ClickHouse exits immediately | Likely a volume permission issue — run `make reset-local` |
-| `bun install` fails | Delete `node_modules/` and `bun.lock`, then retry |
-| Rust crates fail to compile | Run `rustup update stable` |
+| Symptom                             | Fix                                                                              |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| `port already in use`               | Check if a previous run left containers up: `docker ps`                          |
+| ClickHouse exits immediately        | Likely a volume permission issue — run `make reset-local`                        |
+| `bun install` fails                 | Delete `node_modules/` and `bun.lock`, then retry                                |
+| Rust crates fail to compile         | Run `rustup update stable`                                                       |
 | `infra-health.sh` fails on Postgres | `pg_isready` not installed — install `libpq-dev` (Linux) or `postgresql` (macOS) |
