@@ -85,7 +85,7 @@ function Invoke-Agent {
         '-p', '--model', $Model,
         '--settings', (Join-Path $PSScriptRoot 'loop-settings.json'),
         '--mcp-config', $script:McpConfig, '--strict-mcp-config',
-        '--output-format', 'json',
+        '--output-format', 'stream-json', '--verbose',
         '--dangerously-skip-permissions'
     )
     if ($Effort) { $argList += @('--effort', $Effort) }
@@ -93,21 +93,47 @@ function Invoke-Agent {
     $label = "P{0:D2}" -f $Phase
     Write-Host ("[{0}] spawning {1} ({2}{3})..." -f $label, $Role, $Model, $(if ($Effort) { " / effort=$Effort" } else { '' })) -ForegroundColor Cyan
 
+    # stream-json emits newline-delimited events live. Print assistant text + tool
+    # calls as they arrive (so the terminal shows continuous progress), and capture
+    # the final 'result' event for metrics.
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    $script:r = $null
     Push-Location $RepoRoot
     try {
-        $raw = $Prompt | & claude @argList 2>$null | Out-String
+        $Prompt | & claude @argList 2>$null | ForEach-Object {
+            $line = $_
+            if ([string]::IsNullOrWhiteSpace($line)) { return }
+            $evt = $null
+            try { $evt = $line | ConvertFrom-Json } catch { return }
+            switch ($evt.type) {
+                'assistant' {
+                    foreach ($block in $evt.message.content) {
+                        if ($block.type -eq 'text' -and $block.text.Trim()) {
+                            Write-Host ("  {0}" -f $block.text.Trim()) -ForegroundColor Gray
+                        } elseif ($block.type -eq 'tool_use') {
+                            $detail = if ($block.input.command) { $block.input.command }
+                                      elseif ($block.input.file_path) { $block.input.file_path }
+                                      elseif ($block.input.path) { $block.input.path }
+                                      elseif ($block.input.pattern) { $block.input.pattern }
+                                      else { '' }
+                            $detail = ($detail -replace '\s+', ' ').Trim()
+                            if ($detail.Length -gt 100) { $detail = $detail.Substring(0, 100) + '…' }
+                            Write-Host ("  → {0}{1}" -f $block.name, $(if ($detail) { " $detail" } else { '' })) -ForegroundColor DarkGray
+                        }
+                    }
+                }
+                'result' { $script:r = $evt }
+            }
+        }
     } finally {
         Pop-Location
         $sw.Stop()
     }
 
-    $r = $null
-    try { $r = $raw | ConvertFrom-Json } catch { }
+    $r = $script:r
     if (-not $r) {
-        Write-Host ("[{0}] {1} produced unparseable output:" -f $label, $Role) -ForegroundColor Red
-        Write-Host ($raw.Substring(0, [Math]::Min(2000, $raw.Length)))
-        throw "Agent output was not valid JSON."
+        Write-Host ("[{0}] {1} ended with no result event (crash or auth failure)." -f $label, $Role) -ForegroundColor Red
+        throw "Agent stream produced no result event."
     }
 
     $cost = [double]($r.total_cost_usd ?? 0)
