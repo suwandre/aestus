@@ -261,7 +261,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Every raw ingested message can be stored/replayed with source traceability.
 
-### [ ] P03-T004 - Create normalized market event schema
+### [x] P03-T004 - Create normalized market event schema
 
 - Agent action: Define normalized event variants: price_tick, trade, orderbook_delta, funding_rate, open_interest, liquidation, mark_price, index_price.
 

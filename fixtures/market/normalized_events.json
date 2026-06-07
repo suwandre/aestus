@@ -1,0 +1,87 @@
+[
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.100Z",
+    "event_type": "price_tick",
+    "price": 68250.4,
+    "bid": 68250.3,
+    "ask": 68250.5
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.110Z",
+    "sequence": 880123456,
+    "event_type": "trade",
+    "price": 68250.4,
+    "size": 0.125,
+    "side": "buy",
+    "trade_id": "t-99812"
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.120Z",
+    "event_type": "orderbook_delta",
+    "bids": [[68250.3, 1.2], [68250.2, 0]],
+    "asks": [[68250.5, 0.8]],
+    "is_snapshot": false
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.130Z",
+    "event_type": "funding_rate",
+    "funding_rate": 0.0001,
+    "next_funding_time": "2026-06-07T16:00:00.000Z",
+    "interval_hours": 8
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.140Z",
+    "event_type": "open_interest",
+    "open_interest": 91234.5,
+    "notional": 6225000000
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.150Z",
+    "event_type": "liquidation",
+    "side": "sell",
+    "price": 68210.0,
+    "size": 3.4
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.160Z",
+    "event_type": "mark_price",
+    "mark_price": 68249.8
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "instrument_id": "BTCUSDT",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.170Z",
+    "event_type": "index_price",
+    "index_price": 68251.1
+  }
+]

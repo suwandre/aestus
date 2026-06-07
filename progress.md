@@ -293,3 +293,10 @@ No [!] tasks in P02. No failures.
 - Checks: aggTrade (with provider_timestamp) and markPriceUpdate (without) fixtures parse via `RawMarketEvent`; `bun run typecheck` clean
 - Assumptions: Full raw payload is stored out-of-band (object store) keyed by `raw_payload_hash`; envelope holds only the hash for dedup/provenance. `provider_timestamp` optional (some feeds omit it); `sequence` is a non-negative int monotonic per source. `schema_version` stamped on every envelope per T016 plan.
 - Follow-ups: none
+
+### P03-T004 — Create normalized market event schema
+
+- Files: packages/contracts/src/normalized-event.ts (new), packages/contracts/src/index.ts, fixtures/market/normalized_events.json (new)
+- Checks: All 8 variants (price_tick, trade, orderbook_delta, funding_rate, open_interest, liquidation, mark_price, index_price) parse via `z.discriminatedUnion("event_type", ...)`; `bun run typecheck` clean
+- Assumptions: Prices/sizes are numbers (not decimal strings) — normalization is where exact provider decimals become numeric inputs for feature math; exact bytes stay replayable via RawMarketEvent.raw_payload_hash. orderbook_delta uses `[price,size]` tuples with size 0 = level removal. Each variant shares a Base (venue, instrument_id, canonical_asset_id, timestamp, optional sequence).
+- Follow-ups: none
