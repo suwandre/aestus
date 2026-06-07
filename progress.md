@@ -384,3 +384,26 @@ No [!] tasks in P02. No failures.
 - Checks: Doc covers the `schema_version`/`SCHEMA_VERSION` event-version field, breaking vs non-breaking change rules, the step-by-step migration process (edit zod → bump version → update fixtures → regenerate JSON Schema → update downstream → verify), a migration-notes table (baseline v1), and consumer/producer compatibility rules; `bun run format:check` clean
 - Assumptions: Versioning is per-envelope for streamed events; reference data (AssetIdentity/Venue/MacroEvent/NewsItem) evolves via P04 storage migrations rather than a per-record version. Ties to CLAUDE.md hard rule #8 (update contracts/fixtures/docs/types together).
 - Follow-ups: none
+
+### P03 REVIEW — PASS
+
+Verified all 16 P03 tasks against the actual repo with zero trust in progress.md claims. `bun test packages/contracts` → 16 pass / 0 fail. `bun run typecheck` → all 5 workspace packages exit 0.
+
+- P03-T001: fixtures/assets/identities.json has all 6 required assets (BTCUSDT, ETHUSDT, SPX, DXY, GOLD, VIX); each parses via AssetIdentity.parse in the test suite.
+- P03-T002: fixtures/venues/instruments.json covers Binance perp, Bybit perp, Hyperliquid perp, OKX perp, Binance spot, and macro_proxy (SPX); all parse via VenueInstrument.
+- P03-T003: packages/contracts/src/raw-event.ts present; fixture raw_events.json tests pass; envelope includes source, venue, received_at, provider_timestamp (optional), sequence, event_type, raw_payload_hash for replay/traceability.
+- P03-T004: normalized-event.ts uses z.discriminatedUnion on event_type with all 8 variants; all parse deterministically; tests pass.
+- P03-T005: fixtures/macro/events.json has CPI, FOMC, NFP, PPI, and jobless claims; all parse via MacroEvent.
+- P03-T006: news.ts source_type enum includes rss/news/social/other; fixtures include RSS and social items; tests pass.
+- P03-T007: fixtures/onchain/events.json has exchange_flow (direction=net, negative amount = netflow out) and whale_transfer (classification=accumulation); both parse via OnChainEvent.
+- P03-T008: feature-snapshot.ts includes returns, volatility, z_scores, funding_z, oi_delta, volume_z, correlation_set, basis, and regime labels; tests pass.
+- P03-T009: fixtures/anomalies/events.json covers all 7 required types (funding_spike, oi_surge, volume_anomaly, correlation_break, basis_dislocation, whale_flow, macro_approaching); all parse via AnomalyEvent.
+- P03-T010: context-packet.ts composes trigger AnomalyEvent + FeatureSnapshot + correlated assets + news + macro + on-chain + historical analogues + DeterministicLevels; fixture parses; tests pass.
+- P03-T011: fixtures/briefings/briefings.json has long, short, and no_trade stances; all parse via Briefing.
+- P03-T012: fixtures/decisions/decisions.json has act, skip, snooze, dismiss, and watch; all parse via Decision.
+- P03-T013: journal.ts has setup_tags (setup), regime_at_entry (regime), and signal (anomaly type) fields; fixtures demonstrate both populated and null-exit (open) trades; tests pass.
+- P03-T014: 15 draft-2020-12 JSON Schema files present in packages/contracts/schema/; each has "$schema": "https://json-schema.org/draft/2020-12/schema"; ajv@8 devDep present; gen:schema script produces them without runtime Zod import at validation time.
+- P03-T015: fixtures.test.ts validates every fixture file via .parse (throws on bad shape); coverage guard fails CI on unmapped fixture files; negative test confirms rejection of invalid AssetIdentity; 16/16 pass.
+- P03-T016: docs/contracts_versioning.md covers event version fields, breaking vs non-breaking change definitions, 7-step migration process, migration notes table (v1 baseline), and producer/consumer compatibility rules.
+
+No [!] tasks in P03. No failures.
