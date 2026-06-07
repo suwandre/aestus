@@ -1,0 +1,113 @@
+[
+  {
+    "id": "ctx-001",
+    "schema_version": 1,
+    "generated_at": "2026-06-07T12:00:05.000Z",
+    "primary_asset": "crypto:btc-usdt",
+    "trigger": {
+      "id": "anom-001",
+      "type": "funding_spike",
+      "severity": "high",
+      "sigma": 2.6,
+      "assets": ["crypto:btc-usdt"],
+      "venues": ["binance"],
+      "title": "BTC funding rate spike",
+      "description": "Binance perp funding z-score reached 2.6, well above the 30d band.",
+      "detected_at": "2026-06-07T12:00:00.000Z",
+      "status": "active",
+      "context_refs": ["feature:crypto:btc-usdt:2026-06-07T12:00:00Z"],
+      "rule_ref": "rule:funding_z>2"
+    },
+    "market_snapshot": {
+      "schema_version": 1,
+      "canonical_asset_id": "crypto:btc-usdt",
+      "timestamp": "2026-06-07T12:00:00.000Z",
+      "returns": { "1h": 0.004, "24h": 0.021, "7d": -0.018 },
+      "volatility": { "24h": 0.032, "7d": 0.041 },
+      "z_scores": { "price": 1.4, "spread": -0.3 },
+      "funding_z": 2.6,
+      "oi_delta": 0.085,
+      "volume_z": 1.9,
+      "correlation_set": [{ "asset": "macro:spx", "correlation": 0.42, "window": "30d" }],
+      "basis": [{ "reference": "binance-spot", "basis_bps": 12.5 }],
+      "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" }
+    },
+    "correlated_assets": [
+      {
+        "schema_version": 1,
+        "canonical_asset_id": "macro:spx",
+        "timestamp": "2026-06-07T12:00:00.000Z",
+        "returns": { "1d": -0.006 },
+        "volatility": { "30d": 0.012 },
+        "z_scores": { "price": -0.8 },
+        "funding_z": null,
+        "oi_delta": null,
+        "volume_z": 0.4,
+        "correlation_set": [{ "asset": "crypto:btc-usdt", "correlation": 0.42, "window": "30d" }],
+        "basis": [],
+        "regime": { "trend": "ranging", "volatility": "normal", "risk": "neutral" }
+      }
+    ],
+    "news": [
+      {
+        "id": "news-2026-06-07-001",
+        "title": "Bitcoin reclaims $68k as ETF inflows resume",
+        "url": "https://www.coindesk.com/markets/2026/06/07/btc-68k",
+        "source": "coindesk",
+        "source_type": "rss",
+        "published_at": "2026-06-07T11:45:00.000Z",
+        "entities": ["crypto:btc-usdt", "BTC"],
+        "summary": "Spot ETF net inflows turned positive for the week.",
+        "relevance_score": 0.82,
+        "sentiment": "positive",
+        "tags": ["etf", "flows", "btc"]
+      }
+    ],
+    "macro": [
+      {
+        "event_id": "us-cpi-2026-06",
+        "region": "US",
+        "currency": "USD",
+        "title": "CPI (YoY)",
+        "scheduled_at": "2026-06-10T12:30:00.000Z",
+        "importance": "high",
+        "consensus": 3.1,
+        "previous": 3.4,
+        "actual": null,
+        "source": "te"
+      }
+    ],
+    "on_chain": [
+      {
+        "schema_version": 1,
+        "chain": "bitcoin",
+        "asset": "crypto:btc-usdt",
+        "timestamp": "2026-06-07T00:00:00.000Z",
+        "source": "glassnode",
+        "event_type": "exchange_flow",
+        "direction": "net",
+        "amount": -1850.25,
+        "amount_usd": -126300000
+      }
+    ],
+    "historical_analogues": [
+      {
+        "when": "2024-03-12",
+        "description": "Funding z-score >2.5 during an uptrend preceded a 6% pullback within 48h.",
+        "similarity": 0.71,
+        "outcome": "Pullback of 6.2% over two days, then continuation."
+      }
+    ],
+    "deterministic_levels": {
+      "reference_price": 68250.4,
+      "entry_zone": { "low": 67800, "high": 68100 },
+      "invalidation": 66900,
+      "targets": [69500, 71000],
+      "supports": [67800, 66900],
+      "resistances": [69500, 71000],
+      "atr": 1450.5,
+      "liquidation_clusters": [66800, 65500],
+      "method_notes": "Entry from 1h swing structure; invalidation below prior swing low; targets at resistance and 2R."
+    }
+  }
+]

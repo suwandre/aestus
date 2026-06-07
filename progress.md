@@ -335,3 +335,10 @@ No [!] tasks in P02. No failures.
 - Checks: All 7 types (funding_spike, oi_surge, volume_anomaly, correlation_break, basis_dislocation, whale_flow, macro_approaching) parse via `AnomalyEvent`; `bun run typecheck` clean
 - Assumptions: `sigma` nullable — schedule-driven types (macro_approaching, whale_flow) have null sigma. AnomalyType enum matches spec §117 taxonomy. status lifecycle: active/acknowledged/resolved/expired/dismissed. context_refs are free-form ref strings (feature:/onchain:/macro: prefixes) linking supporting evidence; rule_ref optional for rule-based detections.
 - Follow-ups: none
+
+### P03-T010 — Create context packet schema
+
+- Files: packages/contracts/src/levels.ts (new), packages/contracts/src/context-packet.ts (new), packages/contracts/src/index.ts, fixtures/context/packets.json (new)
+- Checks: Composed packet (trigger AnomalyEvent + FeatureSnapshot + correlated assets + news + macro + on-chain + analogues + deterministic levels) parses via `ContextPacket`; `bun run typecheck` clean
+- Assumptions: ContextPacket composes the prior contracts directly (single source of truth). Introduced shared `levels.ts` (`DeterministicLevels`, `EntryZone`) so T011 briefing reuses the same level types — per hard rule #2 these are code-computed and the LLM may only reference them. Added `HistoricalAnalogue` (when/description/similarity/outcome). market_snapshot is a FeatureSnapshot for the primary asset.
+- Follow-ups: T011 briefing imports DeterministicLevels/EntryZone from levels.ts
