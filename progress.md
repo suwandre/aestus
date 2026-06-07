@@ -77,6 +77,13 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T006 — Configure linting
+
+- Files: eslint.config.js (new), package.json (lint script + type:module + eslint/typescript-eslint devDeps), Cargo.toml (workspace.lints section), services/ingestion/Cargo.toml, services/features/Cargo.toml, crates/event_model/Cargo.toml, crates/market_math/Cargo.toml (lints.workspace = true added to all members)
+- Checks: `bun run lint` runs ESLint flat config (typescript-eslint recommended) and cargo clippy --workspace -- -D warnings; both pass clean on placeholder code
+- Assumptions: ESLint flat config (eslint.config.js) requires "type":"module" in package.json root; Clippy warns on unwrap_used/expect_used rather than denying to allow placeholder code
+- Follow-ups: none
+
 ### P01-T005 — Configure formatting
 
 - Files: .prettierrc (new), .prettierignore (new), rustfmt.toml (new), package.json (format script updated to include cargo fmt --all)

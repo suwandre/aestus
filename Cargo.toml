@@ -12,6 +12,15 @@ version = "0.1.0"
 edition = "2021"
 license = "UNLICENSED"
 
+[workspace.lints.rust]
+unused_imports = "deny"
+dead_code = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
+pedantic = { level = "allow", priority = -1 }
+
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

@@ -3,6 +3,9 @@ name = "features"
 version.workspace = true
 edition.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 event_model = { path = "../../crates/event_model" }
 market_math = { path = "../../crates/market_math" }

@@ -145,7 +145,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: Formatting command runs without changing generated/fixture data unexpectedly.
 
-### [ ] P01-T006 - Configure linting
+### [x] P01-T006 - Configure linting
 
 - Agent action: Add ESLint for TS and Clippy config for Rust. Keep rules practical and enforce unused code/import cleanup.
 
