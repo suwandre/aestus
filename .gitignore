@@ -11,3 +11,6 @@ target/
 # Runner-owned local telemetry
 metrics.csv
 .loop-state
+
+# Local dev artifacts (briefings, logs, screenshots) — keep directory tracked
+.local/

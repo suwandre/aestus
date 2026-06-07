@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T006 — Add local object/artifact folder
+
+- Files: .local/artifacts/.gitkeep (new, force-added), .gitignore (appended .local/)
+- Checks: `.local/` is in .gitignore so runtime artifacts (briefings, logs, screenshots) stay out of git; `.local/artifacts/.gitkeep` force-added to track directory structure; `git status` confirms file is staged correctly
+- Assumptions: force-add (`git add -f`) is the standard pattern for tracking an otherwise-ignored directory; once committed, clones will have the path and won't need -f again
+- Follow-ups: none
+
 ### P02-T005 — Configure ClickHouse container
 
 - Files: infra/docker-compose.yml (updated: added CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1)

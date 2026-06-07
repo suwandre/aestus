@@ -209,7 +209,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: ClickHouse starts locally and accepts simple SQL query.
 
-### [ ] P02-T006 - Add local object/artifact folder
+### [x] P02-T006 - Add local object/artifact folder
 
 - Agent action: Create mounted `./.local/artifacts` for generated briefings, logs, exports, and screenshots during dev.
 
