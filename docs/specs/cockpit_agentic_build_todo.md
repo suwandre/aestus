@@ -63,7 +63,7 @@ When completing a task, report:
 
 Goal: Lock the implementation against the system and UI specs so future agents do not drift into an exchange, bot, or generic dashboard.
 
-### [ ] P00-T001 - Add source documents to repo docs
+### [x] P00-T001 - Add source documents to repo docs
 
 - Agent action: Place `cockpit_spec.md`, `cockpit_ui_implementation.md`, and this todo file under `docs/specs/`. Add a README note that these files are the product source of truth.
 

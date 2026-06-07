@@ -26,3 +26,9 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Env: `OLLAMA_API_KEY`, `OLLAMA_BASE_URL`. Fixture-first: app runs with no LLM key present.
 - NOTE: This concerns the **runtime app only**. The build loop (`scripts/loop.ps1`) stays on Claude Code (Opus 4.8 / Sonnet 4.6) per the todo routing table — do not remap it.
 - Full detail: `docs/credentials.md`.
+
+### P00-T001 — Add source documents to repo docs
+- Files: README.md (new), docs/specs/cockpit_spec.md, docs/specs/cockpit_ui_implementation.md, docs/specs/cockpit_agentic_build_todo.md (pre-committed)
+- Checks: Verified README links to all three spec docs and cockpit.html reference; spec files confirmed present under docs/specs/
+- Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
+- Follow-ups: none
