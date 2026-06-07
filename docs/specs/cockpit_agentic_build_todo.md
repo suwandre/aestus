@@ -157,7 +157,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: `bun run typecheck` fails on implicit any and passes on placeholders.
 
-### [ ] P01-T008 - Add environment variable templates
+### [x] P01-T008 - Add environment variable templates
 
 - Agent action: Create `.env.example` files for root, API, ingestion, frontend, and infra. Include no secrets.
 

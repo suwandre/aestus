@@ -77,6 +77,13 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T008 — Add environment variable templates
+
+- Files: .env.example (root, new), apps/api/.env.example, apps/web/.env.example, services/ingestion/.env.example, infra/.env.example (all new)
+- Checks: .gitignore already covers .env / .env.* with !.env.example exception; no secrets in any example file; all required vars documented per credentials.md and ADR-001 stack (Postgres, Redis, NATS, ClickHouse, Ollama Cloud, optional on-chain/push)
+- Assumptions: services/context and services/features will share infra vars from root .env at runtime; separate .env.example not required for pure library packages (contracts/ui/config)
+- Follow-ups: none
+
 ### P01-T007 — Configure TypeScript strict mode
 
 - Files: tsconfig.base.json (new), apps/api/tsconfig.json, apps/web/tsconfig.json, packages/contracts/tsconfig.json, packages/ui/tsconfig.json, packages/config/tsconfig.json (all new), apps/web/src/index.ts (placeholder added to satisfy no-inputs check)
