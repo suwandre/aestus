@@ -233,7 +233,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: Common infra commands work from repo root.
 
-### [ ] P02-T010 - Create local reset script
+### [x] P02-T010 - Create local reset script
 
 - Agent action: Add a destructive local reset script that drops volumes only after an explicit confirmation flag.
 

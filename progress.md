@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T010 — Create local reset script
+
+- Files: scripts/reset-local.sh (new)
+- Checks: `sh -n scripts/reset-local.sh` syntax-clean; running without `--confirm` exits with code 1 and clear error message listing what will be deleted; script uses `docker compose down --volumes --remove-orphans` which destroys all named volumes; explicit `--confirm` flag required — no prompt, no interactive input needed (safe for Makefile use)
+- Assumptions: Makefile calls this with --confirm already passed (the Makefile reset-local target calls `sh scripts/reset-local.sh --confirm`); if called from terminal without --confirm, user sees the safety message and must re-run intentionally
+- Follow-ups: none
+
 ### P02-T009 — Add Makefile aliases
 
 - Files: Makefile (new)
