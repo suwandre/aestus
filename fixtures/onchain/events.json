@@ -1,0 +1,38 @@
+[
+  {
+    "schema_version": 1,
+    "chain": "bitcoin",
+    "asset": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T00:00:00.000Z",
+    "source": "glassnode",
+    "event_type": "exchange_flow",
+    "direction": "net",
+    "amount": -1850.25,
+    "amount_usd": -126300000
+  },
+  {
+    "schema_version": 1,
+    "chain": "bitcoin",
+    "asset": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T09:30:00.000Z",
+    "source": "arkham",
+    "event_type": "whale_transfer",
+    "amount": 950.0,
+    "amount_usd": 64837500,
+    "from_label": "binance_hot_wallet",
+    "to_label": "unknown_cold_wallet",
+    "classification": "accumulation",
+    "tx_hash": "f3a1c9e0b2d4f6081a3c5e7090b2d4f6081a3c5e7090b2d4f6081a3c5e7090b2"
+  },
+  {
+    "schema_version": 1,
+    "chain": "ethereum",
+    "asset": "USDT",
+    "timestamp": "2026-06-07T08:15:00.000Z",
+    "source": "nansen",
+    "event_type": "stablecoin_mint_burn",
+    "action": "mint",
+    "stablecoin": "USDT",
+    "amount": 250000000
+  }
+]

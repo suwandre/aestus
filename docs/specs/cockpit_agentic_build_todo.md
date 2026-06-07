@@ -279,7 +279,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema supports RSS/news and future social sources.
 
-### [ ] P03-T007 - Create on-chain event schema
+### [x] P03-T007 - Create on-chain event schema
 
 - Agent action: Define on-chain event variants for exchange_flow, whale_transfer, stablecoin_mint_burn, token_unlock, dex_activity.
 

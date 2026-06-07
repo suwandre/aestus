@@ -314,3 +314,10 @@ No [!] tasks in P02. No failures.
 - Checks: An RSS news item and a social (whale-alert) item parse via `NewsItem`; `bun run typecheck` clean
 - Assumptions: `source_type` enum (rss/news/social/other) makes the shape future-social-source-ready per Done-when. `sentiment` is a 3-way enum; `relevance_score` constrained 0..1. `entities` are free strings that may reference canonical asset ids or tickers.
 - Follow-ups: none
+
+### P03-T007 — Create on-chain event schema
+
+- Files: packages/contracts/src/onchain.ts (new), packages/contracts/src/index.ts, fixtures/onchain/events.json (new)
+- Checks: BTC exchange netflow (exchange_flow, direction=net, signed amount) and whale accumulation (whale_transfer, classification=accumulation) fixtures parse via `z.discriminatedUnion("event_type", ...)`; stablecoin mint also included; `bun run typecheck` clean
+- Assumptions: 5 variants exchange_flow/whale_transfer/stablecoin_mint_burn/token_unlock/dex_activity. exchange_flow `net` direction allows signed amount (negative = net outflow / off-exchange accumulation). whale_transfer carries optional `classification` (accumulation/distribution/neutral) to satisfy the accumulation fixture. amount in asset units, amount_usd optional.
+- Follow-ups: none
