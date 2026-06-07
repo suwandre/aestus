@@ -94,7 +94,7 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 ### P01-T008 — Add environment variable templates
 
 - Files: .env.example (root, new), apps/api/.env.example, apps/web/.env.example, services/ingestion/.env.example, infra/.env.example (all new)
-- Checks: .gitignore already covers .env / .env.* with !.env.example exception; no secrets in any example file; all required vars documented per credentials.md and ADR-001 stack (Postgres, Redis, NATS, ClickHouse, Ollama Cloud, optional on-chain/push)
+- Checks: .gitignore already covers .env / .env.\* with !.env.example exception; no secrets in any example file; all required vars documented per credentials.md and ADR-001 stack (Postgres, Redis, NATS, ClickHouse, Ollama Cloud, optional on-chain/push)
 - Assumptions: services/context and services/features will share infra vars from root .env at runtime; separate .env.example not required for pure library packages (contracts/ui/config)
 - Follow-ups: none
 
@@ -115,7 +115,7 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 ### P01-T005 — Configure formatting
 
 - Files: .prettierrc (new), .prettierignore (new), rustfmt.toml (new), package.json (format script updated to include cargo fmt --all)
-- Checks: `bun run format` runs Prettier over TS/MD/JSON and cargo fmt over Rust workspace; `bun run format:check` passes clean; fixtures/ and *.generated.* excluded via .prettierignore; rustfmt.toml uses stable-only options (nightly-only imports_granularity/group_imports removed)
+- Checks: `bun run format` runs Prettier over TS/MD/JSON and cargo fmt over Rust workspace; `bun run format:check` passes clean; fixtures/ and _.generated._ excluded via .prettierignore; rustfmt.toml uses stable-only options (nightly-only imports_granularity/group_imports removed)
 - Assumptions: Prettier printWidth=100 to match Rust max_width=100; LF line endings enforced for cross-platform consistency
 - Follow-ups: none
 

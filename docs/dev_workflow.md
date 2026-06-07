@@ -32,15 +32,15 @@ Rules:
 
 ### Types
 
-| Type       | When to use                                         |
-| ---------- | --------------------------------------------------- |
-| `feat`     | New feature or capability                           |
-| `fix`      | Bug fix                                             |
-| `docs`     | Documentation only                                  |
-| `chore`    | Tooling, config, CI, deps — no production code      |
+| Type       | When to use                                             |
+| ---------- | ------------------------------------------------------- |
+| `feat`     | New feature or capability                               |
+| `fix`      | Bug fix                                                 |
+| `docs`     | Documentation only                                      |
+| `chore`    | Tooling, config, CI, deps — no production code          |
 | `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `test`     | Adding or updating tests                            |
-| `perf`     | Performance improvement                             |
+| `test`     | Adding or updating tests                                |
+| `perf`     | Performance improvement                                 |
 
 ### Scope
 
