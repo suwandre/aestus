@@ -333,7 +333,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Invalid fixture shapes fail CI.
 
-### [ ] P03-T016 - Document schema versioning
+### [x] P03-T016 - Document schema versioning
 
 - Agent action: Write `docs/contracts_versioning.md` explaining breaking changes, migration notes, and event version fields.
 

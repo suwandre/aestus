@@ -377,3 +377,10 @@ No [!] tasks in P02. No failures.
 - Checks: `bun test` in packages/contracts → 16 pass / 0 fail. Test loads every `.json` under fixtures/ and validates each item against its mapped contract via `.parse` (throws → fails CI). Includes a coverage test (any unmapped fixture fails CI) and a negative test (a malformed AssetIdentity is rejected). `bun run format:check` and `bunx eslint .` both clean.
 - Assumptions: Test validates against the runtime contracts (zod) per Done-when wording ("validate against the contracts"); the T014 JSON-Schema path is the no-runtime alternative. Added a coverage guard so a new fixture without a contract mapping fails CI. Added `packages/contracts/schema/` to `.prettierignore` — generated artifacts are not hand-formatted (this also keeps the T014-generated files out of format:check); regenerate via `bun run gen:schema`.
 - Follow-ups: none
+
+### P03-T016 — Document schema versioning
+
+- Files: docs/contracts_versioning.md (new)
+- Checks: Doc covers the `schema_version`/`SCHEMA_VERSION` event-version field, breaking vs non-breaking change rules, the step-by-step migration process (edit zod → bump version → update fixtures → regenerate JSON Schema → update downstream → verify), a migration-notes table (baseline v1), and consumer/producer compatibility rules; `bun run format:check` clean
+- Assumptions: Versioning is per-envelope for streamed events; reference data (AssetIdentity/Venue/MacroEvent/NewsItem) evolves via P04 storage migrations rather than a per-record version. Ties to CLAUDE.md hard rule #8 (update contracts/fixtures/docs/types together).
+- Follow-ups: none
