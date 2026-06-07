@@ -303,7 +303,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema is usable as the input to LLM briefing generation.
 
-### [ ] P03-T011 - Create briefing schema
+### [x] P03-T011 - Create briefing schema
 
 - Agent action: Define briefing fields: stance, thesis, entry_zone, invalidation, targets, size_suggestion, timeframe, confidence, model, supporting_context, cost_metadata.
 

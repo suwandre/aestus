@@ -342,3 +342,10 @@ No [!] tasks in P02. No failures.
 - Checks: Composed packet (trigger AnomalyEvent + FeatureSnapshot + correlated assets + news + macro + on-chain + analogues + deterministic levels) parses via `ContextPacket`; `bun run typecheck` clean
 - Assumptions: ContextPacket composes the prior contracts directly (single source of truth). Introduced shared `levels.ts` (`DeterministicLevels`, `EntryZone`) so T011 briefing reuses the same level types — per hard rule #2 these are code-computed and the LLM may only reference them. Added `HistoricalAnalogue` (when/description/similarity/outcome). market_snapshot is a FeatureSnapshot for the primary asset.
 - Follow-ups: T011 briefing imports DeterministicLevels/EntryZone from levels.ts
+
+### P03-T011 — Create briefing schema
+
+- Files: packages/contracts/src/briefing.ts (new), packages/contracts/src/index.ts, fixtures/briefings/briefings.json (new)
+- Checks: long, short, and no_trade briefings parse via `Briefing`; `bun run typecheck` clean
+- Assumptions: For `no_trade`, entry_zone/invalidation/size_suggestion are null and targets empty (made nullable). entry_zone reuses `EntryZone` from levels.ts and is copied from the context packet's deterministic_levels (hard rule #2 — LLM never invents levels). Added `CostMetadata` (provider/model/tokens/cost_usd) per hard rule #7 cost visibility; cost_usd=0.0 reflects Ollama Cloud flat-subscription billing (see DECISION entry). `model` field is the LLM id. supporting_context holds evidence ref strings.
+- Follow-ups: none

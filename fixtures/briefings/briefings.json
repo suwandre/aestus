@@ -1,0 +1,74 @@
+[
+  {
+    "id": "brief-001",
+    "schema_version": 1,
+    "context_packet_id": "ctx-001",
+    "generated_at": "2026-06-07T12:00:08.000Z",
+    "stance": "long",
+    "thesis": "Funding is hot but trend and ETF flows remain constructive; a pullback into the 67.8-68.1k zone offers a favorable entry against the prior swing low.",
+    "entry_zone": { "low": 67800, "high": 68100 },
+    "invalidation": 66900,
+    "targets": [69500, 71000],
+    "size_suggestion": { "risk_pct": 0.01, "notional": 5000, "note": "Sized for 1% account risk at current ATR." },
+    "timeframe": "swing",
+    "confidence": 0.62,
+    "model": "kimi-k2.6",
+    "supporting_context": ["ctx-001", "anom-001", "news-2026-06-07-001"],
+    "cost_metadata": {
+      "provider": "ollama-cloud",
+      "model": "kimi-k2.6",
+      "prompt_tokens": 4200,
+      "completion_tokens": 380,
+      "total_tokens": 4580,
+      "cost_usd": 0.0
+    }
+  },
+  {
+    "id": "brief-002",
+    "schema_version": 1,
+    "context_packet_id": "ctx-001",
+    "generated_at": "2026-06-07T12:05:00.000Z",
+    "stance": "short",
+    "thesis": "Elevated funding plus a correlation break with SPX suggests crowded longs; a rejection at resistance favors a tactical short.",
+    "entry_zone": { "low": 69400, "high": 69600 },
+    "invalidation": 70200,
+    "targets": [68200, 67800],
+    "size_suggestion": { "risk_pct": 0.005, "note": "Half size given counter-trend setup." },
+    "timeframe": "intraday",
+    "confidence": 0.48,
+    "model": "kimi-k2.6",
+    "supporting_context": ["ctx-001", "anom-004"],
+    "cost_metadata": {
+      "provider": "ollama-cloud",
+      "model": "kimi-k2.6",
+      "prompt_tokens": 4100,
+      "completion_tokens": 360,
+      "total_tokens": 4460,
+      "cost_usd": 0.0
+    }
+  },
+  {
+    "id": "brief-003",
+    "schema_version": 1,
+    "context_packet_id": "ctx-001",
+    "generated_at": "2026-06-07T12:10:00.000Z",
+    "stance": "no_trade",
+    "thesis": "With high-importance CPI three days out and volatility already elevated, risk/reward does not justify a position; stand aside until the print clears.",
+    "entry_zone": null,
+    "invalidation": null,
+    "targets": [],
+    "size_suggestion": null,
+    "timeframe": "until post-CPI",
+    "confidence": 0.7,
+    "model": "kimi-k2.6",
+    "supporting_context": ["ctx-001", "anom-007", "us-cpi-2026-06"],
+    "cost_metadata": {
+      "provider": "ollama-cloud",
+      "model": "kimi-k2.6",
+      "prompt_tokens": 3900,
+      "completion_tokens": 220,
+      "total_tokens": 4120,
+      "cost_usd": 0.0
+    }
+  }
+]
