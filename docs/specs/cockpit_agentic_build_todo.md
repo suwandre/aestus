@@ -273,7 +273,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Fixture can represent CPI, FOMC, NFP, PPI, jobless claims.
 
-### [ ] P03-T006 - Create news item schema
+### [x] P03-T006 - Create news item schema
 
 - Agent action: Define news/narrative schema with title, url, source, published_at, entities, summary, relevance_score, sentiment, tags.
 

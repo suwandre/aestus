@@ -307,3 +307,10 @@ No [!] tasks in P02. No failures.
 - Checks: CPI, FOMC, NFP, PPI, jobless claims fixtures parse via `MacroEvent`; `bun run typecheck` clean
 - Assumptions: `consensus`/`previous`/`actual` are nullable numbers — `actual` is null until the print lands (CPI/FOMC/PPI fixtures show null actual; NFP/jobless show released actuals). importance enum low/medium/high. Numeric-only values (percentages stored as the bare number, counts as raw integers).
 - Follow-ups: none
+
+### P03-T006 — Create news item schema
+
+- Files: packages/contracts/src/news.ts (new), packages/contracts/src/index.ts, fixtures/news/items.json (new)
+- Checks: An RSS news item and a social (whale-alert) item parse via `NewsItem`; `bun run typecheck` clean
+- Assumptions: `source_type` enum (rss/news/social/other) makes the shape future-social-source-ready per Done-when. `sentiment` is a 3-way enum; `relevance_score` constrained 0..1. `entities` are free strings that may reference canonical asset ids or tickers.
+- Follow-ups: none
