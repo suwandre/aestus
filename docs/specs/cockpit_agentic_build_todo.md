@@ -227,7 +227,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: A new agent can boot local stack from docs only.
 
-### [ ] P02-T009 - Add Makefile or equivalent aliases
+### [x] P02-T009 - Add Makefile or equivalent aliases
 
 - Agent action: Provide short aliases such as `make up`, `make down`, `make logs`, `make reset-local`.
 

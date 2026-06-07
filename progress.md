@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T009 — Add Makefile aliases
+
+- Files: Makefile (new)
+- Checks: `make -n up` dry-runs correctly (docker compose -f infra/docker-compose.yml up -d); all required targets present: up, down, logs, ps, health, reset-local; all .PHONY declared
+- Assumptions: Makefile targets `up`, `down`, `logs` map directly to docker compose commands; `health` delegates to scripts/infra-health.sh; `reset-local` delegates to scripts/reset-local.sh --confirm (created in P02-T010); Windows users should use WSL as noted in local_dev.md
+- Follow-ups: none
+
 ### P02-T008 — Document local boot sequence
 
 - Files: docs/local_dev.md (new)
