@@ -134,7 +134,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: `cargo check --workspace` succeeds with placeholder crates.
 
-### [ ] P01-T004 - Add root task runner commands
+### [x] P01-T004 - Add root task runner commands
 
 - Agent action: Add root scripts for `dev`, `test`, `lint`, `typecheck`, `format`, `docker:up`, `docker:down`, and `db:migrate`.
 

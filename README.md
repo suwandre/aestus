@@ -24,6 +24,30 @@ These files are the binding product and implementation contracts. Read them befo
 | [`docs/agent_handoff.md`](docs/agent_handoff.md) | Protocol for agentic build loop task execution |
 | [`docs/adr/`](docs/adr/) | Architecture decision records |
 
+## Common commands
+
+All commands run from the **repo root**. Bun is the TypeScript package manager; Cargo handles Rust. Docker Compose manages local infrastructure.
+
+| Command | What it does |
+|---------|-------------|
+| `bun install` | Install all TypeScript workspace dependencies |
+| `bun run dev` | Start all TypeScript services in development mode (hot-reload) |
+| `bun run build` | Build all TypeScript workspaces |
+| `bun run test` | Run all TypeScript tests |
+| `bun run lint` | Run ESLint across all TypeScript workspaces |
+| `bun run typecheck` | Run `tsc --noEmit` across all TypeScript workspaces |
+| `bun run format` | Format all TS/JS/JSON/MD files with Prettier |
+| `bun run format:check` | Check formatting without writing (used in CI) |
+| `bun run docker:up` | Start local infrastructure (Postgres, Redis, ClickHouse, NATS) |
+| `bun run docker:down` | Stop local infrastructure containers |
+| `bun run db:migrate` | Run pending Postgres migrations |
+| `cargo check --workspace` | Type-check all Rust crates without full build |
+| `cargo test --workspace` | Run all Rust tests |
+| `cargo clippy --workspace` | Lint all Rust crates |
+| `cargo fmt --all` | Format all Rust source files |
+
+See `docs/local_dev.md` (created at P02-T008) for the full local boot sequence.
+
 ## Hard rules
 
 1. No automated order placement, trading API keys, order execution, or position-closing logic — ever.

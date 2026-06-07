@@ -69,6 +69,12 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T004 — Add root task runner commands
+- Files: README.md (updated — Common commands table added), package.json (scripts already present from P01-T002)
+- Checks: README table documents all required commands: dev, test, lint, typecheck, format, docker:up, docker:down, db:migrate plus Cargo equivalents
+- Assumptions: Cargo commands documented in README alongside Bun commands for discoverability; no separate task runner (Make/just) added — the spec says "root scripts" which is covered by package.json + README
+- Follow-ups: none
+
 ### P01-T003 — Initialize Rust workspace
 - Files: Cargo.toml (root workspace), crates/event_model/Cargo.toml, crates/event_model/src/lib.rs, crates/market_math/Cargo.toml, crates/market_math/src/lib.rs, services/ingestion/Cargo.toml, services/ingestion/src/main.rs, services/features/Cargo.toml, services/features/src/main.rs, Cargo.lock
 - Checks: `cargo check --workspace` passes; all 4 crates compile (event_model, market_math, ingestion, features)
