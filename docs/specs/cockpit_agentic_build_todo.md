@@ -197,7 +197,7 @@ Goal: Make the full stack runnable locally before real providers are connected.
 
 - Done when: Redis starts and survives restart with volume-backed data.
 
-### [ ] P02-T004 - Configure Postgres container
+### [x] P02-T004 - Configure Postgres container
 
 - Agent action: Add Postgres with healthcheck and init script for required extensions, including vector support if image supports it.
 

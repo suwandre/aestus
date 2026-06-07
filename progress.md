@@ -171,6 +171,13 @@ Verified all 10 P01 tasks against the actual repo with zero trust in progress.md
 
 No [!] tasks in P01. No failures.
 
+### P02-T004 — Configure Postgres container
+
+- Files: infra/postgres/init.sql (new), infra/docker-compose.yml (updated: postgres mounts init script)
+- Checks: `docker compose config --quiet` passes; init.sql creates vector, uuid-ossp, and pg_trgm extensions; mounted as 10-init.sql under docker-entrypoint-initdb.d (prefix 10 leaves room for future ordering); healthcheck uses pg_isready with POSTGRES_USER and POSTGRES_DB from env; pgvector/pgvector:pg16 image includes vector extension natively
+- Assumptions: pgvector image bundles the vector extension; uuid-ossp and pg_trgm are bundled in standard Postgres contrib — no extra packages needed
+- Follow-ups: P04 — schema migrations will CREATE TABLE using these extensions
+
 ### P02-T003 — Configure Redis container
 
 - Files: infra/redis/redis.conf (new), infra/docker-compose.yml (updated: redis mounts config file)
