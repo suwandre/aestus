@@ -169,7 +169,7 @@ Goal: Create the repository shape and tooling so backend, frontend, shared contr
 
 - Done when: Agent can create a branch named like `task/P03-T004-clickhouse-schema`.
 
-### [ ] P01-T010 - Add CI skeleton
+### [x] P01-T010 - Add CI skeleton
 
 - Agent action: Create CI workflow that runs formatting, linting, typecheck, Rust check, and tests on pull requests.
 

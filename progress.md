@@ -77,6 +77,13 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
 - Follow-ups: none
 
+### P01-T010 — Add CI skeleton
+
+- Files: .github/workflows/ci.yml (new)
+- Checks: YAML structure verified; two jobs (ts-checks, rust-checks) covering format-check, lint, typecheck, test for TS and fmt-check, cargo check, clippy, test for Rust; triggers on PR to main and push to main
+- Assumptions: GitHub Actions target (self-hosted VPS has no CI runner — this file is for when the repo is hosted on GitHub per P28); Swatinem/rust-cache used for build-time savings; bun --frozen-lockfile for reproducible installs
+- Follow-ups: none
+
 ### P01-T009 — Create conventional commit/task branch guidance
 
 - Files: docs/dev_workflow.md (new)
