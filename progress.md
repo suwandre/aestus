@@ -286,3 +286,10 @@ No [!] tasks in P02. No failures.
 - Checks: Binance perp+spot, Bybit perp, Hyperliquid perp, OKX perp, and a macro proxy (SPX) all parse via `Venue`/`VenueInstrument`; `bun run typecheck` clean
 - Assumptions: `tick_size`/`lot_size` typed as decimal strings (not numbers) to avoid float precision loss. Added `option`/`futures` to MarketType for future coverage; `macro_proxy` market type represents non-exchange feeds. VenueInstrument.canonical_asset_id is the FK to AssetIdentity.canonical_id.
 - Follow-ups: none
+
+### P03-T003 — Create raw market event schema
+
+- Files: packages/contracts/src/raw-event.ts (new), packages/contracts/src/index.ts, fixtures/market/raw_events.json (new)
+- Checks: aggTrade (with provider_timestamp) and markPriceUpdate (without) fixtures parse via `RawMarketEvent`; `bun run typecheck` clean
+- Assumptions: Full raw payload is stored out-of-band (object store) keyed by `raw_payload_hash`; envelope holds only the hash for dedup/provenance. `provider_timestamp` optional (some feeds omit it); `sequence` is a non-negative int monotonic per source. `schema_version` stamped on every envelope per T016 plan.
+- Follow-ups: none

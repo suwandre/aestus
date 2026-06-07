@@ -255,7 +255,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 - Done when: Schema can represent Binance perp, Bybit perp, Hyperliquid, OKX, spot, and macro proxies.
 
-### [ ] P03-T003 - Create raw market event schema
+### [x] P03-T003 - Create raw market event schema
 
 - Agent action: Define raw event envelope with source, venue, received_at, provider_timestamp, sequence, event_type, raw_payload_hash.
 

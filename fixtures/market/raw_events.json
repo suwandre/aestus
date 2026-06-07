@@ -1,0 +1,21 @@
+[
+  {
+    "schema_version": 1,
+    "source": "binance:ws:perp@btcusdt",
+    "venue": "binance",
+    "received_at": "2026-06-07T12:00:00.123Z",
+    "provider_timestamp": "2026-06-07T12:00:00.100Z",
+    "sequence": 880123456,
+    "event_type": "aggTrade",
+    "raw_payload_hash": "sha256:9f2c0a4b7e1d6c3a5f8e0b2d4c6a8e0f1b3d5a7c9e1f3b5d7a9c1e3f5b7d9a1c"
+  },
+  {
+    "schema_version": 1,
+    "source": "binance:ws:perp@btcusdt",
+    "venue": "binance",
+    "received_at": "2026-06-07T12:00:00.250Z",
+    "sequence": 880123457,
+    "event_type": "markPriceUpdate",
+    "raw_payload_hash": "sha256:1a3c5e7090b2d4f6081a3c5e7090b2d4f6081a3c5e7090b2d4f6081a3c5e7090"
+  }
+]
