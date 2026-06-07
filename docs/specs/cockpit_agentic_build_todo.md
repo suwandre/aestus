@@ -69,7 +69,7 @@ Goal: Lock the implementation against the system and UI specs so future agents d
 
 - Done when: Repo contains the three docs and README links to them.
 
-### [ ] P00-T002 - Create implementation principles doc
+### [x] P00-T002 - Create implementation principles doc
 
 - Agent action: Write `docs/principles.md` summarizing: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost.
 

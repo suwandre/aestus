@@ -32,3 +32,9 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 - Checks: Verified README links to all three spec docs and cockpit.html reference; spec files confirmed present under docs/specs/
 - Assumptions: cockpit.html already placed in docs/specs/ by prior commit; README authored by interrupted prior worker and reviewed as correct
 - Follow-ups: none
+
+### P00-T002 — Create implementation principles doc
+- Files: docs/principles.md (new)
+- Checks: Verified doc covers all six required topics from task spec: cockpit not autopilot, context over raw signal, no-trade is valid, deterministic levels, LLM narrative only, single-user/self-hosted/low-cost; no new product scope added
+- Assumptions: File authored by interrupted prior worker; content reviewed as meeting done-when criteria
+- Follow-ups: none
