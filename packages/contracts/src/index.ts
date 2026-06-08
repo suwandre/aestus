@@ -1,5 +1,6 @@
 export * from "./common";
 export * from "./streams";
+export * from "./envelope";
 export * from "./asset";
 export * from "./venue";
 export * from "./raw-event";

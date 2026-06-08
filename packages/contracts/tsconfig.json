@@ -3,7 +3,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    // Bun implements the Web Crypto API (`crypto.randomUUID` in makeEnvelope);
+    // the DOM lib supplies its global types without pulling in @types/node.
+    "lib": ["ES2022", "DOM"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

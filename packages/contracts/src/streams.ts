@@ -112,7 +112,12 @@ export function streamForBase(base: string): StreamDefinition | undefined {
  */
 export function subject(stream: StreamDefinition, ...tokens: string[]): string {
   const clean = tokens
-    .map((t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, ""))
+    .map((t) =>
+      t
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, ""),
+    )
     .filter((t) => t.length > 0);
   return [stream.base, ...clean].join(".");
 }

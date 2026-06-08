@@ -24,6 +24,7 @@ import { ContextPacket } from "../src/context-packet";
 import { Briefing } from "../src/briefing";
 import { Decision } from "../src/decision";
 import { JournalTrade } from "../src/journal";
+import { EventEnvelope } from "../src/envelope";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = join(here, "..", "schema");
@@ -45,6 +46,7 @@ const contracts: Record<string, z.ZodType> = {
   Briefing,
   Decision,
   JournalTrade,
+  EventEnvelope,
 };
 
 rmSync(outDir, { recursive: true, force: true });

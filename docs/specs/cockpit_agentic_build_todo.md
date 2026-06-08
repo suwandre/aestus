@@ -461,7 +461,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Stream names and subjects are stable and documented.
 
-### [ ] P05-T002 - Create event envelope library
+### [x] P05-T002 - Create event envelope library
 
 - Agent action: Implement shared envelope helpers with event_id, schema_version, trace_id, source, emitted_at, payload_type, payload.
 
