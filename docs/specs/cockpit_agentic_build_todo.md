@@ -355,7 +355,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Migrations create canonical asset and watchlist structures.
 
-### [ ] P04-T003 - Create Postgres news tables
+### [x] P04-T003 - Create Postgres news tables
 
 - Agent action: Add news_items, news_entities, news_embeddings placeholder/vector column, and source metadata.
 

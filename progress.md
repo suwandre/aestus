@@ -427,3 +427,10 @@ No [!] tasks in P03. No failures.
 - Checks: `bun run db:migrate:postgres` applied it against live Postgres 16; `psql \dt` confirms all 5 tables present (assets, venues, venue_instruments, watchlists, watchlist_members) + schema_migrations.
 - Assumptions: Created Postgres enums `asset_class` (mirrors common.ts) and `market_type` (mirrors venue.ts) — reused by later migrations. `assets.canonical_id` is the FK target everywhere. `venue_instruments` PK is (venue_id, instrument_id); `tick_size`/`lot_size` are TEXT to preserve exact decimal precision per the contract. `venues.market_types` is an enum array. Added `watchlists` (id/name/description) and `watchlist_members` (watchlist_id, canonical_asset_id, sort_order) — not in the contracts (UI/config concern), modeled minimally for single-user. FKs cascade on delete.
 - Follow-ups: none
+
+### P04-T003 — Create Postgres news tables
+
+- Files: infra/migrations/postgres/0002_news.sql (new)
+- Checks: `bun run db:migrate:postgres` applied it; `psql \d news_items` confirms columns + the UNIQUE `idx_news_items_url_hash` (dedup) and source/published_at indexes. news_entities + news_embeddings created.
+- Assumptions: Dedup is on `url_hash` (sha256 of canonical URL) via a UNIQUE index — added a dedicated column rather than uniquing the raw `url`. `news_entities(news_id, entity, canonical_asset_id?)` enables query by asset (FK to assets, SET NULL when entity isn't a tracked asset) and by entity (indexed). "Source metadata" = `source`/`source_type` columns on news_items (feed-registry/enablement is T010). `news_embeddings.embedding` is an unbounded `vector` placeholder (pgvector ext from init.sql); the fixed-dim column + ivfflat/hnsw index is deferred until the embedding model is chosen (noted in the migration + docs). Enums `news_source_type`, `sentiment` mirror news.ts.
+- Follow-ups: none
