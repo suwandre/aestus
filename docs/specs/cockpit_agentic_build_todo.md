@@ -415,7 +415,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Market event history can be queried by asset/time efficiently.
 
-### [ ] P04-T013 - Create ClickHouse OHLCV aggregate tables
+### [x] P04-T013 - Create ClickHouse OHLCV aggregate tables
 
 - Agent action: Create materialized views or aggregation tables for 1m, 5m, 15m, 1h OHLCV.
 
