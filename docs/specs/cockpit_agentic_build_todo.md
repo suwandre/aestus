@@ -385,7 +385,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Generated briefings can be reproduced from stored packet data.
 
-### [ ] P04-T008 - Create Postgres briefing tables
+### [x] P04-T008 - Create Postgres briefing tables
 
 - Agent action: Add briefings table storing stance, thesis, levels, confidence, model metadata, cost metadata, context_packet_id.
 

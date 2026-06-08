@@ -462,3 +462,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `\dt` confirms `context_packets` + `context_packet_items`.
 - Assumptions: To make a packet fully reproducible (Done-when), the scalar/single parts (trigger anomaly, market_snapshot, deterministic_levels) are snapshotted as JSONB on `context_packets`; the variable-length lists (correlated_assets, news, macro, on_chain, historical_analogues) live in `context_packet_items(packet_id, item_type, position, payload JSONB)` with an explicit ordinal so they reassemble in order. `trigger_anomaly_id` is a navigable FK (SET NULL on delete) alongside the embedded `trigger` JSONB, so reproduction doesn't depend on the anomaly row surviving. `primary_asset` FK RESTRICT. Enum `context_packet_item_type` matches the array fields of ContextPacket.
 - Follow-ups: none
+
+### P04-T008 — Create Postgres briefing tables
+
+- Files: infra/migrations/postgres/0007_briefings.sql (new)
+- Checks: applied via `db:migrate:postgres`; `\dt briefings` confirms it. Standalone table → persists independently of transient UI state (Done-when).
+- Assumptions: `briefings` mirrors Briefing. `context_packet_id` FK RESTRICT. Levels: `entry_zone` JSONB {low,high} (nullable for no_trade), `invalidation` nullable, `targets` DOUBLE PRECISION[], `size_suggestion` JSONB nullable. CostMetadata flattened into `cost_provider/cost_model/cost_prompt_tokens/cost_completion_tokens/cost_total_tokens/cost_usd` columns for cost visibility/queryability (hard rule #7), separate from the authoring `model` column. Enum `stance` mirrors briefing.ts.
+- Follow-ups: none
