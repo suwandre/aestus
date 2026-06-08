@@ -519,7 +519,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 Goal: Connect the first real-time market feeds with normalized output, starting narrow but production-shaped.
 
-### [ ] P06-T001 - Create ingestion service skeleton
+### [x] P06-T001 - Create ingestion service skeleton
 
 - Agent action: Build Rust service with config loading, structured logging, NATS publisher, health endpoint, graceful shutdown.
 

@@ -9,9 +9,37 @@ workspace = true
 [dependencies]
 event_model = { path = "../../crates/event_model" }
 nats_publisher = { path = "../../crates/nats_publisher" }
+
+# Workspace deps
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+async-trait = { workspace = true }
+time = { workspace = true }
+thiserror = { workspace = true }
+futures = { workspace = true }
+
+# WebSocket client (Binance live stream)
+tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
+
+# HTTP client (OI polling, ClickHouse API)
+reqwest = { version = "0.12", features = ["json"] }
+
+# HTTP server (health / metrics endpoints)
+axum = { version = "0.8", features = ["tokio"] }
+
+# Metrics exposition
+prometheus = "0.13"
+
+# SHA-256 hashing of raw payloads
+sha2 = "0.10"
+hex = "0.4"
+
+# TOML config parsing (symbol_map.toml)
+toml = "0.8"
+
+# Redis hot-state
+redis = { version = "0.26", features = ["tokio-comp"] }

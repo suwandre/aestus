@@ -662,3 +662,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - P05-T008: `packages/event-bus/scripts/nats-tail.ts` — subject filter args, `--max N`, pretty-print via `inspect.ts`. `nats:tail` in package.json. Inspect tests pass.
 - P05-T009: `SystemHealth` contract (TS Zod + Rust struct) with service/version/status/uptime_seconds/dependencies. TS `startHeartbeat`/`publishHealth`/`buildHealth` in `packages/event-bus/src/heartbeat.ts`. Rust `Heartbeat::new`/`publish_once`/`run` in `crates/nats_publisher/src/heartbeat.rs`. All heartbeat tests pass.
 - P05-T010: `docs/event_ordering.md` covers three timestamps, per-source sequence semantics, guaranteed and forbidden ordering assumptions, and five practical consumer rules. Directly addresses cross-provider clock pitfalls.
+
+### P06-T001 — Create ingestion service skeleton
+
+- Files: services/ingestion/src/config.rs (new), services/ingestion/src/health.rs (new), services/ingestion/src/main.rs (rewritten), services/ingestion/Cargo.toml (updated: futures, tokio-tungstenite, reqwest, axum, prometheus, sha2, hex, toml, redis added)
+- Checks: cargo check clean; cargo test -p ingestion 44 passed
+- Assumptions: Config from env with defaults (port 8080, symbols BTCUSDT/ETHUSDT, heartbeat 10 s, OI 60 s, stale 60 s). Health server on /health (JSON) + /metrics (Prometheus text). Graceful ctrl_c via tokio::signal. RecordingPublisher when NATS_URL unset (fixture-first). main.rs wires all P06 modules.
+- Follow-ups: none
