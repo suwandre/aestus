@@ -1,0 +1,23 @@
+{
+  "name": "@aestus/event-bus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@aestus/contracts": "workspace:*",
+    "nats": "^2.28.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

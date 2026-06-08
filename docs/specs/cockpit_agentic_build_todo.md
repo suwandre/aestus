@@ -473,7 +473,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Rust ingestion placeholder can publish a test event.
 
-### [ ] P05-T004 - Create TypeScript NATS client helper
+### [x] P05-T004 - Create TypeScript NATS client helper
 
 - Agent action: Add TS package for subscribe/publish/request patterns with type validation.
 
