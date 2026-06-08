@@ -774,3 +774,9 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: gather_text_does_not_panic, inc_messages_does_not_panic tests pass. Prometheus text output confirmed.
 - Assumptions: Four OnceLock metrics: messages_total (provider, feed), errors_total (provider), reconnects_total (provider), last_message_epoch_ms (provider, feed). init() safe to call multiple times. gather_text() uses global Prometheus registry. Exposed at /metrics HTTP endpoint.
 - Follow-ups: none
+
+### P06 REVIEW — FAIL
+
+Reviewer: independent phase review. All 60 workspace tests pass (`cargo test --workspace`). Tasks T002–T016 verified against actual code and satisfy their "Done when" criteria. One failure:
+
+- P06-T001: `cfg.heartbeat_interval` is loaded (config.rs line 12) but `Heartbeat::run()` is never called and `nats_publisher::Heartbeat` is never imported in main.rs. No heartbeat events are published. "Done when" criterion ("publishes heartbeat events") is not met.
