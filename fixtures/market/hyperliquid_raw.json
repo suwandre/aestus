@@ -1,0 +1,27 @@
+[
+  {
+    "_comment": "Hyperliquid WebSocket trades channel",
+    "channel": "trades",
+    "data": [
+      {
+        "coin": "BTC",
+        "side": "B",
+        "px": "68250.5",
+        "sz": "0.001",
+        "hash": "0xabc123def456",
+        "time": 1717862400000,
+        "tid": 123456789
+      }
+    ]
+  },
+  {
+    "_comment": "Hyperliquid WebSocket allMids — best mid prices",
+    "channel": "allMids",
+    "data": {
+      "mids": {
+        "BTC": "68250.5",
+        "ETH": "3512.75"
+      }
+    }
+  }
+]

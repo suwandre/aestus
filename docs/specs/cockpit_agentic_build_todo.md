@@ -567,7 +567,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Bybit fixture can normalize to the same event shapes.
 
-### [ ] P06-T009 - Add Hyperliquid adapter placeholder
+### [x] P06-T009 - Add Hyperliquid adapter placeholder
 
 - Agent action: Create adapter skeleton and fixture parser for Hyperliquid order/price/open interest shapes.
 

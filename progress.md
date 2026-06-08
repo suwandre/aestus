@@ -718,3 +718,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: parse_public_trade_buy test passes (canonical = crypto:btc-usdt); parse_ticker emits price_tick+mark_price+funding_rate; fixture replay emits >=2 events
 - Assumptions: Bybit V5 publicTrade + tickers snapshot messages. Side from "S" field (Buy/Sell). Bid+ask mid for PriceTick. Fixture path uses CARGO_MANIFEST_DIR for portability across test/prod cwd. No live WebSocket — fixture replay only.
 - Follow-ups: Live WebSocket connection deferred to a future phase (see docs/exchange_capabilities.md)
+
+### P06-T009 — Add Hyperliquid adapter placeholder
+
+- Files: services/ingestion/src/provider/hyperliquid/mod.rs (new), fixtures/market/hyperliquid_raw.json (new)
+- Checks: parse_trade_buy test passes (side=Buy, canonical=crypto:btc-usdt); parse_all_mids emits 2 price_tick events; fixture replay emits >=1 event
+- Assumptions: Hyperliquid uses coin symbols (BTC not BTCUSDT). Side B=Buy, A=Sell (aggressor). allMids channel produces PriceTick with no bid/ask spread. Symbol map maps hyperliquid:BTC -> crypto:btc-usdt.
+- Follow-ups: Live WS, mark price, funding rate, liquidation flag deferred to future phase
