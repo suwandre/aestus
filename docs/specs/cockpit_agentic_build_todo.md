@@ -349,7 +349,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Migration commands are documented and runnable locally.
 
-### [ ] P04-T002 - Create Postgres asset tables
+### [x] P04-T002 - Create Postgres asset tables
 
 - Agent action: Add tables for assets, venues, venue_instruments, watchlists, and watchlist_members.
 

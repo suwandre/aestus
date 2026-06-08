@@ -420,3 +420,10 @@ No [!] tasks in P03. No failures.
 - Checks: `bun run typecheck` clean (all 5 workspaces; scripts/ is outside apps/api `src` include, matching the P03-T014 precedent of keeping Node/Bun-API scripts out of tsc). `bun build` of migrate.ts OK. Ran live against Docker Postgres 16 + ClickHouse 24.8: `bun run db:migrate` → both "up to date" (creates `schema_migrations` in each), `db:migrate:status` → 0 applied / 0 pending. eslint + prettier clean.
 - Assumptions: Runner connection defaults match docker-compose (`postgres://aestus:aestus@localhost:5432/aestus`, `http://aestus:aestus@localhost:8123`). ClickHouse HTTP defaults to the `default` db, so the runner targets `CLICKHOUSE_DB` (default `aestus`, the compose-created db) via `?database=`. `.env.example` files are permission-blocked for me — did not edit; compose already injects DATABASE_URL/CLICKHOUSE_URL for the api service. Postgres migrations run inside `sql.begin` using `tx.unsafe(ddl)` for multi-statement DDL.
 - Follow-ups: none
+
+### P04-T002 — Create Postgres asset tables
+
+- Files: infra/migrations/postgres/0001_assets.sql (new)
+- Checks: `bun run db:migrate:postgres` applied it against live Postgres 16; `psql \dt` confirms all 5 tables present (assets, venues, venue_instruments, watchlists, watchlist_members) + schema_migrations.
+- Assumptions: Created Postgres enums `asset_class` (mirrors common.ts) and `market_type` (mirrors venue.ts) — reused by later migrations. `assets.canonical_id` is the FK target everywhere. `venue_instruments` PK is (venue_id, instrument_id); `tick_size`/`lot_size` are TEXT to preserve exact decimal precision per the contract. `venues.market_types` is an enum array. Added `watchlists` (id/name/description) and `watchlist_members` (watchlist_id, canonical_asset_id, sort_order) — not in the contracts (UI/config concern), modeled minimally for single-user. FKs cascade on delete.
+- Follow-ups: none
