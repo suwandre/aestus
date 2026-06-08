@@ -379,7 +379,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Anomaly status and context references persist.
 
-### [ ] P04-T007 - Create Postgres context packet tables
+### [x] P04-T007 - Create Postgres context packet tables
 
 - Agent action: Add context_packets and context_packet_items storing structured packet snapshots.
 

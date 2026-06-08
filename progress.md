@@ -455,3 +455,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `\dt` confirms both `anomalies` and `anomaly_context_refs` present. `status` defaults to 'active' and persists; context refs persist in the linking table.
 - Assumptions: `anomalies` mirrors AnomalyEvent (assets/venues kept as TEXT[] arrays per the contract — can't FK an array). The contract's flat `context_refs` is normalized into `anomaly_context_refs(anomaly_id, ref_type, ref)` with `ref_type` enum market/news/macro/on_chain/historical/feature so links are typed/queryable (Done-when). Enums `anomaly_type`, `anomaly_severity`, `anomaly_status`, `anomaly_context_ref_type` mirror anomaly.ts.
 - Follow-ups: none
+
+### P04-T007 — Create Postgres context packet tables
+
+- Files: infra/migrations/postgres/0006_context_packets.sql (new)
+- Checks: applied via `db:migrate:postgres`; `\dt` confirms `context_packets` + `context_packet_items`.
+- Assumptions: To make a packet fully reproducible (Done-when), the scalar/single parts (trigger anomaly, market_snapshot, deterministic_levels) are snapshotted as JSONB on `context_packets`; the variable-length lists (correlated_assets, news, macro, on_chain, historical_analogues) live in `context_packet_items(packet_id, item_type, position, payload JSONB)` with an explicit ordinal so they reassemble in order. `trigger_anomaly_id` is a navigable FK (SET NULL on delete) alongside the embedded `trigger` JSONB, so reproduction doesn't depend on the anomaly row surviving. `primary_asset` FK RESTRICT. Enum `context_packet_item_type` matches the array fields of ContextPacket.
+- Follow-ups: none
