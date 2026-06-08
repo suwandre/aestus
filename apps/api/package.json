@@ -13,7 +13,8 @@
     "db:migrate": "bun run scripts/migrate.ts",
     "db:migrate:postgres": "bun run scripts/migrate.ts postgres",
     "db:migrate:clickhouse": "bun run scripts/migrate.ts clickhouse",
-    "db:migrate:status": "bun run scripts/migrate.ts --status"
+    "db:migrate:status": "bun run scripts/migrate.ts --status",
+    "db:seed": "bun run scripts/seed.ts"
   },
   "dependencies": {
     "@aestus/contracts": "workspace:*",

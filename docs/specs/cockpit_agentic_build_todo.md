@@ -439,7 +439,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Retention choices match single-user VPS cost constraints.
 
-### [ ] P04-T017 - Seed development data
+### [x] P04-T017 - Seed development data
 
 - Agent action: Create seed scripts for assets, venues, watchlist, alert rule defaults, and sample UI fixture data.
 
