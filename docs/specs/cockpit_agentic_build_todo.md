@@ -445,7 +445,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Fresh local environment has usable sample data.
 
-### [ ] P04-T018 - Add migration smoke test
+### [x] P04-T018 - Add migration smoke test
 
 - Agent action: Create CI/local test that applies migrations to empty databases and verifies key tables exist.
 

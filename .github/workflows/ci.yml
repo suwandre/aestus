@@ -43,6 +43,59 @@ jobs:
             exit "$status"
           fi
 
+  migration-smoke:
+    name: Migration smoke test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: aestus
+          POSTGRES_PASSWORD: aestus
+          POSTGRES_DB: aestus
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U aestus -d aestus"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      clickhouse:
+        image: clickhouse/clickhouse-server:24.8-alpine
+        env:
+          CLICKHOUSE_USER: aestus
+          CLICKHOUSE_PASSWORD: aestus
+          CLICKHOUSE_DB: aestus
+          CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+        ports:
+          - 8123:8123
+    env:
+      DATABASE_URL: postgres://aestus:aestus@localhost:5432/aestus
+      CLICKHOUSE_URL: http://aestus:aestus@localhost:8123
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Wait for ClickHouse
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf "http://localhost:8123/ping" >/dev/null; then
+              echo "ClickHouse ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "ClickHouse did not become ready"; exit 1
+
+      - name: Migration smoke test
+        run: bun test test/migrate.smoke.test.ts
+        working-directory: apps/api
+
   rust-checks:
     name: Rust checks
     runs-on: ubuntu-latest
