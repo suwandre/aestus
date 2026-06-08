@@ -585,7 +585,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Future agents know exactly what remains for each venue.
 
-### [ ] P06-T012 - Add symbol mapping config
+### [x] P06-T012 - Add symbol mapping config
 
 - Agent action: Create config mapping venue instrument IDs to canonical asset IDs and quote/base assets.
 

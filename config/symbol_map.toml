@@ -1,0 +1,94 @@
+# Symbol mapping: venue instrument IDs → canonical asset IDs (P06-T012).
+# Source of truth for normalization across all exchange adapters.
+# BTCUSDT on Binance, Bybit; BTC on Hyperliquid; BTC-USDT-SWAP on OKX
+# all map to canonical_asset_id = "crypto:btc-usdt".
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "BTCUSDT"
+canonical_asset_id = "crypto:btc-usdt"
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "ETHUSDT"
+canonical_asset_id = "crypto:eth-usdt"
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "SOLUSDT"
+canonical_asset_id = "crypto:sol-usdt"
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "BNBUSDT"
+canonical_asset_id = "crypto:bnb-usdt"
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "XRPUSDT"
+canonical_asset_id = "crypto:xrp-usdt"
+
+[[instruments]]
+venue_id = "binance"
+market_type = "perp"
+instrument_id = "DOGEUSDT"
+canonical_asset_id = "crypto:doge-usdt"
+
+[[instruments]]
+venue_id = "bybit"
+market_type = "perp"
+instrument_id = "BTCUSDT"
+canonical_asset_id = "crypto:btc-usdt"
+
+[[instruments]]
+venue_id = "bybit"
+market_type = "perp"
+instrument_id = "ETHUSDT"
+canonical_asset_id = "crypto:eth-usdt"
+
+[[instruments]]
+venue_id = "bybit"
+market_type = "perp"
+instrument_id = "SOLUSDT"
+canonical_asset_id = "crypto:sol-usdt"
+
+[[instruments]]
+venue_id = "hyperliquid"
+market_type = "perp"
+instrument_id = "BTC"
+canonical_asset_id = "crypto:btc-usdt"
+
+[[instruments]]
+venue_id = "hyperliquid"
+market_type = "perp"
+instrument_id = "ETH"
+canonical_asset_id = "crypto:eth-usdt"
+
+[[instruments]]
+venue_id = "hyperliquid"
+market_type = "perp"
+instrument_id = "SOL"
+canonical_asset_id = "crypto:sol-usdt"
+
+[[instruments]]
+venue_id = "okx"
+market_type = "perp"
+instrument_id = "BTC-USDT-SWAP"
+canonical_asset_id = "crypto:btc-usdt"
+
+[[instruments]]
+venue_id = "okx"
+market_type = "perp"
+instrument_id = "ETH-USDT-SWAP"
+canonical_asset_id = "crypto:eth-usdt"
+
+[[instruments]]
+venue_id = "okx"
+market_type = "perp"
+instrument_id = "SOL-USDT-SWAP"
+canonical_asset_id = "crypto:sol-usdt"

@@ -739,3 +739,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: n/a (docs only)
 - Assumptions: Four venues documented: Binance (live), Bybit/Hyperliquid/OKX (fixture). Capability table per venue covers all 8 event types. Remaining-work section lists what is needed to promote placeholders to live.
 - Follow-ups: none
+
+### P06-T012 — Add symbol mapping config
+
+- Files: config/symbol_map.toml (new), services/ingestion/src/symbol_map.rs (new)
+- Checks: symbol_map tests pass: btcusdt_maps_same_canonical_across_venues, unknown_returns_fallback, loads_from_fixture_fallback (6 entries). Fixture path uses CARGO_MANIFEST_DIR absolute reference.
+- Assumptions: TOML format with [[instruments]] array. Falls back to fixtures/venues/instruments.json if TOML file missing. Unknown instruments return "unknown:{venue}:{id}" fallback (events continue to flow). SYMBOL_MAP_PATH env var overrides default config/symbol_map.toml.
+- Follow-ups: none
