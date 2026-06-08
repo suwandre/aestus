@@ -491,7 +491,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Failed consumers can route poison events without blocking streams.
 
-### [ ] P05-T007 - Add replay utility
+### [x] P05-T007 - Add replay utility
 
 - Agent action: Build script to replay events from ClickHouse or fixtures into NATS for testing.
 

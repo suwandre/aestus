@@ -53,6 +53,16 @@ consumer — safe to re-run. Use `bun run scripts/nats-init.ts --dry-run` to pri
 the planned topology without connecting. JetStream is the in-flight transport
 buffer (short retention); ClickHouse/Postgres are the durable store.
 
+## Replay (testing)
+
+`bun run nats:replay` (`packages/event-bus/scripts/replay.ts`) republishes
+contract payloads from `fixtures/` into NATS as **deterministic** envelopes
+(`event_id`/`trace_id` = `replay-<source>-<index>`), so the feature and anomaly
+engines can be driven from repeatable streams. Sources: `raw`, `normalized`,
+`features`, `anomalies` (pass keys to select; default all). `--dry-run` builds
+and counts without connecting. Replay from ClickHouse history is a documented
+follow-up — the fixtures path is the deterministic test source.
+
 ## Subject token conventions
 
 Producers append routing tokens after the base. Tokens are lowercased and

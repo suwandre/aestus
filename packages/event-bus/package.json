@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "lint": "eslint src",
-    "nats:init": "bun run scripts/nats-init.ts"
+    "nats:init": "bun run scripts/nats-init.ts",
+    "nats:replay": "bun run scripts/replay.ts"
   },
   "dependencies": {
     "@aestus/contracts": "workspace:*",
