@@ -1,0 +1,41 @@
+[
+  {
+    "_comment": "OKX WebSocket trades channel (perp swap)",
+    "arg": {"channel": "trades", "instId": "BTC-USDT-SWAP"},
+    "data": [
+      {
+        "instId": "BTC-USDT-SWAP",
+        "tradeId": "99",
+        "px": "68250.1",
+        "sz": "0.001",
+        "side": "buy",
+        "ts": "1717862400000"
+      }
+    ]
+  },
+  {
+    "_comment": "OKX WebSocket funding-rate channel",
+    "arg": {"channel": "funding-rate", "instId": "BTC-USDT-SWAP"},
+    "data": [
+      {
+        "instId": "BTC-USDT-SWAP",
+        "instType": "SWAP",
+        "fundingRate": "0.0001",
+        "fundingTime": "1717876800000",
+        "nextFundingRate": "0.00015"
+      }
+    ]
+  },
+  {
+    "_comment": "OKX WebSocket mark-price channel",
+    "arg": {"channel": "mark-price", "instId": "BTC-USDT-SWAP"},
+    "data": [
+      {
+        "instType": "SWAP",
+        "instId": "BTC-USDT-SWAP",
+        "markPx": "68251.20",
+        "ts": "1717862400000"
+      }
+    ]
+  }
+]

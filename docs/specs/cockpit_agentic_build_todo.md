@@ -573,7 +573,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Hyperliquid fixture can normalize to contract schema.
 
-### [ ] P06-T010 - Add OKX adapter placeholder
+### [x] P06-T010 - Add OKX adapter placeholder
 
 - Agent action: Create adapter skeleton and fixture parser for OKX perp/spot data shapes.
 

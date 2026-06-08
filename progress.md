@@ -725,3 +725,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: parse_trade_buy test passes (side=Buy, canonical=crypto:btc-usdt); parse_all_mids emits 2 price_tick events; fixture replay emits >=1 event
 - Assumptions: Hyperliquid uses coin symbols (BTC not BTCUSDT). Side B=Buy, A=Sell (aggressor). allMids channel produces PriceTick with no bid/ask spread. Symbol map maps hyperliquid:BTC -> crypto:btc-usdt.
 - Follow-ups: Live WS, mark price, funding rate, liquidation flag deferred to future phase
+
+### P06-T010 — Add OKX adapter placeholder
+
+- Files: services/ingestion/src/provider/okx/mod.rs (new), fixtures/market/okx_raw.json (new)
+- Checks: parse_trade_buy/parse_funding_rate/parse_mark_price tests pass; fixture replay emits >=3 events
+- Assumptions: OKX instId format BTC-USDT-SWAP. trades/funding-rate/mark-price channels implemented. interval_hours=8.0. Symbol map maps okx:BTC-USDT-SWAP -> crypto:btc-usdt.
+- Follow-ups: Live WS, PriceTick (tickers channel), OI, liquidation deferred
