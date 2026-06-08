@@ -367,7 +367,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Calendar events can be updated when actual data arrives.
 
-### [ ] P04-T005 - Create Postgres on-chain tables
+### [x] P04-T005 - Create Postgres on-chain tables
 
 - Agent action: Add on_chain_events table with event_type, chain, asset_id, value, addresses, source, and raw_ref.
 

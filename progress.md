@@ -441,3 +441,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; verified the calendar-update path live — inserted a scheduled CPI row (actual null), then `UPDATE ... SET actual=3.3, actual_at=now(), revision=revision+1` succeeded (revision 0→1). Test row deleted afterward.
 - Assumptions: `macro_events` mirrors MacroEvent (event_id PK, region, currency, title, scheduled_at, importance, consensus/previous/actual nullable, source). Added revision fields beyond the contract — `actual_at`, `revised_at`, `revision` (int counter), `updated_at` — to satisfy the "update when actual arrives" Done-when without a separate history table. Enum `macro_importance` mirrors macro.ts.
 - Follow-ups: none
+
+### P04-T005 — Create Postgres on-chain tables
+
+- Files: infra/migrations/postgres/0004_onchain.sql (new)
+- Checks: applied via `db:migrate:postgres`; `psql \d on_chain_events` confirms the task's columns (event_type, chain, asset_id, value, addresses, source, raw_ref) + id PK and indexes.
+- Assumptions: Flattened the OnChainEvent discriminated union into one table with `id` PK (context packets link to it in T007 — satisfies Done-when). Variant-specific fields (direction, exchange, from/to_label, classification, tx_hash, action, stablecoin, category, dex, pool, activity_type) go in a JSONB `attributes` column rather than per-variant columns, matching the task's generic column list. `asset_id` is plain TEXT (not FK) since chain-native assets aren't always tracked in `assets`. `value`/`value_usd` are the magnitude/USD. Enum `on_chain_event_type` mirrors onchain.ts variants.
+- Follow-ups: none
