@@ -373,7 +373,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: On-chain items can be linked into context packets.
 
-### [ ] P04-T006 - Create Postgres anomaly tables
+### [x] P04-T006 - Create Postgres anomaly tables
 
 - Agent action: Add anomalies table plus anomaly_context_refs for links to market/news/macro/on-chain/historical context.
 

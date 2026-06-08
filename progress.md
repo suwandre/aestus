@@ -448,3 +448,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `psql \d on_chain_events` confirms the task's columns (event_type, chain, asset_id, value, addresses, source, raw_ref) + id PK and indexes.
 - Assumptions: Flattened the OnChainEvent discriminated union into one table with `id` PK (context packets link to it in T007 — satisfies Done-when). Variant-specific fields (direction, exchange, from/to_label, classification, tx_hash, action, stablecoin, category, dex, pool, activity_type) go in a JSONB `attributes` column rather than per-variant columns, matching the task's generic column list. `asset_id` is plain TEXT (not FK) since chain-native assets aren't always tracked in `assets`. `value`/`value_usd` are the magnitude/USD. Enum `on_chain_event_type` mirrors onchain.ts variants.
 - Follow-ups: none
+
+### P04-T006 — Create Postgres anomaly tables
+
+- Files: infra/migrations/postgres/0005_anomalies.sql (new)
+- Checks: applied via `db:migrate:postgres`; `\dt` confirms both `anomalies` and `anomaly_context_refs` present. `status` defaults to 'active' and persists; context refs persist in the linking table.
+- Assumptions: `anomalies` mirrors AnomalyEvent (assets/venues kept as TEXT[] arrays per the contract — can't FK an array). The contract's flat `context_refs` is normalized into `anomaly_context_refs(anomaly_id, ref_type, ref)` with `ref_type` enum market/news/macro/on_chain/historical/feature so links are typed/queryable (Done-when). Enums `anomaly_type`, `anomaly_severity`, `anomaly_status`, `anomaly_context_ref_type` mirror anomaly.ts.
+- Follow-ups: none
