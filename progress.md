@@ -760,3 +760,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: push_no_url_does_not_error, flush_empty_is_noop, push_serializes_row tests pass. No live ClickHouse required.
 - Assumptions: HTTP INSERT via reqwest POST with ?query=INSERT INTO normalized_market_events FORMAT JSONEachRow. Batches up to 256 rows before flush. No URL = silent drop (fixture-first). ClickHouse URL from CLICKHOUSE_URL env var.
 - Follow-ups: none
+
+### P06-T015 — Persist hot market state to Redis
+
+- Files: services/ingestion/src/persist/redis_store.rs (new; committed with T014 persist/ dir)
+- Checks: write_no_redis_does_not_error, key_format_price_tick, key_none_for_trade tests pass
+- Assumptions: Keys: mktstate:{venue}:{canonical_asset_id}:{event_type}. Only PriceTick/MarkPrice/FundingRate get hot keys (latest-value semantics). Trade/Liquidation/OI/IndexPrice are append-only; no hot key. TTL 300s default. No URL = silent no-op.
+- Follow-ups: none

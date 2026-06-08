@@ -603,7 +603,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Live Binance events appear in ClickHouse within configured flush interval.
 
-### [ ] P06-T015 - Persist hot market state to Redis
+### [x] P06-T015 - Persist hot market state to Redis
 
 - Agent action: Maintain Redis keys for latest price, mark, funding, OI, and 24h summary per venue instrument.
 
