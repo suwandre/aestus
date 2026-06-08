@@ -579,7 +579,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: OKX fixture can normalize to contract schema.
 
-### [ ] P06-T011 - Create exchange capability matrix
+### [x] P06-T011 - Create exchange capability matrix
 
 - Agent action: Document for each exchange: supported price/trade/OI/funding/liquidation/orderbook feeds, protocol, rate limits, and MVP status.
 

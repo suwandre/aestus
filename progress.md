@@ -732,3 +732,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: parse_trade_buy/parse_funding_rate/parse_mark_price tests pass; fixture replay emits >=3 events
 - Assumptions: OKX instId format BTC-USDT-SWAP. trades/funding-rate/mark-price channels implemented. interval_hours=8.0. Symbol map maps okx:BTC-USDT-SWAP -> crypto:btc-usdt.
 - Follow-ups: Live WS, PriceTick (tickers channel), OI, liquidation deferred
+
+### P06-T011 — Create exchange capability matrix
+
+- Files: docs/exchange_capabilities.md (new)
+- Checks: n/a (docs only)
+- Assumptions: Four venues documented: Binance (live), Bybit/Hyperliquid/OKX (fixture). Capability table per venue covers all 8 event types. Remaining-work section lists what is needed to promote placeholders to live.
+- Follow-ups: none
