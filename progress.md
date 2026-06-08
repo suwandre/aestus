@@ -490,3 +490,10 @@ No [!] tasks in P03. No failures.
 - Checks: `bun run db:migrate:clickhouse` applied it against live ClickHouse 24.8; `SHOW TABLES` lists `raw_market_events` + `schema_migrations`.
 - Assumptions: Mirrors RawMarketEvent; the full payload is external (object store keyed by raw_payload_hash) — this table is the replayable index. MergeTree, `PARTITION BY toYYYYMM(received_at)`, `ORDER BY (venue, source, received_at, sequence)` for per-feed ordered replay. `DateTime64(3,'UTC')` ms precision; venue/event_type are LowCardinality; `ingested_at DEFAULT now64(3)`. Used `CREATE TABLE IF NOT EXISTS` (smoke-test/idempotency friendly).
 - Follow-ups: none
+
+### P04-T012 — Create ClickHouse normalized event tables
+
+- Files: infra/migrations/clickhouse/0002_normalized_market_events.sql (new)
+- Checks: applied via `db:migrate:clickhouse`; `system.tables` confirms `normalized_market_events`.
+- Assumptions: Chose a single wide table (not a per-variant family) for the 8 NormalizedMarketEvent variants — shared envelope columns + nullable per-variant columns, discriminated by `event_type`. orderbook_delta levels are `Array(Tuple(Float64,Float64))`; `side` is `Nullable(Enum8('buy'=1,'sell'=2))`. MergeTree `PARTITION BY toYYYYMM(timestamp)`, `ORDER BY (canonical_asset_id, event_type, timestamp)` so per-asset/time history is a prefix scan (Done-when: efficient query by asset/time).
+- Follow-ups: none

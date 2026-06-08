@@ -409,7 +409,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Raw provider messages can be retained for replay/debugging.
 
-### [ ] P04-T012 - Create ClickHouse normalized event tables
+### [x] P04-T012 - Create ClickHouse normalized event tables
 
 - Agent action: Create normalized_market_events table or family of tables optimized by asset, venue, event_type, timestamp.
 
