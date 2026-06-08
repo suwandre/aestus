@@ -467,7 +467,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: All services publish consistent envelopes.
 
-### [ ] P05-T003 - Create Rust NATS publisher helper
+### [x] P05-T003 - Create Rust NATS publisher helper
 
 - Agent action: Add Rust helper crate for publishing envelopes to NATS with retries and structured errors.
 

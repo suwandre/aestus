@@ -1,0 +1,5 @@
+# The workspace denies `unwrap`/`expect` in production code (see Cargo.toml
+# [workspace.lints.clippy]), but test code may use them freely — a panicking
+# assertion is exactly what a failing test should do.
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
