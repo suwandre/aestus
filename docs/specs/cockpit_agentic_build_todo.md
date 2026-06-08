@@ -509,7 +509,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Data tab can later consume service health states.
 
-### [ ] P05-T010 - Document event ordering assumptions
+### [x] P05-T010 - Document event ordering assumptions
 
 - Agent action: Write doc explaining sequence handling, provider timestamps, received timestamps, and what ordering guarantees not to assume.
 
