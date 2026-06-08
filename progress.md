@@ -434,3 +434,10 @@ No [!] tasks in P03. No failures.
 - Checks: `bun run db:migrate:postgres` applied it; `psql \d news_items` confirms columns + the UNIQUE `idx_news_items_url_hash` (dedup) and source/published_at indexes. news_entities + news_embeddings created.
 - Assumptions: Dedup is on `url_hash` (sha256 of canonical URL) via a UNIQUE index — added a dedicated column rather than uniquing the raw `url`. `news_entities(news_id, entity, canonical_asset_id?)` enables query by asset (FK to assets, SET NULL when entity isn't a tracked asset) and by entity (indexed). "Source metadata" = `source`/`source_type` columns on news_items (feed-registry/enablement is T010). `news_embeddings.embedding` is an unbounded `vector` placeholder (pgvector ext from init.sql); the fixed-dim column + ivfflat/hnsw index is deferred until the embedding model is chosen (noted in the migration + docs). Enums `news_source_type`, `sentiment` mirror news.ts.
 - Follow-ups: none
+
+### P04-T004 — Create Postgres macro tables
+
+- Files: infra/migrations/postgres/0003_macro.sql (new)
+- Checks: applied via `db:migrate:postgres`; verified the calendar-update path live — inserted a scheduled CPI row (actual null), then `UPDATE ... SET actual=3.3, actual_at=now(), revision=revision+1` succeeded (revision 0→1). Test row deleted afterward.
+- Assumptions: `macro_events` mirrors MacroEvent (event_id PK, region, currency, title, scheduled_at, importance, consensus/previous/actual nullable, source). Added revision fields beyond the contract — `actual_at`, `revised_at`, `revision` (int counter), `updated_at` — to satisfy the "update when actual arrives" Done-when without a separate history table. Enum `macro_importance` mirrors macro.ts.
+- Follow-ups: none

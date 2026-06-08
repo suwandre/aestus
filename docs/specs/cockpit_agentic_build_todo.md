@@ -361,7 +361,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: News items can be deduplicated by URL/hash and queried by asset/entity.
 
-### [ ] P04-T004 - Create Postgres macro tables
+### [x] P04-T004 - Create Postgres macro tables
 
 - Agent action: Add macro_events with scheduled, actual, consensus, previous, importance, source, and revision fields.
 
