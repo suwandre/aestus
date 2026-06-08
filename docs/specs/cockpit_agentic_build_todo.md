@@ -391,7 +391,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Briefings persist independently of transient UI state.
 
-### [ ] P04-T009 - Create Postgres decision and journal tables
+### [x] P04-T009 - Create Postgres decision and journal tables
 
 - Agent action: Add decisions, journal_entries, journal_outcomes, and trade_tags tables.
 

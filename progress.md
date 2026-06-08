@@ -469,3 +469,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `\dt briefings` confirms it. Standalone table → persists independently of transient UI state (Done-when).
 - Assumptions: `briefings` mirrors Briefing. `context_packet_id` FK RESTRICT. Levels: `entry_zone` JSONB {low,high} (nullable for no_trade), `invalidation` nullable, `targets` DOUBLE PRECISION[], `size_suggestion` JSONB nullable. CostMetadata flattened into `cost_provider/cost_model/cost_prompt_tokens/cost_completion_tokens/cost_total_tokens/cost_usd` columns for cost visibility/queryability (hard rule #7), separate from the authoring `model` column. Enum `stance` mirrors briefing.ts.
 - Follow-ups: none
+
+### P04-T009 — Create Postgres decision and journal tables
+
+- Files: infra/migrations/postgres/0008_decisions_journal.sql (new)
+- Checks: applied via `db:migrate:postgres`; `\dt` confirms `decisions`, `journal_entries`, `journal_outcomes`, `trade_tags`.
+- Assumptions: `decisions` mirrors Decision (briefing_id FK RESTRICT to preserve the audit log per rule #4; plan fields nullable for non-act). JournalTrade is split: `journal_entries` holds the always-present entry leg + `outcome_status` (defaults 'open') + regime_at_entry JSONB + signal + linked_briefing_id (SET NULL); `journal_outcomes` (1:1, PK = journal_entry_id) holds the close leg (exit_price/at, realized_pnl, r_multiple) added when the trade closes; `trade_tags(journal_entry_id, tag)` normalizes setup_tags for analytics-by-setup. Enums `decision_type`, `trade_side`, `outcome_status` mirror the contracts (named `trade_side` to avoid colliding with a future generic `side`). Indexes on status/signal/tag/asset enable the query Done-when.
+- Follow-ups: none
