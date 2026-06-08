@@ -362,6 +362,10 @@
         "size": {
           "type": "number",
           "minimum": 0
+        },
+        "notional": {
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [

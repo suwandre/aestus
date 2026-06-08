@@ -69,6 +69,8 @@ const Liquidation = Base.extend({
   side: Side,
   price: z.number(),
   size: z.number().nonnegative(),
+  /** Notional value (price × size), if provided by the exchange. */
+  notional: z.number().nonnegative().optional(),
 });
 
 const MarkPrice = Base.extend({

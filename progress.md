@@ -697,3 +697,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: OI poller spawned as independent tokio task; fetch_oi calls fapi.binance.com/fapi/v1/openInterest; parse_oi_response test passes
 - Assumptions: OI interval configurable via OI_INTERVAL_SECS env (default 60 s). OI poller runs as a separate tokio task cloning the HTTP client and symbol map. REST endpoint only — Binance Futures has no WebSocket OI stream.
 - Follow-ups: none
+
+### P06-T006 — Implement Binance liquidation stream
+
+- Files: packages/contracts/src/normalized-event.ts (notional field added to Liquidation), packages/contracts/schema/NormalizedMarketEvent.schema.json (notional property added to liquidation variant)
+- Checks: parse_force_order test passes; Liquidation event includes side/price/size/notional (price*size); event_type_str = "liquidation"
+- Assumptions: notional = price * size computed client-side (Binance forceOrder omits it). notional: Option<f64> is backward-compatible (optional). Both TS Zod schema and JSON Schema updated together per rule 8. Rust market.rs already had notional added at T002.
+- Follow-ups: none

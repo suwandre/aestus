@@ -549,7 +549,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: OI events are stored with asset, venue, value, timestamp, and source.
 
-### [ ] P06-T006 - Implement Binance liquidation stream
+### [x] P06-T006 - Implement Binance liquidation stream
 
 - Agent action: Connect Binance liquidation/order force stream where available and normalize liquidation events.
 
