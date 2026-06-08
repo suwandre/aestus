@@ -537,7 +537,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: BTCUSDT and ETHUSDT trades/prices stream locally into NATS.
 
-### [ ] P06-T004 - Implement Binance mark/funding adapter
+### [x] P06-T004 - Implement Binance mark/funding adapter
 
 - Agent action: Connect or poll Binance public endpoints for mark price and funding rate.
 

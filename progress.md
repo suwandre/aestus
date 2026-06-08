@@ -683,3 +683,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: ws_url_includes_all_stream_types, process_ws_message_agg_trade, process_ws_message_mark_price, process_ws_message_liquidation tests pass
 - Assumptions: Combined stream URL format: wss://fstream.binance.com/stream?streams=. parse_agg_trade: side from buyer_is_maker flag (false=Buy). parse_book_ticker: mid=(bid+ask)/2. This commit also contains T004 (mark/funding/index parser), T005 (OI REST poller), and T006 (force_order liquidation parser) — all implemented cohesively in the Binance adapter.
 - Follow-ups: T004/T005/T006/T007 checkboxes flipped in separate commits per protocol
+
+### P06-T004 — Implement Binance mark/funding adapter
+
+- Files: (code in binance/parser.rs — committed at T003)
+- Checks: parse_mark_price test passes; 3 events emitted per markPriceUpdate (mark_price + index_price + funding_rate); interval_hours = 8.0
+- Assumptions: mark/index/funding all derived from a single markPriceUpdate WS message. next_funding_time from "T" field. interval_hours hardcoded to 8.0 for Binance perpetuals.
+- Follow-ups: none
