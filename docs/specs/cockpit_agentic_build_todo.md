@@ -531,7 +531,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: New exchange adapters can follow the same pattern.
 
-### [ ] P06-T003 - Implement Binance perp price/trade adapter
+### [x] P06-T003 - Implement Binance perp price/trade adapter
 
 - Agent action: Connect Binance public WebSocket for selected perp symbols and emit raw + normalized trade/price events.
 

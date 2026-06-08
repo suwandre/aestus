@@ -676,3 +676,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: cargo check clean; event_model and ingestion tests pass
 - Assumptions: Provider trait has 8 methods: name/venue/connect/subscribe/parse_raw/normalize/reconnect/health plus run(). AdapterEvent bundles raw_bytes + RawMarketEvent + Vec<NormalizedMarketEvent>. NormalizedMarketEvent uses #[serde(tag = "event_type")] (8 variants) matching TS contract. Helper methods event_type_str/venue/instrument_id/canonical_asset_id added. notional: Option<f64> added to Liquidation (see T006 contract update).
 - Follow-ups: none
+
+### P06-T003 — Implement Binance perp price/trade adapter
+
+- Files: services/ingestion/src/provider/binance/mod.rs (new), services/ingestion/src/provider/binance/parser.rs (new)
+- Checks: ws_url_includes_all_stream_types, process_ws_message_agg_trade, process_ws_message_mark_price, process_ws_message_liquidation tests pass
+- Assumptions: Combined stream URL format: wss://fstream.binance.com/stream?streams=. parse_agg_trade: side from buyer_is_maker flag (false=Buy). parse_book_ticker: mid=(bid+ask)/2. This commit also contains T004 (mark/funding/index parser), T005 (OI REST poller), and T006 (force_order liquidation parser) — all implemented cohesively in the Binance adapter.
+- Follow-ups: T004/T005/T006/T007 checkboxes flipped in separate commits per protocol
