@@ -483,3 +483,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `\dt` confirms `alert_rules`, `feed_settings`, `model_routing`, `notification_channels`, `layout_preferences`. Watchlists were already added in 0001 (T002). All durable Postgres tables → survive restarts (Done-when).
 - Assumptions: No contract backs these (config domain). `alert_rules` use a `condition` kind + JSONB `params`; `feed_settings` is one row per feed id for enablement; `model_routing` keys by LLM task_kind → provider/model (ties to the runtime-LLM-provider DECISION); `notification_channels` use a free-text `channel_type` + JSONB config; `layout_preferences` is a keyed JSONB store. Kept channel/condition as TEXT (not enums) since the value sets are open and config-driven.
 - Follow-ups: none
+
+### P04-T011 — Create ClickHouse raw event table
+
+- Files: infra/migrations/clickhouse/0001_raw_market_events.sql (new)
+- Checks: `bun run db:migrate:clickhouse` applied it against live ClickHouse 24.8; `SHOW TABLES` lists `raw_market_events` + `schema_migrations`.
+- Assumptions: Mirrors RawMarketEvent; the full payload is external (object store keyed by raw_payload_hash) — this table is the replayable index. MergeTree, `PARTITION BY toYYYYMM(received_at)`, `ORDER BY (venue, source, received_at, sequence)` for per-feed ordered replay. `DateTime64(3,'UTC')` ms precision; venue/event_type are LowCardinality; `ingested_at DEFAULT now64(3)`. Used `CREATE TABLE IF NOT EXISTS` (smoke-test/idempotency friendly).
+- Follow-ups: none

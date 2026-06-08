@@ -403,7 +403,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Single-user config survives restarts.
 
-### [ ] P04-T011 - Create ClickHouse raw event table
+### [x] P04-T011 - Create ClickHouse raw event table
 
 - Agent action: Create raw_market_events with event envelope fields and raw payload hash/reference.
 
