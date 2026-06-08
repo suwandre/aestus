@@ -787,3 +787,24 @@ Reviewer: independent phase review. All 60 workspace tests pass (`cargo test --w
 - Checks: `cargo check -p ingestion` clean (7 pre-existing warnings, no errors); `cargo test --workspace` 60/60 pass
 - Assumptions: Publisher wrapped in `Arc<dyn Publisher>` to share between event loop and heartbeat task without a second NATS connection. `Heartbeat::new("ingestion", env!("CARGO_PKG_VERSION")).run(hb_publisher.as_ref(), hb_interval, || vec![])` spawned after health server; deps closure returns empty vec (no structured dep health needed for the done-when criterion).
 - Follow-ups: none
+
+### P06 REVIEW — PASS
+
+Reviewer: independent phase review (post-repair). All 16 tasks verified against actual repo files and test names. No failures.
+
+- P06-T001: Heartbeat::run() spawned in main.rs; health server on /health+/metrics. PASS.
+- P06-T002: Provider trait (8 methods) in provider/mod.rs; NormalizedMarketEvent (8 variants) in event_model. PASS.
+- P06-T003: BinanceAdapter + parse_agg_trade; NATS publish path wired in main.rs. PASS.
+- P06-T004: parse_mark_price emits MarkPrice+IndexPrice+FundingRate with venue/timestamp fields. PASS.
+- P06-T005: parse_oi_response sets canonical_asset_id, venue, open_interest, timestamp, source. PASS.
+- P06-T006: Liquidation variant has side/price/size/notional/canonical_asset_id/venue; parse_force_order test confirms all. PASS.
+- P06-T007: BackoffState in reconnect.rs with 3 tests; used in BinanceAdapter::run() reconnect loop. PASS.
+- P06-T008: bybit/mod.rs + fixtures/market/bybit_raw.json; parse_public_trade_buy + parse_ticker tests pass. PASS.
+- P06-T009: hyperliquid/mod.rs + fixtures/market/hyperliquid_raw.json; parse_trade_buy + parse_all_mids tests pass. PASS.
+- P06-T010: okx/mod.rs + fixtures/market/okx_raw.json; parse_trade_buy + parse_funding_rate + parse_mark_price tests pass. PASS.
+- P06-T011: docs/exchange_capabilities.md covers all 8 event types per venue with remaining-work section. PASS.
+- P06-T012: config/symbol_map.toml maps BTCUSDT/BTC/BTC-USDT-SWAP across all venues to crypto:btc-usdt; 3 tests pass. PASS.
+- P06-T013: hash.rs (sha256_hex); RawMarketEvent.raw_payload_hash field present; prefix/determinism/empty-string tests pass. PASS.
+- P06-T014: persist/clickhouse.rs; 256-row batch + HTTP INSERT; 3 tests pass; wired in main.rs event loop. PASS.
+- P06-T015: persist/redis_store.rs; mktstate:{venue}:{canonical_asset_id}:{event_type} keys with 300s TTL; 3 tests pass; wired in main.rs. PASS.
+- P06-T016: metrics.rs; 4 metrics (messages_total, errors_total, reconnects_total, last_message_epoch_ms); exposed at /metrics; 2 tests pass. PASS.
