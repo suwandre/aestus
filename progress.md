@@ -476,3 +476,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:postgres`; `\dt` confirms `decisions`, `journal_entries`, `journal_outcomes`, `trade_tags`.
 - Assumptions: `decisions` mirrors Decision (briefing_id FK RESTRICT to preserve the audit log per rule #4; plan fields nullable for non-act). JournalTrade is split: `journal_entries` holds the always-present entry leg + `outcome_status` (defaults 'open') + regime_at_entry JSONB + signal + linked_briefing_id (SET NULL); `journal_outcomes` (1:1, PK = journal_entry_id) holds the close leg (exit_price/at, realized_pnl, r_multiple) added when the trade closes; `trade_tags(journal_entry_id, tag)` normalizes setup_tags for analytics-by-setup. Enums `decision_type`, `trade_side`, `outcome_status` mirror the contracts (named `trade_side` to avoid colliding with a future generic `side`). Indexes on status/signal/tag/asset enable the query Done-when.
 - Follow-ups: none
+
+### P04-T010 — Create Postgres config tables
+
+- Files: infra/migrations/postgres/0009_config.sql (new)
+- Checks: applied via `db:migrate:postgres`; `\dt` confirms `alert_rules`, `feed_settings`, `model_routing`, `notification_channels`, `layout_preferences`. Watchlists were already added in 0001 (T002). All durable Postgres tables → survive restarts (Done-when).
+- Assumptions: No contract backs these (config domain). `alert_rules` use a `condition` kind + JSONB `params`; `feed_settings` is one row per feed id for enablement; `model_routing` keys by LLM task_kind → provider/model (ties to the runtime-LLM-provider DECISION); `notification_channels` use a free-text `channel_type` + JSONB config; `layout_preferences` is a keyed JSONB store. Kept channel/condition as TEXT (not enums) since the value sets are open and config-driven.
+- Follow-ups: none

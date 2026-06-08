@@ -397,7 +397,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: User actions and outcomes can be logged and queried.
 
-### [ ] P04-T010 - Create Postgres config tables
+### [x] P04-T010 - Create Postgres config tables
 
 - Agent action: Add settings for watchlists, alert rules, feed enablement, model routing, notification channels, layout preferences.
 
