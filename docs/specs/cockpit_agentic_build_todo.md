@@ -555,7 +555,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Liquidation events include side, price, quantity, notional, asset, venue.
 
-### [ ] P06-T007 - Add Binance reconnect/backoff logic
+### [x] P06-T007 - Add Binance reconnect/backoff logic
 
 - Agent action: Implement exponential backoff, ping/pong handling, stale stream detection, and reconnect metrics.
 

@@ -704,3 +704,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: parse_force_order test passes; Liquidation event includes side/price/size/notional (price*size); event_type_str = "liquidation"
 - Assumptions: notional = price * size computed client-side (Binance forceOrder omits it). notional: Option<f64> is backward-compatible (optional). Both TS Zod schema and JSON Schema updated together per rule 8. Rust market.rs already had notional added at T002.
 - Follow-ups: none
+
+### P06-T007 — Add Binance reconnect/backoff logic
+
+- Files: services/ingestion/src/provider/binance/reconnect.rs (new)
+- Checks: backoff_increases_exponentially, backoff_capped_at_max, reset_restores_initial_delay tests pass
+- Assumptions: BackoffState: initial 1 s, max 60 s, multiplier 2.0. Stale-stream detection via tokio::time::timeout in ws_loop. Reconnect loop in BinanceAdapter::run() drives ws_loop with BackoffState backoff between retries. Ping->Pong handled inline in ws_loop. Reconnect metrics (inc_reconnects) called on each retry.
+- Follow-ups: none
