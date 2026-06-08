@@ -767,3 +767,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: write_no_redis_does_not_error, key_format_price_tick, key_none_for_trade tests pass
 - Assumptions: Keys: mktstate:{venue}:{canonical_asset_id}:{event_type}. Only PriceTick/MarkPrice/FundingRate get hot keys (latest-value semantics). Trade/Liquidation/OI/IndexPrice are append-only; no hot key. TTL 300s default. No URL = silent no-op.
 - Follow-ups: none
+
+### P06-T016 — Add ingestion metrics
+
+- Files: services/ingestion/src/metrics.rs (new)
+- Checks: gather_text_does_not_panic, inc_messages_does_not_panic tests pass. Prometheus text output confirmed.
+- Assumptions: Four OnceLock metrics: messages_total (provider, feed), errors_total (provider), reconnects_total (provider), last_message_epoch_ms (provider, feed). init() safe to call multiple times. gather_text() uses global Prometheus registry. Exposed at /metrics HTTP endpoint.
+- Follow-ups: none

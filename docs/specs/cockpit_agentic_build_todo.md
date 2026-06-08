@@ -609,7 +609,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: API can read latest market state without ClickHouse scan.
 
-### [ ] P06-T016 - Add ingestion metrics
+### [x] P06-T016 - Add ingestion metrics
 
 - Agent action: Expose counts, error rates, reconnects, message lag, last message time per provider/feed.
 
