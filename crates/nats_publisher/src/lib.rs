@@ -13,6 +13,9 @@ use async_trait::async_trait;
 use event_model::envelope::Envelope;
 use serde::Serialize;
 
+pub mod heartbeat;
+pub use heartbeat::Heartbeat;
+
 /// Structured failures from the publish path.
 #[derive(Debug, thiserror::Error)]
 pub enum PublishError {

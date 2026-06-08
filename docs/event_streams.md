@@ -33,7 +33,14 @@ binds the bare base for un-routed publishes.
 | `DECISION_LOGGED`    | `decision.logged`    | `decision.logged`, `decision.logged.>`       | `Decision`              | API → journal/storage, analytics       |
 | `SYSTEM_HEALTH`      | `system.health`      | `system.health`, `system.health.>`           | `SystemHealth`          | every service → Data tab health view   |
 
-`SystemHealth` is defined in P05-T009; the others reuse the P03 contracts.
+`SystemHealth` is defined in `packages/contracts/src/health.ts` (+ Rust mirror);
+the others reuse the P03 contracts.
+
+Each service publishes periodic heartbeats on `system.health.<service>` with its
+name, version, uptime, and per-dependency status (overall status = worst
+dependency). Helpers: `startHeartbeat(bus, { service, version, intervalMs })` in
+TypeScript (`@aestus/event-bus`) and `Heartbeat::run(...)` in Rust
+(`nats_publisher`). The Data tab consumes these for live service health.
 
 ## Initialization & reproducibility
 

@@ -26,6 +26,7 @@ import { Decision } from "../src/decision";
 import { JournalTrade } from "../src/journal";
 import { EventEnvelope } from "../src/envelope";
 import { DeadLetter } from "../src/dlq";
+import { SystemHealth } from "../src/health";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = join(here, "..", "schema");
@@ -49,6 +50,7 @@ const contracts: Record<string, z.ZodType> = {
   JournalTrade,
   EventEnvelope,
   DeadLetter,
+  SystemHealth,
 };
 
 rmSync(outDir, { recursive: true, force: true });

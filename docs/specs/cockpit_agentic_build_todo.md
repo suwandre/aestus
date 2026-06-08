@@ -503,7 +503,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Developer can inspect live events without custom scripts.
 
-### [ ] P05-T009 - Implement heartbeat publisher
+### [x] P05-T009 - Implement heartbeat publisher
 
 - Agent action: Each service should publish periodic system.health events with service name, version, uptime, and dependency status.
 

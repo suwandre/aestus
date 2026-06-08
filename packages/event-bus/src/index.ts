@@ -7,3 +7,4 @@ export * from "./topology";
 export * from "./dlq";
 export * from "./replay";
 export * from "./inspect";
+export * from "./heartbeat";
