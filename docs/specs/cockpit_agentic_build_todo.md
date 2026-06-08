@@ -597,7 +597,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Raw events include stable hash and duplicate messages can be identified.
 
-### [ ] P06-T014 - Persist normalized events to ClickHouse
+### [x] P06-T014 - Persist normalized events to ClickHouse
 
 - Agent action: Add writer consumer that batches normalized market events into ClickHouse.
 

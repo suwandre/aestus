@@ -753,3 +753,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: hash tests pass: prefix check (sha256:), determinism, known empty-string hash
 - Assumptions: sha2::Sha256 + hex encoding. Output format "sha256:<64 hex chars>". Used by all adapters' parse_raw() and by binance parser make_raw().
 - Follow-ups: none
+
+### P06-T014 — Persist normalized events to ClickHouse
+
+- Files: services/ingestion/src/persist/mod.rs (new), services/ingestion/src/persist/clickhouse.rs (new)
+- Checks: push_no_url_does_not_error, flush_empty_is_noop, push_serializes_row tests pass. No live ClickHouse required.
+- Assumptions: HTTP INSERT via reqwest POST with ?query=INSERT INTO normalized_market_events FORMAT JSONEachRow. Batches up to 256 rows before flush. No URL = silent drop (fixture-first). ClickHouse URL from CLICKHOUSE_URL env var.
+- Follow-ups: none
