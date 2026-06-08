@@ -455,7 +455,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 Goal: Implement the event backbone that connects ingestion, features, anomalies, context assembly, LLM jobs, API, and UI.
 
-### [ ] P05-T001 - Define NATS stream names
+### [x] P05-T001 - Define NATS stream names
 
 - Agent action: Document and create streams: raw.market, normalized.market, feature.snapshot, anomaly.detected, context.packet, briefing.generated, decision.logged, system.health.
 

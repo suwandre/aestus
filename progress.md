@@ -577,3 +577,10 @@ Independent review. Verified each task against the repo with zero trust in prior
 - T018: `apps/api/test/migrate.smoke.test.ts` — provisions throwaway `aestus_migrate_smoke` DBs, spawns real `migrate.ts` runner, asserts 24 Postgres key tables + 9 ClickHouse key tables, verifies `schema_migrations` counts equal file counts, self-skips when DBs unreachable. `.github/workflows/ci.yml` has dedicated `migration-smoke` job with `pgvector/pgvector:pg16` and `clickhouse/clickhouse-server:24.8-alpine` services.
 
 No [!] tasks. No failures.
+
+### P05-T001 — Define NATS stream names
+
+- Files: packages/contracts/src/streams.ts (new), packages/contracts/src/index.ts (export), crates/event_model/src/streams.rs (new), crates/event_model/src/lib.rs (module), docs/event_streams.md (new)
+- Checks: `cargo test -p event_model` (3 pass), `cargo clippy -p event_model -- -D warnings` clean, contracts `bun run typecheck` clean, subject helper smoke (`raw.market.binance.btc_usdt`, 8 streams, base lookup) verified
+- Assumptions: JetStream stream names are UPPER_SNAKE (no dots) with the dotted form as the subject base; each stream binds the bare base plus `<base>.>` wildcard. TS file (`packages/contracts/src/streams.ts`) is the single source of truth; Rust mirror kept in sync by hand (no codegen yet). Subject routing-token conventions documented per-stream in docs/event_streams.md. `SystemHealth` payload contract is deferred to P05-T009.
+- Follow-ups: none
