@@ -427,7 +427,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Feature engine can persist rolling feature state over time.
 
-### [ ] P04-T015 - Create ClickHouse anomaly metrics table
+### [x] P04-T015 - Create ClickHouse anomaly metrics table
 
 - Agent action: Create anomaly_metrics for severity, sigma, feature values at trigger time.
 

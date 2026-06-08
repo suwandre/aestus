@@ -511,3 +511,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:clickhouse`; `system.tables` confirms `feature_snapshots`.
 - Assumptions: Mirrors FeatureSnapshot. Horizon-keyed metrics (returns/volatility/z_scores) are `Map(String, Float64)`; correlation_set and basis are `Nested(...)` (parallel-array) columns matching the contract's array-of-objects; funding_z/oi_delta/volume_z Nullable; regime split into regime_trend/volatility/risk LowCardinality columns. `schema_version` versions the feature fields (Done-when). MergeTree `ORDER BY (canonical_asset_id, timestamp)` for rolling-state reads.
 - Follow-ups: none
+
+### P04-T015 — Create ClickHouse anomaly metrics table
+
+- Files: infra/migrations/clickhouse/0005_anomaly_metrics.sql (new)
+- Checks: applied via `db:migrate:clickhouse`; `system.tables` lists `anomaly_metrics`. All 8 CH base tables now present (raw/normalized events, 4 OHLCV, feature_snapshots, anomaly_metrics) + schema_migrations.
+- Assumptions: anomaly_metrics is the analytics mirror of the Postgres `anomalies` row (linked by `anomaly_id` String). Retains severity/sigma + the feature state at trigger: named convenience columns (funding_z/oi_delta/volume_z), a generic `feature_values Map(String,Float64)` for arbitrary z_scores/returns, and regime labels. MergeTree `ORDER BY (canonical_asset_id, type, detected_at)` for per-asset/type analytics (Done-when).
+- Follow-ups: none
