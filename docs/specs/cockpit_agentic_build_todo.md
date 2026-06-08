@@ -525,7 +525,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Service starts locally and publishes heartbeat events.
 
-### [ ] P06-T002 - Implement provider trait/interface
+### [x] P06-T002 - Implement provider trait/interface
 
 - Agent action: Define a Rust trait for exchange adapters: connect, subscribe, parse_raw, normalize, reconnect, health.
 

@@ -669,3 +669,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: cargo check clean; cargo test -p ingestion 44 passed
 - Assumptions: Config from env with defaults (port 8080, symbols BTCUSDT/ETHUSDT, heartbeat 10 s, OI 60 s, stale 60 s). Health server on /health (JSON) + /metrics (Prometheus text). Graceful ctrl_c via tokio::signal. RecordingPublisher when NATS_URL unset (fixture-first). main.rs wires all P06 modules.
 - Follow-ups: none
+
+### P06-T002 — Implement provider trait/interface
+
+- Files: services/ingestion/src/provider/mod.rs (new), crates/event_model/src/market.rs (new), crates/event_model/src/lib.rs (modified)
+- Checks: cargo check clean; event_model and ingestion tests pass
+- Assumptions: Provider trait has 8 methods: name/venue/connect/subscribe/parse_raw/normalize/reconnect/health plus run(). AdapterEvent bundles raw_bytes + RawMarketEvent + Vec<NormalizedMarketEvent>. NormalizedMarketEvent uses #[serde(tag = "event_type")] (8 variants) matching TS contract. Helper methods event_type_str/venue/instrument_id/canonical_asset_id added. notional: Option<f64> added to Liquidation (see T006 contract update).
+- Follow-ups: none

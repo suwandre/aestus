@@ -6,4 +6,5 @@
 
 pub mod envelope;
 pub mod health;
+pub mod market;
 pub mod streams;
