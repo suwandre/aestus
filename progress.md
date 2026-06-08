@@ -808,3 +808,24 @@ Reviewer: independent phase review (post-repair). All 16 tasks verified against 
 - P06-T014: persist/clickhouse.rs; 256-row batch + HTTP INSERT; 3 tests pass; wired in main.rs event loop. PASS.
 - P06-T015: persist/redis_store.rs; mktstate:{venue}:{canonical_asset_id}:{event_type} keys with 300s TTL; 3 tests pass; wired in main.rs. PASS.
 - P06-T016: metrics.rs; 4 metrics (messages_total, errors_total, reconnects_total, last_message_epoch_ms); exposed at /metrics; 2 tests pass. PASS.
+
+### P06 REVIEW — PASS
+
+Reviewer: independent phase review (fresh eyes, zero trust). Verified all 16 tasks against actual repo files; ran `cargo test --workspace` (60/60 pass). No failures found.
+
+- P06-T001: Heartbeat::run() spawned in main.rs:67-71 via Arc<dyn Publisher>; health.rs exposes /health + /metrics. PASS.
+- P06-T002: Provider trait (name/venue/connect/subscribe/parse_raw/normalize/reconnect/health/run — 9 methods) in provider/mod.rs. PASS.
+- P06-T003: BinanceAdapter builds WS URL with aggTrade+bookTicker+markPrice streams for all symbols; parse_agg_trade/parse_book_ticker wired; events published via NATS in main.rs event loop. PASS.
+- P06-T004: parse_mark_price emits MarkPrice+IndexPrice+FundingRate with timestamp from E (event_time_ms) and venue="binance"; 3-event test confirms. PASS.
+- P06-T005: parse_oi_response emits OpenInterest with venue, canonical_asset_id, open_interest, timestamp; source in paired RawMarketEvent (binance:rest:oi@{symbol}); OI poller wired in BinanceAdapter::run(). PASS.
+- P06-T006: Liquidation has side/price/size/notional=Some(price*size)/canonical_asset_id/venue; parse_force_order_liquidation test asserts all. PASS.
+- P06-T007: reconnect.rs BackoffState (initial=1s, max=60s, mult=2.0); 3 tests (exponential, capped, reset); used in BinanceAdapter::run() retry loop; Ping→Pong at ws_loop:148-153; stale via tokio::time::timeout. PASS.
+- P06-T008: bybit/mod.rs + fixtures/market/bybit_raw.json; parse_public_trade_buy (canonical=crypto:btc-usdt), parse_ticker_emits_price_mark_funding, run_replay_fixture (≥2 events). PASS.
+- P06-T009: hyperliquid/mod.rs + fixtures/market/hyperliquid_raw.json; parse_trade_buy (side=Buy, canonical=crypto:btc-usdt), parse_all_mids (2 PriceTick), run_replay_fixture (≥1 event). PASS.
+- P06-T010: okx/mod.rs + fixtures/market/okx_raw.json; parse_trade_buy/parse_funding_rate/parse_mark_price tests pass; run_replay_fixture (≥3 events). PASS.
+- P06-T011: docs/exchange_capabilities.md: 4 venues × 8 event types table; live/fixture/not-implemented status; remaining-work section. PASS.
+- P06-T012: config/symbol_map.toml maps BTCUSDT/ETHUSDT/SOLUSDT (Binance+Bybit), BTC/ETH/SOL (Hyperliquid), BTC-USDT-SWAP/ETH-USDT-SWAP/SOL-USDT-SWAP (OKX); btcusdt_maps_same_canonical_across_venues test asserts all 4 venues → crypto:btc-usdt. PASS.
+- P06-T013: hash.rs sha256_hex; RawMarketEvent.raw_payload_hash field set by make_raw() for all events; prefix/determinism/known-empty-hash tests pass. PASS.
+- P06-T014: persist/clickhouse.rs; 256-row auto-flush + HTTP INSERT FORMAT JSONEachRow; 3 tests (push_no_url, flush_empty, push_serializes_row); wired at main.rs:144. PASS.
+- P06-T015: persist/redis_store.rs; key=mktstate:{venue}:{canonical_asset_id}:{event_type}; TTL=300s; hot keys for PriceTick/MarkPrice/FundingRate only; 3 tests; wired at main.rs:149. PASS.
+- P06-T016: metrics.rs; 4 OnceLock metrics (messages_total, errors_total, reconnects_total, last_message_epoch_ms); /metrics endpoint via health.rs:20-22; 2 tests pass. PASS.
