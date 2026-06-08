@@ -88,7 +88,18 @@ export const SYSTEM_HEALTH = define(
   "Periodic per-service health heartbeats.",
 );
 
-/** Every stream in publish/topology order. */
+/**
+ * Dead-letter stream (P05-T006). Failed event handling is routed here as a
+ * `DeadLetter` (original event + error metadata) so a poison message never
+ * blocks its source stream. DLQ subjects are `dlq.<original-subject>`.
+ */
+export const DEAD_LETTER = define(
+  "DLQ",
+  "dlq",
+  "Dead-lettered events with error metadata, for inspection and replay.",
+);
+
+/** Every stream in publish/topology order (DLQ last — it is operational). */
 export const STREAMS: readonly StreamDefinition[] = [
   RAW_MARKET,
   NORMALIZED_MARKET,
@@ -98,7 +109,17 @@ export const STREAMS: readonly StreamDefinition[] = [
   BRIEFING_GENERATED,
   DECISION_LOGGED,
   SYSTEM_HEALTH,
+  DEAD_LETTER,
 ];
+
+/**
+ * Dead-letter subject for a failed event: `dlq.<original-subject>`. Keeps the
+ * original routing visible so DLQ consumers can filter by it
+ * (e.g. `dlq.raw.market.>`).
+ */
+export function deadLetterSubject(originalSubject: string): string {
+  return `${DEAD_LETTER.base}.${originalSubject}`;
+}
 
 /** Look up a stream definition by its dotted base, e.g. `raw.market`. */
 export function streamForBase(base: string): StreamDefinition | undefined {

@@ -485,7 +485,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: NATS setup is reproducible after reset.
 
-### [ ] P05-T006 - Create dead-letter stream pattern
+### [x] P05-T006 - Create dead-letter stream pattern
 
 - Agent action: Define DLQ subjects for failed event handling and include original event + error metadata.
 

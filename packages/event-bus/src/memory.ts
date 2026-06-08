@@ -48,12 +48,12 @@ export class InMemoryBus implements EventBus {
   ): Promise<Subscription> {
     const sub: MemSub = {
       pattern: subject,
-      deliver: async (_subject, bytes) => {
+      deliver: async (deliveredSubject, bytes) => {
         try {
           const { payload, envelope } = decodeEvent(bytes, schema);
           await handler(payload, envelope);
         } catch (error) {
-          if (options?.onError) options.onError(error, bytes);
+          if (options?.onError) options.onError(error, bytes, deliveredSubject);
           else throw error;
         }
       },

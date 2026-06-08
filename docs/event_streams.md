@@ -85,5 +85,21 @@ the whole stream is `<base>.>`.
 
 ## Dead-letter
 
-Failed event handling routes to a dedicated dead-letter stream — defined in
-P05-T006 and documented in this file once it lands.
+Failed event handling routes to a dedicated `DLQ` stream (P05-T006) instead of
+blocking the source stream. When a consumer cannot handle an event — decode
+failure, contract-validation failure, or a throwing handler — the event is
+re-published as a `DeadLetter` to `dlq.<original-subject>`:
+
+| Stream | Subject base | Subjects       | Payload      |
+| ------ | ------------ | -------------- | ------------ |
+| `DLQ`  | `dlq`        | `dlq`, `dlq.>` | `DeadLetter` |
+
+The original subject is preserved in the DLQ subject, so a monitor can filter by
+origin (e.g. `dlq.raw.market.>`). A `DeadLetter` carries the original event
+verbatim (UTF-8, so even non-JSON poison survives) plus `consumer`,
+`error_type`, `error_message`, `failed_at`, and `attempts`.
+
+In TypeScript, `makeDeadLetterHandler(bus, { consumer })` returns a subscription
+`onError` hook that does this routing; the publish is fire-and-forget so a DLQ
+failure cannot wedge the consumer. The `dlq-monitor` durable consumer is created
+by `nats-init`.

@@ -76,8 +76,14 @@ stream!(
     "system.health",
     "Periodic per-service health heartbeats."
 );
+stream!(
+    DEAD_LETTER,
+    "DLQ",
+    "dlq",
+    "Dead-lettered events with error metadata, for inspection and replay."
+);
 
-/// Every stream in publish/topology order.
+/// Every stream in publish/topology order (DLQ last — it is operational).
 pub const STREAMS: &[StreamDefinition] = &[
     RAW_MARKET,
     NORMALIZED_MARKET,
@@ -87,7 +93,14 @@ pub const STREAMS: &[StreamDefinition] = &[
     BRIEFING_GENERATED,
     DECISION_LOGGED,
     SYSTEM_HEALTH,
+    DEAD_LETTER,
 ];
+
+/// Dead-letter subject for a failed event: `dlq.<original-subject>`.
+#[must_use]
+pub fn dead_letter_subject(original_subject: &str) -> String {
+    format!("{}.{}", DEAD_LETTER.base, original_subject)
+}
 
 /// Look up a stream definition by its dotted base, e.g. `raw.market`.
 #[must_use]
@@ -138,6 +151,14 @@ mod tests {
         assert_eq!(
             subject(&RAW_MARKET, &["Binance", "BTC-USDT"]),
             "raw.market.binance.btc_usdt"
+        );
+    }
+
+    #[test]
+    fn dead_letter_subject_prefixes_dlq() {
+        assert_eq!(
+            dead_letter_subject("raw.market.binance"),
+            "dlq.raw.market.binance"
         );
     }
 }

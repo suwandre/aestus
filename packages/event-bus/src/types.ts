@@ -30,8 +30,12 @@ export type RequestHandler<TReq, TRes> = (
 
 /** Per-subscription error hook for decode/validation/handler failures. */
 export interface SubscribeOptions {
-  /** Called when an incoming message fails to decode/validate or the handler throws. */
-  onError?: (error: unknown, raw: Uint8Array) => void;
+  /**
+   * Called when an incoming message fails to decode/validate or the handler
+   * throws. Receives the error, the raw bytes, and the subject it arrived on —
+   * enough to dead-letter it (see `makeDeadLetterHandler`).
+   */
+  onError?: (error: unknown, raw: Uint8Array, subject: string) => void;
 }
 
 /**

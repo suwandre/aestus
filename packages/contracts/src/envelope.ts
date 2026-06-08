@@ -42,6 +42,7 @@ export const PAYLOAD_TYPES = {
   Briefing: "Briefing",
   Decision: "Decision",
   SystemHealth: "SystemHealth",
+  DeadLetter: "DeadLetter",
 } as const;
 export type PayloadType = (typeof PAYLOAD_TYPES)[keyof typeof PAYLOAD_TYPES];
 

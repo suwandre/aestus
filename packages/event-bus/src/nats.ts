@@ -79,7 +79,7 @@ export class NatsBus implements EventBus {
           const { payload, envelope } = decodeEvent(msg.data, schema);
           await handler(payload, envelope);
         } catch (error) {
-          if (options?.onError) options.onError(error, msg.data);
+          if (options?.onError) options.onError(error, msg.data, msg.subject);
           else throw error;
         }
       }

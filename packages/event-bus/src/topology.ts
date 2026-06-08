@@ -98,6 +98,11 @@ export const CONSUMERS: ConsumerSpec[] = [
     durableName: "health-monitor",
     description: "Aggregates service health.",
   },
+  {
+    stream: "DLQ",
+    durableName: "dlq-monitor",
+    description: "Inspects and replays dead-lettered events.",
+  },
 ];
 
 /**
