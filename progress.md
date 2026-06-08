@@ -552,3 +552,28 @@ Verified all 18 P04 tasks against a live, freshly-reset Docker stack (Postgres 1
 - T018: self-contained smoke test (throwaway empty DBs, real runner, asserts key tables + migration counts) + dedicated `migration-smoke` CI job with DB services; self-skips when DBs are unreachable.
 
 No [!] tasks in P04. No failures. Open follow-up (not a task ID): wire the ClickHouse TTL ALTERs + Postgres nightly prune job from data_retention.md in a later ops phase.
+
+### P04 REVIEW — PASS
+
+Independent review. Verified each task against the repo with zero trust in prior progress.md claims.
+
+- T001: `apps/api/scripts/migrate.ts` exists and implements both Postgres (transactional via Bun SQL) and ClickHouse (HTTP statement-split) runners. `schema_migrations` tracked per engine. `docs/migrations.md` documents tool choice and all commands. Root `package.json` proxies `db:migrate`/`db:seed` to `apps/api`. Apps/api `package.json` exposes `db:migrate`, `db:migrate:postgres`, `db:migrate:clickhouse`, `db:migrate:status`, `db:seed`.
+- T002: `infra/migrations/postgres/0001_assets.sql` — creates `assets`, `venues`, `venue_instruments`, `watchlists`, `watchlist_members` with correct FKs, enums mirroring contracts, and indexes.
+- T003: `0002_news.sql` — `news_items` has `url_hash TEXT NOT NULL` with `UNIQUE INDEX` (dedup path). `news_entities` has `canonical_asset_id` FK and `entity` index (query by asset/entity path).
+- T004: `0003_macro.sql` — `macro_events` has nullable `actual` plus `actual_at`, `revised_at`, `revision` columns; calendar-update path clear.
+- T005: `0004_onchain.sql` — `on_chain_events` has `id TEXT PRIMARY KEY`; context packets (T007) embed snapshots as JSONB in `context_packet_items`.
+- T006: `0005_anomalies.sql` — `anomalies` has `status anomaly_status NOT NULL DEFAULT 'active'`; `anomaly_context_refs(anomaly_id, ref_type, ref)` normalized with typed enum.
+- T007: `0006_context_packets.sql` — `context_packets` snapshots `trigger`/`market_snapshot`/`deterministic_levels` as JSONB; `context_packet_items` snapshots ordered list items; `trigger_anomaly_id` SET NULL so reproduction survives anomaly row removal.
+- T008: `0007_briefings.sql` — `briefings` table with all fields from contract (stance/thesis/levels/cost metadata/model/context_packet_id). Standalone, not tied to UI state.
+- T009: `0008_decisions_journal.sql` — `decisions`, `journal_entries`, `journal_outcomes`, `trade_tags` with appropriate indexes on status/asset/signal/tag.
+- T010: `0009_config.sql` — `alert_rules`, `feed_settings`, `model_routing`, `notification_channels`, `layout_preferences` all in Postgres (durable volume).
+- T011: `infra/migrations/clickhouse/0001_raw_market_events.sql` — correct envelope fields, `raw_payload_hash`, MergeTree ORDER BY (venue, source, received_at, sequence).
+- T012: `0002_normalized_market_events.sql` — single wide table, all 8 event-type variants, ORDER BY (canonical_asset_id, event_type, timestamp) enables per-asset/time prefix scans.
+- T013: `0003_ohlcv_aggregates.sql` — `ohlcv_1m/5m/15m/1h` AggregatingMergeTree tables each fed by a dedicated materialized view over `normalized_market_events`; charts read these, never ticks.
+- T014: `0004_feature_snapshots.sql` — `schema_version`, horizon-keyed Maps (returns/volatility/z_scores), Nested for correlation_set and basis, regime labels, ORDER BY (canonical_asset_id, timestamp).
+- T015: `0005_anomaly_metrics.sql` — severity, sigma, named feature columns (funding_z/oi_delta/volume_z), generic `feature_values Map(String,Float64)`, regime labels at trigger time.
+- T016: `docs/data_retention.md` — tiered policy covering every required dataset (raw ticks 30d/14d, aggregates 180d–indefinite, news 180d, macro indefinite, on-chain 365d, feature_snapshots 180d, anomaly_metrics 2y, briefings/decisions/journal forever). ClickHouse TTL commands provided; VPS cost constraint addressed.
+- T017: `apps/api/scripts/seed.ts` — loads `fixtures/assets/identities.json`, `fixtures/venues/venues.json`, `fixtures/venues/instruments.json` (all non-empty, verified). Seeds default watchlist (6 assets), 3 alert rules, 2 model routes, 5 feed settings. Idempotent (`ON CONFLICT DO NOTHING`).
+- T018: `apps/api/test/migrate.smoke.test.ts` — provisions throwaway `aestus_migrate_smoke` DBs, spawns real `migrate.ts` runner, asserts 24 Postgres key tables + 9 ClickHouse key tables, verifies `schema_migrations` counts equal file counts, self-skips when DBs unreachable. `.github/workflows/ci.yml` has dedicated `migration-smoke` job with `pgvector/pgvector:pg16` and `clickhouse/clickhouse-server:24.8-alpine` services.
+
+No [!] tasks. No failures.
