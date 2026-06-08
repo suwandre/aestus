@@ -50,11 +50,7 @@ mod tests {
 
     #[test]
     fn delays_are_exponential() {
-        let mut b = BackoffState::new(
-            Duration::from_millis(100),
-            Duration::from_secs(60),
-            2.0,
-        );
+        let mut b = BackoffState::new(Duration::from_millis(100), Duration::from_secs(60), 2.0);
         assert_eq!(b.next_delay(), Duration::from_millis(100));
         assert_eq!(b.next_delay(), Duration::from_millis(200));
         assert_eq!(b.next_delay(), Duration::from_millis(400));
@@ -63,11 +59,7 @@ mod tests {
 
     #[test]
     fn delay_is_capped_at_max() {
-        let mut b = BackoffState::new(
-            Duration::from_secs(30),
-            Duration::from_secs(60),
-            2.0,
-        );
+        let mut b = BackoffState::new(Duration::from_secs(30), Duration::from_secs(60), 2.0);
         assert_eq!(b.next_delay(), Duration::from_secs(30));
         assert_eq!(b.next_delay(), Duration::from_secs(60)); // 60 is max
         assert_eq!(b.next_delay(), Duration::from_secs(60)); // stays at max

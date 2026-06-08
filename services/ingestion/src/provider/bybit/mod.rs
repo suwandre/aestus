@@ -25,7 +25,11 @@ impl BybitAdapter {
     pub fn new(symbol_map: SymbolMap) -> Self {
         Self {
             symbol_map,
-            fixture_path: concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/market/bybit_raw.json").into(),
+            fixture_path: concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/../../fixtures/market/bybit_raw.json"
+            )
+            .into(),
         }
     }
 
@@ -189,8 +193,8 @@ impl Provider for BybitAdapter {
     }
 
     fn parse_raw(&self, raw_bytes: &[u8], seq: u64) -> Result<RawMarketEvent, ProviderError> {
-        use time::OffsetDateTime;
         use time::format_description::well_known::Rfc3339;
+        use time::OffsetDateTime;
         let now = OffsetDateTime::now_utc()
             .format(&Rfc3339)
             .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string());
@@ -239,12 +243,12 @@ impl Provider for BybitAdapter {
         }
         let content = std::fs::read_to_string(&self.fixture_path)
             .map_err(|e| ProviderError::Io(e.to_string()))?;
-        let messages: Vec<Value> = serde_json::from_str(&content)
-            .map_err(|e| ProviderError::Parse(e.to_string()))?;
+        let messages: Vec<Value> =
+            serde_json::from_str(&content).map_err(|e| ProviderError::Parse(e.to_string()))?;
 
         let received_at = {
-            use time::OffsetDateTime;
             use time::format_description::well_known::Rfc3339;
+            use time::OffsetDateTime;
             OffsetDateTime::now_utc()
                 .format(&Rfc3339)
                 .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string())
@@ -299,10 +303,17 @@ mod tests {
             "ts": 1717862400000i64,
             "data": [{"i": "abc", "T": 1717862400000i64, "p": "68250.50", "v": "0.001", "S": "Buy"}]
         });
-        let evs = a.parse_public_trade(&msg, 0, "2026-06-08T12:00:00Z").unwrap();
+        let evs = a
+            .parse_public_trade(&msg, 0, "2026-06-08T12:00:00Z")
+            .unwrap();
         assert_eq!(evs.len(), 1);
         match &evs[0] {
-            NormalizedMarketEvent::Trade { price, side, canonical_asset_id, .. } => {
+            NormalizedMarketEvent::Trade {
+                price,
+                side,
+                canonical_asset_id,
+                ..
+            } => {
                 assert!((price - 68250.50).abs() < 1e-6);
                 assert_eq!(*side, Side::Buy);
                 assert_eq!(canonical_asset_id, "crypto:btc-usdt");
@@ -339,7 +350,10 @@ mod tests {
         let mut adapter = make_adapter();
         let (tx, mut rx) = mpsc::channel(20);
         let (_, shutdown) = watch::channel(false);
-        adapter.run(vec!["BTCUSDT".into()], tx, shutdown).await.unwrap();
+        adapter
+            .run(vec!["BTCUSDT".into()], tx, shutdown)
+            .await
+            .unwrap();
         let mut count = 0;
         while rx.try_recv().is_ok() {
             count += 1;

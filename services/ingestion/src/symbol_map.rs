@@ -66,7 +66,10 @@ impl SymbolMap {
     }
 
     fn load_fixture_fallback() -> Self {
-        let fallback = concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/venues/instruments.json");
+        let fallback = concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../fixtures/venues/instruments.json"
+        );
         let content = std::fs::read_to_string(fallback).unwrap_or_default();
         let entries: Vec<JsonEntry> = serde_json::from_str(&content).unwrap_or_default();
         let map = entries
@@ -98,10 +101,7 @@ mod tests {
             ("binance".into(), "BTCUSDT".into()),
             "crypto:btc-usdt".into(),
         );
-        map.insert(
-            ("bybit".into(), "BTCUSDT".into()),
-            "crypto:btc-usdt".into(),
-        );
+        map.insert(("bybit".into(), "BTCUSDT".into()), "crypto:btc-usdt".into());
         map.insert(
             ("hyperliquid".into(), "BTC".into()),
             "crypto:btc-usdt".into(),

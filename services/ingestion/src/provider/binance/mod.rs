@@ -22,7 +22,6 @@ use std::time::{Duration, Instant};
 use tokio::sync::{mpsc, watch};
 use tokio_tungstenite::tungstenite;
 
-
 const VENUE: &str = "binance";
 const SOURCE_PREFIX: &str = "binance:ws:perp";
 const OI_BASE_URL: &str = "https://fapi.binance.com/fapi/v1/openInterest";
@@ -101,8 +100,8 @@ impl BinanceAdapter {
 
         let (mut sink, mut stream) = ws.split();
         let received_at_fn = || {
-            use time::OffsetDateTime;
             use time::format_description::well_known::Rfc3339;
+            use time::OffsetDateTime;
             OffsetDateTime::now_utc()
                 .format(&Rfc3339)
                 .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string())
@@ -167,8 +166,8 @@ impl BinanceAdapter {
         received_at: &str,
         tx: &mpsc::Sender<AdapterEvent>,
     ) -> Result<(), ProviderError> {
-        let combined: parser::CombinedMessage = serde_json::from_slice(bytes)
-            .map_err(|e| ProviderError::Parse(e.to_string()))?;
+        let combined: parser::CombinedMessage =
+            serde_json::from_slice(bytes).map_err(|e| ProviderError::Parse(e.to_string()))?;
 
         let stream = &combined.stream;
         let data = &combined.data;
@@ -181,14 +180,7 @@ impl BinanceAdapter {
         let result = if stream.ends_with("@aggTrade") {
             parser::parse_agg_trade(data, VENUE, &instrument_id, &canonical, seq)?
         } else if stream.ends_with("@bookTicker") {
-            parser::parse_book_ticker(
-                data,
-                VENUE,
-                &instrument_id,
-                &canonical,
-                seq,
-                received_at,
-            )?
+            parser::parse_book_ticker(data, VENUE, &instrument_id, &canonical, seq, received_at)?
         } else if stream.contains("@markPrice") {
             parser::parse_mark_price(data, VENUE, &instrument_id, &canonical, seq)?
         } else if stream == "!forceOrder@arr" {
@@ -321,8 +313,8 @@ impl Provider for BinanceAdapter {
         use crate::hash::sha256_hex;
         use event_model::envelope::SCHEMA_VERSION;
         use event_model::market::RawMarketEvent;
-        use time::OffsetDateTime;
         use time::format_description::well_known::Rfc3339;
+        use time::OffsetDateTime;
         let received_at = OffsetDateTime::now_utc()
             .format(&Rfc3339)
             .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string());
@@ -389,7 +381,9 @@ impl Provider for BinanceAdapter {
                 backoff: BackoffState::default(),
                 http_client: http,
             };
-            poller.run_oi_poller(oi_syms, oi_tx, oi_shutdown.clone()).await;
+            poller
+                .run_oi_poller(oi_syms, oi_tx, oi_shutdown.clone())
+                .await;
             // silence clippy: reference shutdown_clone to suppress unused-variable warning
             let _ = &mut oi_shutdown;
         });
@@ -428,11 +422,15 @@ impl Provider for BinanceAdapter {
 
 #[cfg(test)]
 mod tests {
-    use crate::symbol_map::SymbolMap;
     use super::*;
+    use crate::symbol_map::SymbolMap;
 
     fn make_adapter() -> BinanceAdapter {
-        BinanceAdapter::new(SymbolMap::default(), Duration::from_secs(60), Duration::from_secs(60))
+        BinanceAdapter::new(
+            SymbolMap::default(),
+            Duration::from_secs(60),
+            Duration::from_secs(60),
+        )
     }
 
     #[test]
@@ -449,7 +447,8 @@ mod tests {
     #[tokio::test]
     async fn process_ws_message_agg_trade() {
         let sym_map = SymbolMap::load("nonexistent.toml"); // loads fixture fallback
-        let adapter = BinanceAdapter::new(sym_map, Duration::from_secs(60), Duration::from_secs(60));
+        let adapter =
+            BinanceAdapter::new(sym_map, Duration::from_secs(60), Duration::from_secs(60));
         let (tx, mut rx) = mpsc::channel(10);
 
         let msg = serde_json::to_vec(&serde_json::json!({

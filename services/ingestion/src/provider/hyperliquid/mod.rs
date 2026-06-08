@@ -23,7 +23,11 @@ impl HyperliquidAdapter {
     pub fn new(symbol_map: SymbolMap) -> Self {
         Self {
             symbol_map,
-            fixture_path: concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/market/hyperliquid_raw.json").into(),
+            fixture_path: concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/../../fixtures/market/hyperliquid_raw.json"
+            )
+            .into(),
         }
     }
 
@@ -133,8 +137,8 @@ impl Provider for HyperliquidAdapter {
         Ok(())
     }
     fn parse_raw(&self, raw_bytes: &[u8], seq: u64) -> Result<RawMarketEvent, ProviderError> {
-        use time::OffsetDateTime;
         use time::format_description::well_known::Rfc3339;
+        use time::OffsetDateTime;
         let now = OffsetDateTime::now_utc()
             .format(&Rfc3339)
             .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string());
@@ -179,12 +183,12 @@ impl Provider for HyperliquidAdapter {
         }
         let content = std::fs::read_to_string(&self.fixture_path)
             .map_err(|e| ProviderError::Io(e.to_string()))?;
-        let messages: Vec<Value> = serde_json::from_str(&content)
-            .map_err(|e| ProviderError::Parse(e.to_string()))?;
+        let messages: Vec<Value> =
+            serde_json::from_str(&content).map_err(|e| ProviderError::Parse(e.to_string()))?;
 
         let received_at = {
-            use time::OffsetDateTime;
             use time::format_description::well_known::Rfc3339;
+            use time::OffsetDateTime;
             OffsetDateTime::now_utc()
                 .format(&Rfc3339)
                 .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string())
@@ -238,7 +242,12 @@ mod tests {
         let evs = a.parse_trades(&msg, 0, "2026-06-08T12:00:00Z").unwrap();
         assert_eq!(evs.len(), 1);
         match &evs[0] {
-            NormalizedMarketEvent::Trade { side, canonical_asset_id, venue, .. } => {
+            NormalizedMarketEvent::Trade {
+                side,
+                canonical_asset_id,
+                venue,
+                ..
+            } => {
                 assert_eq!(*side, Side::Buy);
                 assert_eq!(canonical_asset_id, "crypto:btc-usdt");
                 assert_eq!(venue, VENUE);

@@ -701,8 +701,8 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 ### P06-T006 — Implement Binance liquidation stream
 
 - Files: packages/contracts/src/normalized-event.ts (notional field added to Liquidation), packages/contracts/schema/NormalizedMarketEvent.schema.json (notional property added to liquidation variant)
-- Checks: parse_force_order test passes; Liquidation event includes side/price/size/notional (price*size); event_type_str = "liquidation"
-- Assumptions: notional = price * size computed client-side (Binance forceOrder omits it). notional: Option<f64> is backward-compatible (optional). Both TS Zod schema and JSON Schema updated together per rule 8. Rust market.rs already had notional added at T002.
+- Checks: parse_force_order test passes; Liquidation event includes side/price/size/notional (price\*size); event_type_str = "liquidation"
+- Assumptions: notional = price \* size computed client-side (Binance forceOrder omits it). notional: Option<f64> is backward-compatible (optional). Both TS Zod schema and JSON Schema updated together per rule 8. Rust market.rs already had notional added at T002.
 - Follow-ups: none
 
 ### P06-T007 — Add Binance reconnect/backoff logic
@@ -818,7 +818,7 @@ Reviewer: independent phase review (fresh eyes, zero trust). Verified all 16 tas
 - P06-T003: BinanceAdapter builds WS URL with aggTrade+bookTicker+markPrice streams for all symbols; parse_agg_trade/parse_book_ticker wired; events published via NATS in main.rs event loop. PASS.
 - P06-T004: parse_mark_price emits MarkPrice+IndexPrice+FundingRate with timestamp from E (event_time_ms) and venue="binance"; 3-event test confirms. PASS.
 - P06-T005: parse_oi_response emits OpenInterest with venue, canonical_asset_id, open_interest, timestamp; source in paired RawMarketEvent (binance:rest:oi@{symbol}); OI poller wired in BinanceAdapter::run(). PASS.
-- P06-T006: Liquidation has side/price/size/notional=Some(price*size)/canonical_asset_id/venue; parse_force_order_liquidation test asserts all. PASS.
+- P06-T006: Liquidation has side/price/size/notional=Some(price\*size)/canonical_asset_id/venue; parse_force_order_liquidation test asserts all. PASS.
 - P06-T007: reconnect.rs BackoffState (initial=1s, max=60s, mult=2.0); 3 tests (exponential, capped, reset); used in BinanceAdapter::run() retry loop; Ping→Pong at ws_loop:148-153; stale via tokio::time::timeout. PASS.
 - P06-T008: bybit/mod.rs + fixtures/market/bybit_raw.json; parse_public_trade_buy (canonical=crypto:btc-usdt), parse_ticker_emits_price_mark_funding, run_replay_fixture (≥2 events). PASS.
 - P06-T009: hyperliquid/mod.rs + fixtures/market/hyperliquid_raw.json; parse_trade_buy (side=Buy, canonical=crypto:btc-usdt), parse_all_mids (2 PriceTick), run_replay_fixture (≥1 event). PASS.

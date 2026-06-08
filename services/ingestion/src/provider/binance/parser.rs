@@ -9,8 +9,8 @@ use event_model::envelope::SCHEMA_VERSION;
 use event_model::market::{NormalizedMarketEvent, RawMarketEvent, Side};
 use serde::Deserialize;
 use serde_json::Value;
-use time::OffsetDateTime;
 use time::format_description::well_known::Rfc3339;
+use time::OffsetDateTime;
 
 use super::ProviderError;
 
@@ -78,7 +78,11 @@ pub fn parse_agg_trade(
     let size = parse_f64(&data["q"], "aggTrade.q")?;
     let trade_time_ms = data["T"].as_i64().unwrap_or(0);
     let is_buyer_maker = data["m"].as_bool().unwrap_or(false);
-    let side = if is_buyer_maker { Side::Sell } else { Side::Buy };
+    let side = if is_buyer_maker {
+        Side::Sell
+    } else {
+        Side::Buy
+    };
     let trade_id = data["a"].as_i64().map(|id| id.to_string());
 
     let timestamp = ms_to_rfc3339(trade_time_ms);
@@ -173,9 +177,7 @@ pub fn parse_mark_price(
 
     // Funding rate (field "r" in Binance perp mark price stream)
     if let Ok(rate) = parse_f64(&data["r"], "markPrice.r") {
-        let next_time = data["T"]
-            .as_i64()
-            .map(ms_to_rfc3339);
+        let next_time = data["T"].as_i64().map(ms_to_rfc3339);
         events.push(NormalizedMarketEvent::FundingRate {
             schema_version: SCHEMA_VERSION,
             venue: venue.into(),
@@ -238,11 +240,12 @@ pub fn parse_force_order(
     let symbol = order["s"]
         .as_str()
         .ok_or_else(|| ProviderError::Parse("forceOrder: missing s".into()))?;
-    let side_str = order["S"]
-        .as_str()
-        .unwrap_or("BUY")
-        .to_uppercase();
-    let side = if side_str == "SELL" { Side::Sell } else { Side::Buy };
+    let side_str = order["S"].as_str().unwrap_or("BUY").to_uppercase();
+    let side = if side_str == "SELL" {
+        Side::Sell
+    } else {
+        Side::Buy
+    };
 
     let price = parse_f64(&order["ap"], "forceOrder.ap")
         .or_else(|_| parse_f64(&order["p"], "forceOrder.p"))?;
@@ -317,7 +320,13 @@ mod tests {
         let r = parse_agg_trade(&data, "binance", "BTCUSDT", "crypto:btc-usdt", 1).unwrap();
         assert_eq!(r.raw_event_type, "aggTrade");
         match &r.normalized[0] {
-            NormalizedMarketEvent::Trade { price, size, side, trade_id, .. } => {
+            NormalizedMarketEvent::Trade {
+                price,
+                size,
+                side,
+                trade_id,
+                ..
+            } => {
                 assert!((price - 50000.50).abs() < 1e-9);
                 assert!((size - 0.001).abs() < 1e-9);
                 assert_eq!(*side, Side::Buy);
@@ -349,9 +358,19 @@ mod tests {
             "b": "50000.00", "B": "1.0",
             "a": "50002.00", "A": "0.5"
         });
-        let r = parse_book_ticker(&data, "binance", "BTCUSDT", "crypto:btc-usdt", 3, "2026-06-08T12:00:00Z").unwrap();
+        let r = parse_book_ticker(
+            &data,
+            "binance",
+            "BTCUSDT",
+            "crypto:btc-usdt",
+            3,
+            "2026-06-08T12:00:00Z",
+        )
+        .unwrap();
         match &r.normalized[0] {
-            NormalizedMarketEvent::PriceTick { price, bid, ask, .. } => {
+            NormalizedMarketEvent::PriceTick {
+                price, bid, ask, ..
+            } => {
                 assert!((price - 50001.0).abs() < 1e-9);
                 assert_eq!(*bid, Some(50000.0));
                 assert_eq!(*ask, Some(50002.0));
@@ -427,7 +446,13 @@ mod tests {
         let r = parse_force_order(&data, "binance", |_| "crypto:btc-usdt".into(), 6).unwrap();
         assert_eq!(r.raw_event_type, "forceOrder");
         match &r.normalized[0] {
-            NormalizedMarketEvent::Liquidation { side, price, size, notional, .. } => {
+            NormalizedMarketEvent::Liquidation {
+                side,
+                price,
+                size,
+                notional,
+                ..
+            } => {
                 assert_eq!(*side, Side::Sell);
                 assert!((price - 9910.0).abs() < 1e-6);
                 assert!((size - 0.014).abs() < 1e-6);

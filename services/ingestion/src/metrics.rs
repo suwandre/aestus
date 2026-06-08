@@ -3,9 +3,7 @@
 //! Exposes per-provider/feed counters and last-message gauges. The `/metrics`
 //! endpoint is wired in `health.rs`; call `init()` once at startup.
 
-use prometheus::{
-    register_counter_vec, register_gauge_vec, CounterVec, GaugeVec, TextEncoder,
-};
+use prometheus::{register_counter_vec, register_gauge_vec, CounterVec, GaugeVec, TextEncoder};
 use std::sync::OnceLock;
 
 static MESSAGES: OnceLock<CounterVec> = OnceLock::new();

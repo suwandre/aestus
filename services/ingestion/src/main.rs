@@ -19,8 +19,8 @@ use event_model::streams::{subject, NORMALIZED_MARKET, RAW_MARKET};
 use nats_publisher::{Heartbeat, NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
 use persist::{clickhouse::ClickHouseSink, redis_store::RedisStore};
 use provider::{
-    binance::BinanceAdapter, bybit::BybitAdapter, hyperliquid::HyperliquidAdapter,
-    okx::OkxAdapter, AdapterEvent, Provider,
+    binance::BinanceAdapter, bybit::BybitAdapter, hyperliquid::HyperliquidAdapter, okx::OkxAdapter,
+    AdapterEvent, Provider,
 };
 use symbol_map::SymbolMap;
 use tokio::sync::{mpsc, watch};
@@ -84,7 +84,11 @@ async fn main() -> anyhow::Result<()> {
     // Spawn each provider adapter.
     let symbols = cfg.symbols.clone();
     let providers: Vec<Box<dyn Provider>> = vec![
-        Box::new(BinanceAdapter::new(sym_map.clone(), cfg.oi_interval, cfg.stale_timeout)),
+        Box::new(BinanceAdapter::new(
+            sym_map.clone(),
+            cfg.oi_interval,
+            cfg.stale_timeout,
+        )),
         Box::new(BybitAdapter::new(sym_map.clone())),
         Box::new(HyperliquidAdapter::new(sym_map.clone())),
         Box::new(OkxAdapter::new(sym_map.clone())),
@@ -110,7 +114,10 @@ async fn main() -> anyhow::Result<()> {
     // Event routing loop.
     while let Some(ev) = rx.recv().await {
         // Publish raw event.
-        let raw_subject = subject(&RAW_MARKET, &[ev.raw.venue.as_str(), ev.raw.event_type.as_str()]);
+        let raw_subject = subject(
+            &RAW_MARKET,
+            &[ev.raw.venue.as_str(), ev.raw.event_type.as_str()],
+        );
         if let Ok(raw_bytes) = serde_json::to_vec(&ev.raw) {
             if let Err(e) = publisher.publish_bytes(&raw_subject, raw_bytes).await {
                 tracing::warn!(subject = %raw_subject, error = %e, "raw publish failed");
@@ -173,7 +180,9 @@ mod tests {
         // Sanity-check that the RecordingPublisher can publish without panicking.
         use nats_publisher::Publisher;
         let p = RecordingPublisher::new();
-        p.publish_bytes("test.subject", b"hello".to_vec()).await.unwrap();
+        p.publish_bytes("test.subject", b"hello".to_vec())
+            .await
+            .unwrap();
         assert_eq!(p.len().await, 1);
     }
 }

@@ -98,7 +98,10 @@ mod tests {
     fn key_format_price_tick() {
         let store = RedisStore::connect(None, 60);
         let k = store.key(&price_tick());
-        assert_eq!(k.as_deref(), Some("mktstate:binance:crypto:btc-usdt:price_tick"));
+        assert_eq!(
+            k.as_deref(),
+            Some("mktstate:binance:crypto:btc-usdt:price_tick")
+        );
     }
 
     #[test]
