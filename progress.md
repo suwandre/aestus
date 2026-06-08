@@ -647,3 +647,18 @@ No [!] tasks. No failures.
 - Checks: `bun run format:check` clean. Doc cross-checked against actual contract fields (RawMarketEvent.provider_timestamp/received_at/sequence, NormalizedMarketEvent.timestamp/sequence, EventEnvelope.emitted_at/event_id/trace_id).
 - Assumptions: Documents the three clocks (provider_timestamp optional/provider clock, received_at ingestion clock, emitted_at producer clock) and the derived event `timestamp = provider_timestamp ?? received_at`; `sequence` is monotonic-per-source only (not global/cross-venue/cross-connection). Spells out what MAY be assumed (per-source+subject order, JetStream per-stream storage order, event_id dedup, trace_id correlation) vs MUST NOT (no global total order, no cross-provider clock alignment, no cross-subject ordering, received_at ≠ source order, at-least-once/out-of-order). Practical consumer rules: dedup by event_id, order within a key not globally, window-join not equality, tolerate gaps/late arrivals, per-asset monotonic-aware derivations.
 - Follow-ups: none
+
+### P05 REVIEW — PASS
+
+Independent review against repo state on 2026-06-08. All ten [x] tasks verified; no [!] tasks present in P05.
+
+- P05-T001: `packages/contracts/src/streams.ts` + `crates/event_model/src/streams.rs` define all 8 streams (RAW_MARKET → SYSTEM_HEALTH) plus DLQ with base/subjects/description. Rust tests pass.
+- P05-T002: `EventEnvelope` Zod schema (TS) and `Envelope<T>` (Rust) carry all required fields (event_id, schema_version, trace_id, source, emitted_at, payload_type, payload). `makeEnvelope`/`envelopeOf` helpers present. Rust roundtrip + trace_id tests pass.
+- P05-T003: `crates/nats_publisher` — `Publisher` trait, `NatsPublisher` with linear-backoff retries, `RecordingPublisher` for fixtures. `recording_publisher_captures_envelope` test publishes an ingestion envelope and decodes it back. `cargo test -p nats_publisher`: 4/4 pass.
+- P05-T004: `packages/event-bus` — `NatsBus` + `InMemoryBus`, publish/subscribe/request/respond with per-schema Zod validation. `bun test`: 20/20 pass; `tsc --noEmit` clean.
+- P05-T005: `packages/event-bus/scripts/nats-init.ts` idempotent (streams.info → update else add), reads declarative topology, `--dry-run` supported. `nats:init` in package.json; Makefile target present.
+- P05-T006: `packages/event-bus/src/dlq.ts` `makeDeadLetterHandler` routes `DeadLetter` to `dlq.<original-subject>`, fire-and-forget publish to avoid blocking source stream. DLQ tests in `test/dlq.test.ts`: pass.
+- P05-T007: `packages/event-bus/src/replay.ts` with four `REPLAY_SOURCES` (raw/normalized/features/anomalies), deterministic envelope IDs, `replay()` function. CLI at `scripts/replay.ts`. `nats:replay` in package.json. Replay tests pass.
+- P05-T008: `packages/event-bus/scripts/nats-tail.ts` — subject filter args, `--max N`, pretty-print via `inspect.ts`. `nats:tail` in package.json. Inspect tests pass.
+- P05-T009: `SystemHealth` contract (TS Zod + Rust struct) with service/version/status/uptime_seconds/dependencies. TS `startHeartbeat`/`publishHealth`/`buildHealth` in `packages/event-bus/src/heartbeat.ts`. Rust `Heartbeat::new`/`publish_once`/`run` in `crates/nats_publisher/src/heartbeat.rs`. All heartbeat tests pass.
+- P05-T010: `docs/event_ordering.md` covers three timestamps, per-source sequence semantics, guaranteed and forbidden ordering assumptions, and five practical consumer rules. Directly addresses cross-provider clock pitfalls.
