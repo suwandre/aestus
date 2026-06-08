@@ -518,3 +518,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:clickhouse`; `system.tables` lists `anomaly_metrics`. All 8 CH base tables now present (raw/normalized events, 4 OHLCV, feature_snapshots, anomaly_metrics) + schema_migrations.
 - Assumptions: anomaly_metrics is the analytics mirror of the Postgres `anomalies` row (linked by `anomaly_id` String). Retains severity/sigma + the feature state at trigger: named convenience columns (funding_z/oi_delta/volume_z), a generic `feature_values Map(String,Float64)` for arbitrary z_scores/returns, and regime labels. MergeTree `ORDER BY (canonical_asset_id, type, detected_at)` for per-asset/type analytics (Done-when).
 - Follow-ups: none
+
+### P04-T016 — Add retention and downsampling doc
+
+- Files: docs/data_retention.md (new)
+- Checks: prettier clean. Doc covers all required datasets (raw ticks, normalized events, aggregates, news, briefings, journal) + macro/on-chain/context/feature/anomaly; references the actual P04 table names and the ohlcv MVs.
+- Assumptions: Tiered policy — expire raw ticks at 14d (candles preserve history), keep ohlcv_1h indefinitely, keep the decision record (briefings/decisions/journal) forever per rule #4. Concrete numbers chosen by me (spec had no retention guidance): raw envelopes 30d, ticks 14d, 1m 180d, 5m/15m 2y, feature_snapshots 180d, anomaly_metrics 2y, news 180d, on_chain 365d, context_packets 365d. TTLs are documented as `ALTER TABLE ... MODIFY TTL` to apply later rather than baked into the create migrations (so retention tuning doesn't rewrite schema migrations); Postgres prune is a scheduled-job DELETE (future ops phase) — briefings/decisions/journal explicitly excluded.
+- Follow-ups: Wire the ClickHouse TTL ALTERs + the Postgres nightly prune job in a later ops phase (not yet a task ID).

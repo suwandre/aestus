@@ -433,7 +433,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Analytics can inspect feature values behind triggered anomalies.
 
-### [ ] P04-T016 - Add retention and downsampling doc
+### [x] P04-T016 - Add retention and downsampling doc
 
 - Agent action: Write `docs/data_retention.md` covering raw ticks, normalized events, aggregates, news, briefings, and journal retention.
 
