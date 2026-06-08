@@ -10,7 +10,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "nats:init": "bun run scripts/nats-init.ts"
   },
   "dependencies": {
     "@aestus/contracts": "workspace:*",

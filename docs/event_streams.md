@@ -35,6 +35,24 @@ binds the bare base for un-routed publishes.
 
 `SystemHealth` is defined in P05-T009; the others reuse the P03 contracts.
 
+## Initialization & reproducibility
+
+Streams and durable consumers are created from a declarative topology
+(`packages/event-bus/src/topology.ts`) by the idempotent init script. The setup
+is fully reproducible after a JetStream reset:
+
+```sh
+make reset-local   # destroys volumes (NATS streams included)
+make up            # start infra fresh
+make nats-init     # recreate all streams + durable consumers
+```
+
+`make nats-init` (`bun run nats:init`) connects to `$NATS_URL`
+(default `nats://127.0.0.1:4222`) and create-or-updates every stream and
+consumer — safe to re-run. Use `bun run scripts/nats-init.ts --dry-run` to print
+the planned topology without connecting. JetStream is the in-flight transport
+buffer (short retention); ClickHouse/Postgres are the durable store.
+
 ## Subject token conventions
 
 Producers append routing tokens after the base. Tokens are lowercased and

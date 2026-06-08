@@ -479,7 +479,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: API/context services can publish and subscribe to contract-validated events.
 
-### [ ] P05-T005 - Create stream initialization script
+### [x] P05-T005 - Create stream initialization script
 
 - Agent action: Add script to create/update streams and durable consumers for local/dev/prod.
 
