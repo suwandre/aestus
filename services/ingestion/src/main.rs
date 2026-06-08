@@ -12,9 +12,11 @@ mod persist;
 mod provider;
 mod symbol_map;
 
+use std::sync::Arc;
+
 use config::Config;
 use event_model::streams::{subject, NORMALIZED_MARKET, RAW_MARKET};
-use nats_publisher::{NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
+use nats_publisher::{Heartbeat, NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
 use persist::{clickhouse::ClickHouseSink, redis_store::RedisStore};
 use provider::{
     binance::BinanceAdapter, bybit::BybitAdapter, hyperliquid::HyperliquidAdapter,
@@ -39,15 +41,15 @@ async fn main() -> anyhow::Result<()> {
     let sym_map = SymbolMap::load(&cfg.symbol_map_path);
 
     // NATS: use live publisher if URL is set, otherwise record in-memory.
-    let publisher: Box<dyn Publisher> = match &cfg.nats_url {
+    let publisher: Arc<dyn Publisher> = match &cfg.nats_url {
         Some(url) => {
             let p = NatsPublisher::connect(url, RetryConfig::default()).await?;
             tracing::info!(url = %url, "connected to NATS");
-            Box::new(p)
+            Arc::new(p)
         }
         None => {
             tracing::warn!("NATS_URL unset — using in-memory RecordingPublisher (fixture mode)");
-            Box::new(RecordingPublisher::new())
+            Arc::new(RecordingPublisher::new())
         }
     };
 
@@ -57,6 +59,15 @@ async fn main() -> anyhow::Result<()> {
         if let Err(e) = health::serve(http_port).await {
             tracing::error!(error = %e, "health server exited");
         }
+    });
+
+    // Periodic heartbeat on system.health.ingestion.
+    let hb_publisher = Arc::clone(&publisher);
+    let hb_interval = cfg.heartbeat_interval;
+    tokio::spawn(async move {
+        Heartbeat::new("ingestion", env!("CARGO_PKG_VERSION"))
+            .run(hb_publisher.as_ref(), hb_interval, || vec![])
+            .await;
     });
 
     // Graceful shutdown via Ctrl-C / SIGTERM.

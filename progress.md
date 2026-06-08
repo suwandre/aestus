@@ -780,3 +780,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 Reviewer: independent phase review. All 60 workspace tests pass (`cargo test --workspace`). Tasks T002–T016 verified against actual code and satisfy their "Done when" criteria. One failure:
 
 - P06-T001: `cfg.heartbeat_interval` is loaded (config.rs line 12) but `Heartbeat::run()` is never called and `nats_publisher::Heartbeat` is never imported in main.rs. No heartbeat events are published. "Done when" criterion ("publishes heartbeat events") is not met.
+
+### P06-T001 — repair
+
+- Files: services/ingestion/src/main.rs
+- Checks: `cargo check -p ingestion` clean (7 pre-existing warnings, no errors); `cargo test --workspace` 60/60 pass
+- Assumptions: Publisher wrapped in `Arc<dyn Publisher>` to share between event loop and heartbeat task without a second NATS connection. `Heartbeat::new("ingestion", env!("CARGO_PKG_VERSION")).run(hb_publisher.as_ref(), hb_interval, || vec![])` spawned after health server; deps closure returns empty vec (no structured dep health needed for the done-when criterion).
+- Follow-ups: none
