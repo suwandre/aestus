@@ -497,7 +497,7 @@ Goal: Implement the event backbone that connects ingestion, features, anomalies,
 
 - Done when: Feature/anomaly engines can be tested from deterministic event streams.
 
-### [ ] P05-T008 - Add event inspection CLI
+### [x] P05-T008 - Add event inspection CLI
 
 - Agent action: Create a small CLI that tails selected NATS subjects and pretty-prints envelopes.
 

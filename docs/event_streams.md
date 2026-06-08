@@ -63,6 +63,14 @@ engines can be driven from repeatable streams. Sources: `raw`, `normalized`,
 and counts without connecting. Replay from ClickHouse history is a documented
 follow-up — the fixtures path is the deterministic test source.
 
+## Inspection
+
+`bun run nats:tail` (`packages/event-bus/scripts/nats-tail.ts`) tails subjects
+and pretty-prints decoded envelopes (header line + indented payload), so you can
+watch live events without a custom script: `bun run nats:tail "raw.market.>"`,
+or `--max N` to stop after N messages. Undecodable bytes are flagged, not
+dropped.
+
 ## Subject token conventions
 
 Producers append routing tokens after the base. Tokens are lowercased and
