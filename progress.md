@@ -711,3 +711,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: backoff_increases_exponentially, backoff_capped_at_max, reset_restores_initial_delay tests pass
 - Assumptions: BackoffState: initial 1 s, max 60 s, multiplier 2.0. Stale-stream detection via tokio::time::timeout in ws_loop. Reconnect loop in BinanceAdapter::run() drives ws_loop with BackoffState backoff between retries. Ping->Pong handled inline in ws_loop. Reconnect metrics (inc_reconnects) called on each retry.
 - Follow-ups: none
+
+### P06-T008 — Add Bybit adapter placeholder
+
+- Files: services/ingestion/src/provider/bybit/mod.rs (new), fixtures/market/bybit_raw.json (new)
+- Checks: parse_public_trade_buy test passes (canonical = crypto:btc-usdt); parse_ticker emits price_tick+mark_price+funding_rate; fixture replay emits >=2 events
+- Assumptions: Bybit V5 publicTrade + tickers snapshot messages. Side from "S" field (Buy/Sell). Bid+ask mid for PriceTick. Fixture path uses CARGO_MANIFEST_DIR for portability across test/prod cwd. No live WebSocket — fixture replay only.
+- Follow-ups: Live WebSocket connection deferred to a future phase (see docs/exchange_capabilities.md)

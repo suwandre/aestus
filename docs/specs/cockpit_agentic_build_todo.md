@@ -561,7 +561,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Unplug/replug network simulation recovers without process crash.
 
-### [ ] P06-T008 - Add Bybit adapter placeholder
+### [x] P06-T008 - Add Bybit adapter placeholder
 
 - Agent action: Create adapter skeleton and fixture parser for Bybit without requiring full live connection yet.
 
