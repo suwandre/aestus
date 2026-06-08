@@ -690,3 +690,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: parse_mark_price test passes; 3 events emitted per markPriceUpdate (mark_price + index_price + funding_rate); interval_hours = 8.0
 - Assumptions: mark/index/funding all derived from a single markPriceUpdate WS message. next_funding_time from "T" field. interval_hours hardcoded to 8.0 for Binance perpetuals.
 - Follow-ups: none
+
+### P06-T005 — Implement Binance open interest polling
+
+- Files: (code in binance/mod.rs run_oi_poller + fetch_oi — committed at T003)
+- Checks: OI poller spawned as independent tokio task; fetch_oi calls fapi.binance.com/fapi/v1/openInterest; parse_oi_response test passes
+- Assumptions: OI interval configurable via OI_INTERVAL_SECS env (default 60 s). OI poller runs as a separate tokio task cloning the HTTP client and symbol map. REST endpoint only — Binance Futures has no WebSocket OI stream.
+- Follow-ups: none

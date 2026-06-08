@@ -543,7 +543,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: Funding and mark price events emit with correct timestamps and venue metadata.
 
-### [ ] P06-T005 - Implement Binance open interest polling
+### [x] P06-T005 - Implement Binance open interest polling
 
 - Agent action: Poll Binance OI endpoint at configured cadence and emit normalized open_interest events.
 
