@@ -746,3 +746,10 @@ Independent review against repo state on 2026-06-08. All ten [x] tasks verified;
 - Checks: symbol_map tests pass: btcusdt_maps_same_canonical_across_venues, unknown_returns_fallback, loads_from_fixture_fallback (6 entries). Fixture path uses CARGO_MANIFEST_DIR absolute reference.
 - Assumptions: TOML format with [[instruments]] array. Falls back to fixtures/venues/instruments.json if TOML file missing. Unknown instruments return "unknown:{venue}:{id}" fallback (events continue to flow). SYMBOL_MAP_PATH env var overrides default config/symbol_map.toml.
 - Follow-ups: none
+
+### P06-T013 — Add raw payload hashing
+
+- Files: services/ingestion/src/hash.rs (new)
+- Checks: hash tests pass: prefix check (sha256:), determinism, known empty-string hash
+- Assumptions: sha2::Sha256 + hex encoding. Output format "sha256:<64 hex chars>". Used by all adapters' parse_raw() and by binance parser make_raw().
+- Follow-ups: none

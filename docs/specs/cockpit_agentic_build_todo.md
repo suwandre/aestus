@@ -591,7 +591,7 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 - Done when: BTCUSDT across venues maps to the same canonical BTC perp asset.
 
-### [ ] P06-T013 - Add raw payload hashing
+### [x] P06-T013 - Add raw payload hashing
 
 - Agent action: Hash raw messages before publish/storage for dedupe and debugging.
 
