@@ -343,7 +343,7 @@ Goal: Define typed data boundaries before implementing services so every agent k
 
 Goal: Create persistent storage foundations for hot state, relational metadata, vectors, and high-volume time-series.
 
-### [ ] P04-T001 - Choose migration tools
+### [x] P04-T001 - Choose migration tools
 
 - Agent action: Select and configure a TS-friendly migration tool for Postgres and a SQL migration pattern for ClickHouse.
 

@@ -407,3 +407,16 @@ Verified all 16 P03 tasks against the actual repo with zero trust in progress.md
 - P03-T016: docs/contracts_versioning.md covers event version fields, breaking vs non-breaking change definitions, 7-step migration process, migration notes table (v1 baseline), and producer/consumer compatibility rules.
 
 No [!] tasks in P03. No failures.
+
+### DECISION — Migration tooling (binding; informs all of P04)
+
+- Tool: a **custom SQL-file migration runner** in Bun (`apps/api/scripts/migrate.ts`), not an ORM migration tool (Drizzle/Prisma/Kysely). Rationale in `docs/migrations.md`: contracts are zod (not an ORM) so an ORM schema would become a competing source of truth; ClickHouse has no first-class TS migration tool; minimal-deps fits the €10–30/mo single-user target. Runner uses Bun's built-in `SQL` (Postgres) + `fetch` (ClickHouse HTTP) → zero new npm deps.
+- Layout: `infra/migrations/postgres/NNNN_*.sql` (applied transactionally, in filename order) and `infra/migrations/clickhouse/NNNN_*.sql` (statement-split on `;`, single-line `--` comments only). Each engine tracks applied files in its own `schema_migrations` table → idempotent re-runs.
+- Files are forward-only/immutable once applied; never renumber an applied migration. P04-T002…T015 add the actual table files under these dirs.
+
+### P04-T001 — Choose migration tools
+
+- Files: apps/api/scripts/migrate.ts (new), apps/api/package.json (db:migrate + :postgres/:clickhouse/:status scripts replace the placeholder), docs/migrations.md (new), infra/migrations/postgres/.gitkeep, infra/migrations/clickhouse/.gitkeep
+- Checks: `bun run typecheck` clean (all 5 workspaces; scripts/ is outside apps/api `src` include, matching the P03-T014 precedent of keeping Node/Bun-API scripts out of tsc). `bun build` of migrate.ts OK. Ran live against Docker Postgres 16 + ClickHouse 24.8: `bun run db:migrate` → both "up to date" (creates `schema_migrations` in each), `db:migrate:status` → 0 applied / 0 pending. eslint + prettier clean.
+- Assumptions: Runner connection defaults match docker-compose (`postgres://aestus:aestus@localhost:5432/aestus`, `http://aestus:aestus@localhost:8123`). ClickHouse HTTP defaults to the `default` db, so the runner targets `CLICKHOUSE_DB` (default `aestus`, the compose-created db) via `?database=`. `.env.example` files are permission-blocked for me — did not edit; compose already injects DATABASE_URL/CLICKHOUSE_URL for the api service. Postgres migrations run inside `sql.begin` using `tx.unsafe(ddl)` for multi-statement DDL.
+- Follow-ups: none

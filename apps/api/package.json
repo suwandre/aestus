@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "lint": "eslint src",
-    "db:migrate": "echo 'migration placeholder — implement at P04'"
+    "db:migrate": "bun run scripts/migrate.ts",
+    "db:migrate:postgres": "bun run scripts/migrate.ts postgres",
+    "db:migrate:clickhouse": "bun run scripts/migrate.ts clickhouse",
+    "db:migrate:status": "bun run scripts/migrate.ts --status"
   },
   "dependencies": {
     "@aestus/contracts": "workspace:*",
