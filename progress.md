@@ -504,3 +504,10 @@ No [!] tasks in P03. No failures.
 - Checks: applied via `db:migrate:clickhouse`; `system.tables` shows ohlcv_1m/5m/15m/1h + their _mv. Functionally verified: inserted 3 out-of-order trades into normalized_market_events; reading ohlcv_1m with argMinMerge/argMaxMerge returned correct candle (open=100 first-by-time, high=110, low=90, close=110 last-by-time, volume=6, trades=3) — charts read candles without touching ticks (Done-when).
 - Assumptions: One AggregatingMergeTree per timeframe fed by a per-timeframe materialized view over normalized_market_events (event_type IN trade/price_tick, price NOT NULL). open/close = AggregateFunction(argMin/argMax, Float64, DateTime64) read with -Merge; high/low/volume/trades = SimpleAggregateFunction. Bucketing via toStartOfMinute/FiveMinutes/FifteenMinutes/Hour. `assumeNotNull(price)` strips the source Nullable to match the non-null state types. Left a tiny `test:ohlcv` row set in the dev CH from verification — wiped by the reset-local before the T018 smoke test.
 - Follow-ups: none
+
+### P04-T014 — Create ClickHouse feature snapshot table
+
+- Files: infra/migrations/clickhouse/0004_feature_snapshots.sql (new)
+- Checks: applied via `db:migrate:clickhouse`; `system.tables` confirms `feature_snapshots`.
+- Assumptions: Mirrors FeatureSnapshot. Horizon-keyed metrics (returns/volatility/z_scores) are `Map(String, Float64)`; correlation_set and basis are `Nested(...)` (parallel-array) columns matching the contract's array-of-objects; funding_z/oi_delta/volume_z Nullable; regime split into regime_trend/volatility/risk LowCardinality columns. `schema_version` versions the feature fields (Done-when). MergeTree `ORDER BY (canonical_asset_id, timestamp)` for rolling-state reads.
+- Follow-ups: none

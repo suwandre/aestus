@@ -421,7 +421,7 @@ Goal: Create persistent storage foundations for hot state, relational metadata, 
 
 - Done when: Frontend charts can query candles without scanning ticks.
 
-### [ ] P04-T014 - Create ClickHouse feature snapshot table
+### [x] P04-T014 - Create ClickHouse feature snapshot table
 
 - Agent action: Create feature_snapshots with versioned feature fields and timestamp.
 
