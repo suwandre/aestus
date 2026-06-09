@@ -196,7 +196,10 @@ mod tests {
         let m = mixed_map();
         let perp = m.canonical_id_typed("binance", "perp", "BTCUSDT");
         let spot = m.canonical_id_typed("binance", "spot", "BTCUSDT");
-        assert_ne!(perp, spot, "perp and spot must resolve to different canonical IDs");
+        assert_ne!(
+            perp, spot,
+            "perp and spot must resolve to different canonical IDs"
+        );
         assert_eq!(perp, "crypto:btc-usdt");
         assert_eq!(spot, "crypto:btc-spot");
     }
@@ -206,7 +209,10 @@ mod tests {
         let m = mixed_map();
         // canonical_id() is the perp shorthand — it must NOT return the spot ID
         let via_shorthand = m.canonical_id("binance", "BTCUSDT");
-        assert_eq!(via_shorthand, "crypto:btc-usdt", "shorthand must resolve to perp");
+        assert_eq!(
+            via_shorthand, "crypto:btc-usdt",
+            "shorthand must resolve to perp"
+        );
         assert_ne!(
             via_shorthand, "crypto:btc-spot",
             "shorthand must not return spot canonical"
@@ -236,6 +242,9 @@ mod tests {
         assert_eq!(m.canonical_id("binance", "BTCUSDT"), "crypto:btc-usdt");
         // Spot lookup via typed method
         let spot = m.canonical_id_typed("binance", "spot", "BTCUSDT");
-        assert_eq!(spot, "crypto:btc-spot", "spot should map to crypto:btc-spot");
+        assert_eq!(
+            spot, "crypto:btc-spot",
+            "spot should map to crypto:btc-spot"
+        );
     }
 }

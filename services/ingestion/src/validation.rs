@@ -38,7 +38,9 @@ const MAX_PRICE: f64 = 10_000_000.0;
 /// `Err(ValidationError)` for the first failed check.
 pub fn validate(ev: &NormalizedMarketEvent) -> Result<(), ValidationError> {
     match ev {
-        NormalizedMarketEvent::PriceTick { price, bid, ask, .. } => {
+        NormalizedMarketEvent::PriceTick {
+            price, bid, ask, ..
+        } => {
             check_price_positive("price", *price)?;
             check_price_sane("price", *price)?;
             if let Some(b) = bid {

@@ -64,10 +64,7 @@ impl NormalizedEventsQuery {
     /// Execute the query against ClickHouse and return raw JSON rows.
     ///
     /// Returns an empty `Vec` when `base_url` is `None` (fixture mode).
-    pub async fn execute(
-        &self,
-        base_url: Option<&str>,
-    ) -> Result<Vec<serde_json::Value>> {
+    pub async fn execute(&self, base_url: Option<&str>) -> Result<Vec<serde_json::Value>> {
         let Some(url) = base_url else {
             return Ok(vec![]);
         };

@@ -168,8 +168,14 @@ mod tests {
         let statuses = fh.feed_statuses(60);
         assert_eq!(statuses.len(), 2);
 
-        let trade = statuses.iter().find(|s| s.feed_id == "binance:trade").unwrap();
-        let funding = statuses.iter().find(|s| s.feed_id == "binance:funding").unwrap();
+        let trade = statuses
+            .iter()
+            .find(|s| s.feed_id == "binance:trade")
+            .unwrap();
+        let funding = statuses
+            .iter()
+            .find(|s| s.feed_id == "binance:funding")
+            .unwrap();
         assert_eq!(trade.state, FeedState::Fresh);
         assert_eq!(funding.state, FeedState::Stale);
     }

@@ -96,12 +96,8 @@ pub struct FeedQualityRecord {
 }
 
 /// `GET /data-quality` — per-feed freshness, lag, and event counts (P08-T008).
-async fn data_quality_handler(
-    State(state): State<Arc<AppState>>,
-) -> Json<Vec<FeedQualityRecord>> {
-    let statuses = state
-        .feed_health
-        .feed_statuses(state.stale_threshold_secs);
+async fn data_quality_handler(State(state): State<Arc<AppState>>) -> Json<Vec<FeedQualityRecord>> {
+    let statuses = state.feed_health.feed_statuses(state.stale_threshold_secs);
 
     let records = statuses
         .into_iter()

@@ -66,7 +66,8 @@ async fn main() -> anyhow::Result<()> {
     let health_feed = feed_health.clone();
     let health_stale = cfg.stale_timeout.as_secs();
     tokio::spawn(async move {
-        if let Err(e) = health::serve(http_port, ch_url_for_health, health_feed, health_stale).await {
+        if let Err(e) = health::serve(http_port, ch_url_for_health, health_feed, health_stale).await
+        {
             tracing::error!(error = %e, "health server exited");
         }
     });
@@ -159,7 +160,8 @@ async fn main() -> anyhow::Result<()> {
             if let Err(e) = validation::validate(norm) {
                 tracing::warn!(venue, event_type, error = %e, "outlier event rejected → DLQ");
                 metrics::inc_errors(venue);
-                let dlq_subj = dead_letter_subject(&format!("normalized.market.{}.outlier", event_type));
+                let dlq_subj =
+                    dead_letter_subject(&format!("normalized.market.{}.outlier", event_type));
                 if let Ok(bytes) = serde_json::to_vec(norm) {
                     let _ = publisher.publish_bytes(&dlq_subj, bytes).await;
                 }
