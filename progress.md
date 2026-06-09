@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T005 — Implement outlier guardrails
+
+- Files: `services/ingestion/src/validation.rs` (new), `services/ingestion/src/main.rs`
+- Checks: `cargo test --workspace` — 152 pass; 11 new validation tests
+- Assumptions: Bounds are intentionally wide (negative/NaN price, >100% funding rate absolute, negative OI). `OrderbookDelta` skipped — zero-quantity levels are valid in snapshot clears. Rejected events are logged + published to `dlq.normalized.market.<event_type>.outlier` but never persisted to ClickHouse or Redis. DLQ subject format uses existing `dead_letter_subject()` helper from event_model::streams.
+- Follow-ups: none
+
 ### P08-T004 — Implement stale-feed detection
 
 - Files: `services/ingestion/src/feed_health.rs` (new), `services/ingestion/src/main.rs`

@@ -719,7 +719,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: System health events include fresh/stale state by feed.
 
-### [ ] P08-T005 - Implement outlier guardrails
+### [x] P08-T005 - Implement outlier guardrails
 
 - Agent action: Detect impossible price/funding/OI values and route them to quarantine/DLQ rather than feature calculations.
 

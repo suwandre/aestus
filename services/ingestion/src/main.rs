@@ -12,12 +12,13 @@ mod metrics;
 mod persist;
 mod provider;
 mod symbol_map;
+mod validation;
 
 use std::sync::Arc;
 
 use config::Config;
 use event_model::health::{DependencyHealth, HealthStatus};
-use event_model::streams::{subject, NORMALIZED_MARKET, RAW_MARKET};
+use event_model::streams::{dead_letter_subject, subject, NORMALIZED_MARKET, RAW_MARKET};
 use feed_health::{FeedHealth, FeedState};
 use nats_publisher::{Heartbeat, NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
 use persist::{clickhouse::ClickHouseSink, redis_store::RedisStore};
@@ -150,6 +151,17 @@ async fn main() -> anyhow::Result<()> {
             let event_type = norm.event_type_str();
             let canonical = norm.canonical_asset_id();
             let venue = norm.venue();
+
+            // Outlier guardrail (P08-T005): route bad events to DLQ.
+            if let Err(e) = validation::validate(norm) {
+                tracing::warn!(venue, event_type, error = %e, "outlier event rejected → DLQ");
+                metrics::inc_errors(venue);
+                let dlq_subj = dead_letter_subject(&format!("normalized.market.{}.outlier", event_type));
+                if let Ok(bytes) = serde_json::to_vec(norm) {
+                    let _ = publisher.publish_bytes(&dlq_subj, bytes).await;
+                }
+                continue;
+            }
 
             // Track feed freshness: key is "venue:event_type".
             let feed_id = format!("{venue}:{event_type}");
