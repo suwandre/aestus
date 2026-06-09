@@ -913,3 +913,22 @@ Reviewer: independent phase review (fresh eyes, zero trust). Verified all 16 tas
 - Checks: prettier clean
 - Assumptions: Documents free/low-cost providers for calendar (Fixture/TradingEconomics/ForexFactory), news (Public RSS/CryptoPanic/Alpaca), on-chain (Fixture/Glassnode/Dune/Etherscan), and macro proxy (Yahoo Finance/FRED). Summary matrix with cost ceiling and priority. All implementations go behind existing trait interfaces (`CalendarProvider`/`RssFetcher`/`OnChainProvider`) selected via env var.
 - Follow-ups: none
+
+### P07 REVIEW — FAIL
+
+Independent review. Verified all 12 [x] P07 tasks against actual repo files; ran `cargo test --workspace` (53/53 pass for feeds crate, 53/53 workspace total). No [!] tasks in P07.
+
+- P07-T001: `services/feeds/` is a separate Rust binary from `services/ingestion/`; config/logging/NATS/health/heartbeat wired in main.rs. PASS.
+- P07-T002: `CalendarProvider` async trait in `calendar/mod.rs` with name()/fetch()/normalize() + default is_duplicate()/update_actuals() helpers; 3 tests pass. PASS.
+- P07-T003: `FixtureCalendarProvider` reads `fixtures/macro/events.json`; confirmed CPI/FOMC/NFP/PPI/Jobless Claims present; 4 tests pass. PASS.
+- P07-T004: `RssFetcher` with configurable RSS_SOURCES, POLL_INTERVAL_SECS, url_hash dedup; main.rs calls `pg.upsert_news_item()` (Postgres) and `publisher.publish_bytes()` (NATS); 5 tests pass. PASS.
+- P07-T005: `entity_extractor.rs` — ASSET_RULES (BTC/ETH/SOL/…), MACRO_RULES (CPI/FOMC/ETF/…), VENUE_RULES (Binance/…), TAG_RULES (whale/institutional/…); 9 tests pass. PASS.
+- P07-T006: `relevance.rs` scores items by watched_assets and tags (clamped 0..1); score persisted via `upsert_news_item` so API can sort/filter; 5 tests pass. PASS.
+- P07-T007: **FAIL** — "Postgres can store embedding refs when provider is enabled" is not satisfied. `PostgresSink` has no `upsert_news_embedding()` method. In `main.rs` the provider is assigned to `let _embed = ...` and immediately discarded; `embed()` is never called on any news item and nothing is written to `news_embeddings`. Even if `EMBEDDING_PROVIDER` is set to a real name, `build_provider()` falls back to `NoOpEmbeddingProvider` and the result is never used. The storage code pathway (embed → news_embeddings table) is absent.
+- P07-T008: `OnChainProvider` async trait with `confidence()` method; `Confidence` enum (High/Medium/Low); `OnChainItem` carries source + confidence; 3 tests pass. PASS.
+- P07-T009: `FixtureOnChainProvider` reads `fixtures/onchain/events.json` (exchange_flow/whale_transfer/stablecoin_mint_burn variants present); 4 tests pass. PASS.
+- P07-T010: `DedupeSet` deduplicates by url_hash (news), event_id:source (calendar), id (onchain); Postgres upserts use ON CONFLICT for cross-restart dedup; 6 tests pass. PASS.
+- P07-T011: `PostgresSink::upsert_news_item/upsert_macro_event/upsert_on_chain_event` write into standard P04 tables; poll loop in main.rs wires all three; 3 no-op tests pass. PASS.
+- P07-T012: `docs/provider_candidates.md` covers all four categories (calendar/news/on-chain/macro proxy) with free tiers, rate limits, cost ceilings, and summary matrix. PASS.
+
+Failure: P07-T007 — missing embedding storage code (no upsert_news_embedding in PostgresSink; _embed discarded in main.rs).
