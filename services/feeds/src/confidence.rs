@@ -37,8 +37,14 @@ mod tests {
 
     #[test]
     fn serialises_lowercase() {
-        assert_eq!(serde_json::to_string(&Confidence::High).unwrap(), "\"high\"");
-        assert_eq!(serde_json::to_string(&Confidence::Medium).unwrap(), "\"medium\"");
+        assert_eq!(
+            serde_json::to_string(&Confidence::High).unwrap(),
+            "\"high\""
+        );
+        assert_eq!(
+            serde_json::to_string(&Confidence::Medium).unwrap(),
+            "\"medium\""
+        );
         assert_eq!(serde_json::to_string(&Confidence::Low).unwrap(), "\"low\"");
     }
 

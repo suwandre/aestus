@@ -119,7 +119,10 @@ mod tests {
 
     #[test]
     fn parse_invalid_returns_error() {
-        assert!(matches!(parse_price_str("abc"), Err(PriceError::Parse(_, _))));
+        assert!(matches!(
+            parse_price_str("abc"),
+            Err(PriceError::Parse(_, _))
+        ));
     }
 
     #[test]
@@ -128,7 +131,11 @@ mod tests {
         let a = parse_price_str("0.1").unwrap();
         let b = parse_price_str("0.2").unwrap();
         let sum = a + b;
-        assert_eq!(sum, Decimal::from_str("0.3").unwrap(), "decimal sum must be exact");
+        assert_eq!(
+            sum,
+            Decimal::from_str("0.3").unwrap(),
+            "decimal sum must be exact"
+        );
     }
 
     #[test]
