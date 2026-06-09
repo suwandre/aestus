@@ -25,7 +25,7 @@ impl HyperliquidAdapter {
             symbol_map,
             fixture_path: concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/../../fixtures/market/hyperliquid_raw.json"
+                "/tests/fixtures/hyperliquid_raw.json"
             )
             .into(),
         }

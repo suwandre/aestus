@@ -25,11 +25,8 @@ impl BybitAdapter {
     pub fn new(symbol_map: SymbolMap) -> Self {
         Self {
             symbol_map,
-            fixture_path: concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/../../fixtures/market/bybit_raw.json"
-            )
-            .into(),
+            fixture_path: concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/bybit_raw.json")
+                .into(),
         }
     }
 
