@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T008 — Create data quality dashboard endpoint
+
+- Files: `services/ingestion/src/health.rs`, `services/ingestion/src/main.rs`
+- Checks: `cargo test --workspace` — 162 pass
+- Assumptions: `AppState` extended with `feed_health: FeedHealth` and `stale_threshold_secs: u64`. `/data-quality` returns an array of `FeedQualityRecord` (feed_id, last_message_at RFC-3339, last_message_epoch_ms, is_stale bool, state string). Unknown/stale feeds both return `is_stale: true`. Timestamp formatting uses `market_math::timestamps::ms_to_rfc3339`. Empty array when no feeds have been seen yet.
+- Follow-ups: none
+
 ### P08-T007 — Implement normalized data explorer query
 
 - Files: `services/ingestion/src/persist/clickhouse_query.rs` (new), `services/ingestion/src/persist/mod.rs`, `services/ingestion/src/health.rs`, `services/ingestion/src/main.rs`

@@ -737,7 +737,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: Data tab can display raw normalized event history.
 
-### [ ] P08-T008 - Create data quality dashboard endpoint
+### [x] P08-T008 - Create data quality dashboard endpoint
 
 - Agent action: Expose feed freshness, event counts, error counts, lag, and last-seen timestamps.
 

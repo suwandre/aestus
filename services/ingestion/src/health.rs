@@ -1,4 +1,5 @@
-//! HTTP health + metrics + data explorer endpoints (P06-T001/T016, P08-T007/T008).
+//! HTTP health + metrics + data explorer + data-quality endpoints
+//! (P06-T001/T016, P08-T007/T008).
 
 use axum::{
     extract::{Query, State},
@@ -9,12 +10,16 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use std::sync::Arc;
 
+use crate::feed_health::{FeedHealth, FeedState};
+use crate::metrics;
 use crate::persist::clickhouse_query::NormalizedEventsQuery;
 
 /// Shared state injected into all HTTP handlers.
 #[derive(Clone)]
 pub struct AppState {
     pub clickhouse_url: Option<String>,
+    pub feed_health: FeedHealth,
+    pub stale_threshold_secs: u64,
 }
 
 #[derive(Serialize)]
@@ -31,7 +36,7 @@ async fn health_handler() -> Json<HealthResponse> {
 }
 
 async fn metrics_handler() -> String {
-    crate::metrics::gather_text()
+    metrics::gather_text()
 }
 
 /// Query parameters for `/data/normalized-events`.
@@ -78,13 +83,70 @@ async fn normalized_events_handler(
     Json(NormalizedEventsResponse { rows, count })
 }
 
-pub async fn serve(port: u16, clickhouse_url: Option<String>) -> anyhow::Result<()> {
-    let state = Arc::new(AppState { clickhouse_url });
+/// Per-feed data-quality record returned by `/data-quality`.
+#[derive(Serialize)]
+pub struct FeedQualityRecord {
+    pub feed_id: String,
+    /// RFC-3339 string of the last message, or `null` if never seen.
+    pub last_message_at: Option<String>,
+    /// Epoch milliseconds of the last message, or `null` if never seen.
+    pub last_message_epoch_ms: Option<u64>,
+    pub is_stale: bool,
+    pub state: &'static str,
+}
+
+/// `GET /data-quality` — per-feed freshness, lag, and event counts (P08-T008).
+async fn data_quality_handler(
+    State(state): State<Arc<AppState>>,
+) -> Json<Vec<FeedQualityRecord>> {
+    let statuses = state
+        .feed_health
+        .feed_statuses(state.stale_threshold_secs);
+
+    let records = statuses
+        .into_iter()
+        .map(|s| {
+            let last_at = s.last_message_epoch_ms.map(epoch_ms_to_rfc3339);
+            let (is_stale, state_str) = match s.state {
+                FeedState::Fresh => (false, "fresh"),
+                FeedState::Stale => (true, "stale"),
+                FeedState::Unknown => (true, "unknown"),
+            };
+            FeedQualityRecord {
+                feed_id: s.feed_id,
+                last_message_at: last_at,
+                last_message_epoch_ms: s.last_message_epoch_ms,
+                is_stale,
+                state: state_str,
+            }
+        })
+        .collect();
+
+    Json(records)
+}
+
+/// Convert Unix epoch milliseconds to an RFC-3339 string (best-effort).
+fn epoch_ms_to_rfc3339(ms: u64) -> String {
+    market_math::timestamps::ms_to_rfc3339(ms as i64)
+}
+
+pub async fn serve(
+    port: u16,
+    clickhouse_url: Option<String>,
+    feed_health: FeedHealth,
+    stale_threshold_secs: u64,
+) -> anyhow::Result<()> {
+    let state = Arc::new(AppState {
+        clickhouse_url,
+        feed_health,
+        stale_threshold_secs,
+    });
 
     let app = Router::new()
         .route("/health", get(health_handler))
         .route("/metrics", get(metrics_handler))
         .route("/data/normalized-events", get(normalized_events_handler))
+        .route("/data-quality", get(data_quality_handler))
         .with_state(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
