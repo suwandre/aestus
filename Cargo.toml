@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "services/ingestion",
     "services/features",
+    "services/feeds",
     "crates/event_model",
     "crates/market_math",
     "crates/nats_publisher",

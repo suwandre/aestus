@@ -619,73 +619,73 @@ Goal: Connect the first real-time market feeds with normalized output, starting 
 
 Goal: Add contextual feeds needed for briefings without relying on expensive providers.
 
-### [ ] P07-T001 - Create contextual ingestion service skeleton
+### [x] P07-T001 - Create contextual ingestion service skeleton
 
 - Agent action: Build TS or Rust service for scheduled lower-frequency contextual feeds with config, logging, NATS, and health.
 
 - Done when: Service runs separately from high-frequency exchange ingestion.
 
-### [ ] P07-T002 - Implement economic calendar provider abstraction
+### [x] P07-T002 - Implement economic calendar provider abstraction
 
 - Agent action: Define interface for calendar providers with fetch, normalize, dedupe, and update actuals.
 
 - Done when: New free/low-cost calendar sources can be added safely.
 
-### [ ] P07-T003 - Add calendar fixture importer
+### [x] P07-T003 - Add calendar fixture importer
 
 - Agent action: Before live provider work, create importer for CPI/FOMC/NFP/PPI/jobless fixtures.
 
 - Done when: Upcoming Events UI can be developed from realistic data.
 
-### [ ] P07-T004 - Implement RSS news fetcher
+### [x] P07-T004 - Implement RSS news fetcher
 
 - Agent action: Create configurable RSS fetcher with source list, polling cadence, dedupe by URL/hash, and publish news events.
 
 - Done when: Crypto/financial RSS items populate Postgres and NATS.
 
-### [ ] P07-T005 - Add news entity extraction job
+### [x] P07-T005 - Add news entity extraction job
 
 - Agent action: Implement cheap model or deterministic keyword pass to tag assets, venues, protocols, macro entities in news.
 
 - Done when: News items contain entity tags like BTC, ETH, Binance, CPI, ETF.
 
-### [ ] P07-T006 - Add news relevance scoring job
+### [x] P07-T006 - Add news relevance scoring job
 
 - Agent action: Score news relevance to watched assets and anomaly context using cheap model or rules.
 
 - Done when: News list can sort/filter by relevance to current focus asset.
 
-### [ ] P07-T007 - Add news embedding pipeline placeholder
+### [x] P07-T007 - Add news embedding pipeline placeholder
 
 - Agent action: Create interface and storage pathway for embeddings, with provider behind config and safe no-op fallback.
 
 - Done when: Postgres can store embedding refs when provider is enabled.
 
-### [ ] P07-T008 - Create on-chain provider abstraction
+### [x] P07-T008 - Create on-chain provider abstraction
 
 - Agent action: Define normalized interface for whale flow, exchange flow, stablecoin mint/burn, token unlock, DEX activity.
 
 - Done when: On-chain sources are pluggable and marked by confidence/source.
 
-### [ ] P07-T009 - Add on-chain fixture importer
+### [x] P07-T009 - Add on-chain fixture importer
 
 - Agent action: Create sample exchange netflow, whale transfer, active addresses, MVRV, realized cap change data.
 
 - Done when: On-Chain Insights UI can develop before live provider selection.
 
-### [ ] P07-T010 - Add contextual dedupe logic
+### [x] P07-T010 - Add contextual dedupe logic
 
 - Agent action: Deduplicate news/macro/on-chain items by provider IDs, URLs, timestamps, and payload hashes.
 
 - Done when: Repeated polls do not create duplicate context records.
 
-### [ ] P07-T011 - Persist contextual items
+### [x] P07-T011 - Persist contextual items
 
 - Agent action: Write news, macro, and on-chain normalized items into Postgres with source metadata.
 
 - Done when: Context assembler can query contextual data from Postgres.
 
-### [ ] P07-T012 - Document low-cost provider candidates
+### [x] P07-T012 - Document low-cost provider candidates
 
 - Agent action: Create `docs/provider_candidates.md` with free/low-cost options, limitations, rate limits, and what data each covers.
 

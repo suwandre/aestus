@@ -1,0 +1,28 @@
+[package]
+name = "feeds"
+version.workspace = true
+edition.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+event_model = { path = "../../crates/event_model" }
+nats_publisher = { path = "../../crates/nats_publisher" }
+
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+time = { workspace = true }
+thiserror = { workspace = true }
+
+axum = { version = "0.8", features = ["tokio"] }
+sha2 = "0.10"
+hex = "0.4"
+prometheus = "0.13"
+reqwest = { version = "0.12", features = ["json"] }
+tokio-postgres = "0.7"

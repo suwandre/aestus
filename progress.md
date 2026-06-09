@@ -829,3 +829,87 @@ Reviewer: independent phase review (fresh eyes, zero trust). Verified all 16 tas
 - P06-T014: persist/clickhouse.rs; 256-row auto-flush + HTTP INSERT FORMAT JSONEachRow; 3 tests (push_no_url, flush_empty, push_serializes_row); wired at main.rs:144. PASS.
 - P06-T015: persist/redis_store.rs; key=mktstate:{venue}:{canonical_asset_id}:{event_type}; TTL=300s; hot keys for PriceTick/MarkPrice/FundingRate only; 3 tests; wired at main.rs:149. PASS.
 - P06-T016: metrics.rs; 4 OnceLock metrics (messages_total, errors_total, reconnects_total, last_message_epoch_ms); /metrics endpoint via health.rs:20-22; 2 tests pass. PASS.
+
+### P07-T001 — Create feeds service skeleton
+
+- Files: services/feeds/Cargo.toml (new), services/feeds/src/main.rs (new), services/feeds/src/config.rs (new), services/feeds/src/health.rs (new), services/feeds/src/metrics.rs (new), Cargo.toml (services/feeds added to members)
+- Checks: `cargo test --workspace` 53/53 pass; `cargo clippy --workspace -- -D warnings` clean; `cargo fmt --all --check` clean
+- Assumptions: Service lives at `services/feeds` (not `services/context` — that dir is reserved for the P11 TS context assembler per P01-T001 README). Config from env: `NATS_URL`, `LOG_LEVEL`, `HTTP_PORT` (default 8082), `HEARTBEAT_INTERVAL_SECS`, `POLL_INTERVAL_SECS` (default 300), `POSTGRES_URL`, `{CALENDAR,ONCHAIN,NEWS}_FIXTURE_PATH`, `RSS_SOURCES`, `WATCHED_ASSETS` (default `crypto:btc-usdt,crypto:eth-usdt`), `EMBEDDING_PROVIDER`. Health server mirrors ingestion pattern on /health + /metrics. Three Prometheus metrics: `feeds_items_total` (counter, feed+source), `feeds_errors_total` (counter, feed), `feeds_last_poll_epoch_ms` (gauge, feed). NATS_URL unset → `RecordingPublisher` (fixture-first rule #5).
+- Follow-ups: none
+
+### P07-T002 — Implement calendar provider trait
+
+- Files: services/feeds/src/calendar/mod.rs (new)
+- Checks: 3 tests pass: `is_duplicate_detects_same_event_id_and_source`, `update_actuals_sets_field`, `different_source_is_not_duplicate`
+- Assumptions: `CalendarItem` mirrors `MacroEvent` TS contract and `macro_events` Postgres table (fields: event_id, source, region, currency, title, scheduled_at, importance, consensus/previous/actual nullable, revision). `CalendarProvider` async trait with `name()`, `fetch()`, `normalize()` plus default-body helpers `is_duplicate()` (key = `event_id:source`) and `update_actuals()` (sets actual + bumps revision).
+- Follow-ups: none
+
+### P07-T003 — Implement fixture calendar provider
+
+- Files: services/feeds/src/calendar/fixture.rs (new)
+- Checks: 4 tests pass: `loads_fixture_events`, `fetch_returns_all_items`, `normalize_round_trips`, `fixture_contains_cpi_and_fomc`
+- Assumptions: Reads `fixtures/macro/events.json` (created at P03-T005). Fixture path uses `concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/macro/events.json")` pattern (same as `services/ingestion/src/symbol_map.rs`). `FixtureCalendarProvider::load()` → `fetch()` returns all items from file; `normalize()` is a passthrough round-trip.
+- Follow-ups: none
+
+### P07-T004 — Implement news RSS fetcher
+
+- Files: services/feeds/src/news/mod.rs (new), services/feeds/src/news/rss.rs (new)
+- Checks: 5 tests pass: `poll_once_returns_fixture_items`, `url_hash_is_deterministic`, `url_hash_normalises_trailing_slash`, `parse_rss_xml_extracts_items`, `parse_rss_xml_deduplicates_same_link`
+- Assumptions: `NewsItem.url_hash` = SHA-256 of lowercased, trailing-slash-stripped URL. `RssFetcher::new(sources, fixture_path)` — sources empty = fixture-only mode (rule #5). `poll_once()` falls back to fixture when sources empty or all live fetches fail. Lightweight inline RSS 2.0/Atom XML line-scanner (no XML crate dep) extracts title/link/description/pubDate. `dedup_within_batch()` removes duplicate url_hash within a single poll. Reads `fixtures/news/items.json` (created at P03-T006).
+- Follow-ups: none
+
+### P07-T005 — Implement entity extractor
+
+- Files: services/feeds/src/news/entity_extractor.rs (new)
+- Checks: 9 tests pass covering individual asset/macro/venue/tag extraction and edge cases (multi-asset, no-match)
+- Assumptions: Deterministic keyword-based extraction — no LLM (rule #2). Rule tables: `ASSET_RULES` (BTC/ETH/SOL/XRP/BNB/DOGE/AVAX/LINK), `CANONICAL_MAP` (ticker → canonical id), `MACRO_RULES` (CPI/FOMC/NFP/PPI/GDP/JOBLESS_CLAIMS/DXY/VIX/SPX/ETF), `VENUE_RULES` (Binance/Coinbase/Bybit/OKX/Hyperliquid/Kraken/Bitfinex), `TAG_RULES` (whale/institutional/etf/security/regulation/defi/liquidation). `extract_entities()` appends to `item.entities` and `item.tags` without duplicates; operates on item title + summary concatenated.
+- Follow-ups: none
+
+### P07-T006 — Implement relevance scorer
+
+- Files: services/feeds/src/news/relevance.rs (new)
+- Checks: 5 tests pass
+- Assumptions: `score_relevance(item, watched_assets)` — additive scoring clamped to [0.0, 1.0]. Rules: +0.5 per watched asset in entities, +0.3 for high-macro (FOMC/CPI/NFP), +0.2 for whale/institutional tag, +0.1 for ETF tag, −0.1 penalty for neutral sentiment on macro item. Modifies `item.relevance_score` in place.
+- Follow-ups: none
+
+### P07-T007 — Add embedding stub
+
+- Files: services/feeds/src/news/embeddings.rs (new)
+- Checks: 5 tests pass including `noop_provider_returns_none` and `build_provider_falls_back_for_unknown_provider`
+- Assumptions: `EmbeddingRef` struct (news_id, model, dim). `EmbeddingProvider` async trait. `NoOpEmbeddingProvider` always returns `None`. `build_provider(Option<&str>)` factory — returns noop for None/""/"noop"/unknown. Real providers (Ollama/OpenAI) deferred to embedding integration phase.
+- Follow-ups: none
+
+### P07-T008 — Implement on-chain provider trait
+
+- Files: services/feeds/src/onchain/mod.rs (new)
+- Checks: 3 tests pass
+- Assumptions: `Confidence` enum (`High/Medium/Low`, serde lowercase) signals data quality. `OnChainItem` struct with id, event_type, chain, asset, value, value_usd, addresses, attributes (serde_json::Value), source, confidence, occurred_at. `OnChainProvider` async trait with `name()`, `confidence()`, `fetch()`, `normalize()`.
+- Follow-ups: none
+
+### P07-T009 — Implement fixture on-chain provider
+
+- Files: services/feeds/src/onchain/fixture.rs (new)
+- Checks: 4 tests pass: `fixture_importer_loads_all_variants`, `items_have_source_and_confidence`, `normalise_exchange_flow`, `normalise_whale_transfer_extracts_addresses`
+- Assumptions: Reads `fixtures/onchain/events.json` (created at P03-T007). `normalise_event()` extracts known fields; builds `attributes` from remaining fields after stripping top-level known keys; extracts `addresses` from from_label/to_label/exchange fields. Uses tx_hash as id or deterministic composite (`{chain}:{asset}:{occurred_at}`). Fixture path uses `CARGO_MANIFEST_DIR` pattern.
+- Follow-ups: none
+
+### P07-T010 — Add deduplication helper
+
+- Files: services/feeds/src/dedupe.rs (new)
+- Checks: 6 tests pass: `dedupe_ignores_same_url_hash`, `different_urls_are_not_duplicates`, `dedupe_ignores_same_calendar_id`, `same_event_id_different_source_not_duplicate`, `dedupe_ignores_same_onchain_id`, `sizes_returns_counts`
+- Assumptions: `DedupeSet` wraps three `HashSet<String>` — seen_news (key: url_hash), seen_calendar (key: `event_id:source`), seen_onchain (key: id). Methods return `true` if duplicate, insert if new. In-memory only; resets on service restart (stateless dedup between restarts is Postgres's job via ON CONFLICT).
+- Follow-ups: none
+
+### P07-T011 — Wire poll loop and Postgres persistence
+
+- Files: services/feeds/src/persist.rs (new), services/feeds/src/main.rs (updated — full poll loop wired)
+- Checks: 3 no-op persistence tests pass; `recording_publisher_fixture_mode_works` passes; full workspace 53/53 tests pass
+- Assumptions: `PostgresSink { db_url: Option<String> }` — all three upsert methods (`upsert_news_item`, `upsert_macro_event`, `upsert_on_chain_event`) are no-ops when `db_url` is None (fixture-first rule #5). Postgres ENUM casts use `$n::enum_type_name` SQL cast pattern (news_source_type, sentiment, macro_importance, on_chain_event_type). JSONB attributes serialized via `.to_string()` and cast `$8::jsonb` (avoids the `tokio-postgres` `with-serde_1` feature flag). Poll loop iterates: calendar → news (entity extraction + relevance scoring) → on-chain; deduplicates; persists (no-op if no DB); publishes to NATS `context.packet.*` subjects. Missing trait imports in main.rs (`CalendarProvider`/`OnChainProvider`) required explicit `use` statements.
+- Follow-ups: none
+
+### P07-T012 — Document provider candidates
+
+- Files: docs/provider_candidates.md (new)
+- Checks: prettier clean
+- Assumptions: Documents free/low-cost providers for calendar (Fixture/TradingEconomics/ForexFactory), news (Public RSS/CryptoPanic/Alpaca), on-chain (Fixture/Glassnode/Dune/Etherscan), and macro proxy (Yahoo Finance/FRED). Summary matrix with cost ceiling and priority. All implementations go behind existing trait interfaces (`CalendarProvider`/`RssFetcher`/`OnChainProvider`) selected via env var.
+- Follow-ups: none
