@@ -1011,4 +1011,17 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Files: `crates/market_math/src/timestamps.rs` (new), `crates/market_math/src/lib.rs`, `crates/market_math/Cargo.toml`, `services/ingestion/src/provider/binance/parser.rs`, `services/ingestion/src/provider/bybit/mod.rs`, `services/ingestion/src/provider/hyperliquid/mod.rs`, `services/ingestion/src/provider/okx/mod.rs`
 - Checks: `cargo test --workspace` — 141 pass
 - Assumptions: `TimestampSet` lives in `market_math` (not `event_model`) because it is a processing utility, not a wire type. `ms_to_rfc3339` returns a fallback "epoch" string rather than panicking on out-of-range inputs (negative ms, very large ms). All four exchange adapters now import from `market_math::timestamps`; their local copies removed.
+
+### P08 REVIEW — PASS
+
+- Reviewer: independent agent, zero-trust pass against actual repo state.
+- Checks run: read all 8 task files; `cargo test --workspace` — 162 pass (9 suites).
+- P08-T001: `timestamps.rs` — `TimestampSet` preserves `provider_ts` and `ingested_at` separately; 5 tests confirm independence and `event_ts()` preference. PASS.
+- P08-T002: `prices.rs` — `parse_price_str`/`format_price`/`f64_to_decimal` use `rust_decimal::Decimal`; test `no_floating_point_accumulation` confirms 0.1+0.2=0.3 exactly. PASS.
+- P08-T003: `symbol_map.rs` — key upgraded to `(venue, market_type, instrument_id)`; tests `btcusdt_perp_and_spot_are_different_canonical_ids` and `perp_not_confused_with_spot_via_shorthand` explicitly verify no confusion. PASS.
+- P08-T004: `feed_health.rs` — `FeedHealth` with `Fresh/Stale/Unknown` states; wired into `Heartbeat::run` closure in `main.rs` mapping state to `DependencyHealth::Ok/Degraded`. PASS.
+- P08-T005: `validation.rs` — outlier events route to DLQ via `dead_letter_subject` + `continue` in `main.rs`, skipping Redis and ClickHouse persist; 11 tests confirm bad fixtures rejected. PASS.
+- P08-T006: `confidence.rs` — `Confidence::High/Medium/Low`; `NewsItem` and `CalendarItem` both have `#[serde(default)] source_confidence: Confidence`; Postgres migration `0010_source_confidence.sql` adds column. PASS.
+- P08-T007: `clickhouse_query.rs` — `NormalizedEventsQuery` with asset/venue/event_type/from/limit filters; exposed as `GET /data/normalized-events`; empty result in fixture mode (no live ClickHouse). PASS.
+- P08-T008: `health.rs` `data_quality_handler` — `GET /data-quality` returns `Vec<FeedQualityRecord>` with `feed_id`, `last_message_at` (RFC-3339), `last_message_epoch_ms`, `is_stale`, `state`; route registered in `serve()`. PASS.
 - Follow-ups: none
