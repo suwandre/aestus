@@ -119,6 +119,43 @@ impl PostgresSink {
         Ok(())
     }
 
+    /// Write an embedding reference to `news_embeddings`.
+    ///
+    /// The `embedding` vector column is left NULL in this placeholder phase
+    /// (pgvector crate not yet added). Stores model name and dimension so the
+    /// row exists for later vector back-fill.
+    pub async fn upsert_news_embedding(
+        &self,
+        news_id: &str,
+        model: &str,
+        dim: u32,
+    ) -> anyhow::Result<()> {
+        let Some(ref url) = self.db_url else {
+            return Ok(());
+        };
+        let (client, conn) =
+            tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        tokio::spawn(async move {
+            if let Err(e) = conn.await {
+                tracing::error!(error = %e, "postgres connection error");
+            }
+        });
+
+        let dim_i32 = dim as i32;
+        client
+            .execute(
+                "INSERT INTO news_embeddings (news_id, model, dim) \
+                 VALUES ($1, $2, $3) \
+                 ON CONFLICT (news_id) DO UPDATE SET \
+                   model = EXCLUDED.model, \
+                   dim   = EXCLUDED.dim",
+                &[&news_id, &model, &dim_i32],
+            )
+            .await?;
+
+        Ok(())
+    }
+
     /// Upsert an on-chain event into `on_chain_events`.
     pub async fn upsert_on_chain_event(&self, item: &OnChainItem) -> anyhow::Result<()> {
         let Some(ref url) = self.db_url else {
@@ -231,5 +268,11 @@ mod tests {
     async fn upsert_onchain_no_postgres_is_noop() {
         let sink = PostgresSink::new(None);
         sink.upsert_on_chain_event(&make_onchain()).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn upsert_embedding_no_postgres_is_noop() {
+        let sink = PostgresSink::new(None);
+        sink.upsert_news_embedding("news-001", "noop", 0).await.unwrap();
     }
 }

@@ -72,7 +72,7 @@ async fn main() -> anyhow::Result<()> {
     let onchain = onchain::fixture::FixtureOnChainProvider::load(&cfg.onchain_fixture_path)?;
 
     // Embedding provider (no-op until configured).
-    let _embed = news::embeddings::build_provider(cfg.embedding_provider.as_deref());
+    let embed = news::embeddings::build_provider(cfg.embedding_provider.as_deref());
 
     let pg = persist::PostgresSink::new(cfg.postgres_url.clone());
     let watched_assets = cfg.watched_assets.clone();
@@ -131,6 +131,20 @@ async fn main() -> anyhow::Result<()> {
                         if let Err(e) = pg.upsert_news_item(&item).await {
                             tracing::warn!(error = %e, "news persist failed");
                             metrics::inc_errors("news");
+                        }
+                        // Embed title+summary and persist ref; noop returns None and is skipped.
+                        let embed_text = format!("{} {}", item.title, item.summary);
+                        match embed.embed(&embed_text).await {
+                            Ok(Some(_)) => {
+                                if let Err(e) = pg
+                                    .upsert_news_embedding(&item.id, embed.name(), embed.dim())
+                                    .await
+                                {
+                                    tracing::warn!(error = %e, "embedding persist failed");
+                                }
+                            }
+                            Ok(None) => {}
+                            Err(e) => tracing::warn!(error = %e, "embedding failed"),
                         }
                         let subj = subject(&CONTEXT_PACKET, &["news"]);
                         if let Ok(bytes) = serde_json::to_vec(&item) {

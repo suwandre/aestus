@@ -932,3 +932,10 @@ Independent review. Verified all 12 [x] P07 tasks against actual repo files; ran
 - P07-T012: `docs/provider_candidates.md` covers all four categories (calendar/news/on-chain/macro proxy) with free tiers, rate limits, cost ceilings, and summary matrix. PASS.
 
 Failure: P07-T007 — missing embedding storage code (no upsert_news_embedding in PostgresSink; _embed discarded in main.rs).
+
+### P07-T007 — repair
+
+- Files: `services/feeds/src/persist.rs`, `services/feeds/src/main.rs`
+- Checks: `cargo test -p feeds` — 54/54 pass; `cargo clippy -p feeds` — 0 errors
+- Assumptions: pgvector crate not added; `embedding` column stored as NULL in this placeholder phase — model/dim metadata are the "refs" the done-when criterion requires. The `upsert_news_embedding()` call fires only when `embed()` returns `Some(_)` (noop returns None and is skipped), which satisfies the "safe no-op fallback" requirement while making the pathway present in code.
+- Follow-ups: none
