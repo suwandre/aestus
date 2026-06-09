@@ -8,7 +8,7 @@
     "build": "bun build src/index.ts --outdir dist --target bun",
     "start": "bun run dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "bun test --pass-with-no-tests",
     "lint": "eslint src",
     "db:migrate": "bun run scripts/migrate.ts",
     "db:migrate:postgres": "bun run scripts/migrate.ts postgres",

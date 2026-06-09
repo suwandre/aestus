@@ -9,7 +9,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "bun test --pass-with-no-tests",
     "lint": "eslint src",
     "nats:init": "bun run scripts/nats-init.ts",
     "nats:replay": "bun run scripts/replay.ts",

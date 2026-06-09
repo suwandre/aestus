@@ -192,14 +192,30 @@ impl NormalizedMarketEvent {
 
     pub fn canonical_asset_id(&self) -> &str {
         match self {
-            Self::PriceTick { canonical_asset_id, .. }
-            | Self::Trade { canonical_asset_id, .. }
-            | Self::OrderbookDelta { canonical_asset_id, .. }
-            | Self::FundingRate { canonical_asset_id, .. }
-            | Self::OpenInterest { canonical_asset_id, .. }
-            | Self::Liquidation { canonical_asset_id, .. }
-            | Self::MarkPrice { canonical_asset_id, .. }
-            | Self::IndexPrice { canonical_asset_id, .. } => canonical_asset_id,
+            Self::PriceTick {
+                canonical_asset_id, ..
+            }
+            | Self::Trade {
+                canonical_asset_id, ..
+            }
+            | Self::OrderbookDelta {
+                canonical_asset_id, ..
+            }
+            | Self::FundingRate {
+                canonical_asset_id, ..
+            }
+            | Self::OpenInterest {
+                canonical_asset_id, ..
+            }
+            | Self::Liquidation {
+                canonical_asset_id, ..
+            }
+            | Self::MarkPrice {
+                canonical_asset_id, ..
+            }
+            | Self::IndexPrice {
+                canonical_asset_id, ..
+            } => canonical_asset_id,
         }
     }
 }
