@@ -115,7 +115,11 @@ jobs:
         run: cargo check --workspace
 
       - name: Clippy
-        run: cargo clippy --workspace -- -D warnings
+        # Lint severity is governed by [workspace.lints] in Cargo.toml: deny-level
+        # lints (e.g. unused_imports) still fail here, while placeholder patterns
+        # (unwrap_used/expect_used/dead_code) stay warnings during build-out per
+        # the P01-T006 policy. A blanket `-D warnings` would override that intent.
+        run: cargo clippy --workspace
 
       - name: Test
         run: cargo test --workspace
