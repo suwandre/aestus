@@ -1,8 +1,21 @@
-//! HTTP health + metrics endpoint (P06-T001 / T016).
+//! HTTP health + metrics + data explorer endpoints (P06-T001/T016, P08-T007/T008).
 
-use axum::{routing::get, Json, Router};
-use serde::Serialize;
+use axum::{
+    extract::{Query, State},
+    routing::get,
+    Json, Router,
+};
+use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+use std::sync::Arc;
+
+use crate::persist::clickhouse_query::NormalizedEventsQuery;
+
+/// Shared state injected into all HTTP handlers.
+#[derive(Clone)]
+pub struct AppState {
+    pub clickhouse_url: Option<String>,
+}
 
 #[derive(Serialize)]
 struct HealthResponse {
@@ -21,12 +34,61 @@ async fn metrics_handler() -> String {
     crate::metrics::gather_text()
 }
 
-pub async fn serve(port: u16) -> anyhow::Result<()> {
+/// Query parameters for `/data/normalized-events`.
+#[derive(Debug, Deserialize)]
+pub struct NormalizedEventsParams {
+    pub asset: Option<String>,
+    pub venue: Option<String>,
+    /// Event type, e.g. `trade`, `price_tick`.
+    #[serde(rename = "type")]
+    pub event_type: Option<String>,
+    /// ISO-8601 timestamp lower bound.
+    pub from: Option<String>,
+    /// Max rows to return (default 100, hard cap 1000).
+    pub limit: Option<u32>,
+}
+
+#[derive(Serialize)]
+struct NormalizedEventsResponse {
+    rows: Vec<serde_json::Value>,
+    count: usize,
+}
+
+async fn normalized_events_handler(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<NormalizedEventsParams>,
+) -> Json<NormalizedEventsResponse> {
+    let query = NormalizedEventsQuery {
+        asset: params.asset,
+        venue: params.venue,
+        event_type: params.event_type,
+        from: params.from,
+        limit: params.limit,
+    };
+
+    let rows = query
+        .execute(state.clickhouse_url.as_deref())
+        .await
+        .unwrap_or_else(|e| {
+            tracing::warn!(error = %e, "clickhouse query failed");
+            vec![]
+        });
+
+    let count = rows.len();
+    Json(NormalizedEventsResponse { rows, count })
+}
+
+pub async fn serve(port: u16, clickhouse_url: Option<String>) -> anyhow::Result<()> {
+    let state = Arc::new(AppState { clickhouse_url });
+
     let app = Router::new()
         .route("/health", get(health_handler))
-        .route("/metrics", get(metrics_handler));
+        .route("/metrics", get(metrics_handler))
+        .route("/data/normalized-events", get(normalized_events_handler))
+        .with_state(state);
+
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    tracing::info!(port, "HTTP health/metrics listening");
+    tracing::info!(port, "HTTP health/metrics/data listening");
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
     Ok(())

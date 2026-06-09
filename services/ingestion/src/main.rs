@@ -60,10 +60,11 @@ async fn main() -> anyhow::Result<()> {
         }
     };
 
-    // Health + metrics HTTP endpoint.
+    // Health + metrics + data explorer HTTP endpoint.
     let http_port = cfg.http_port;
+    let ch_url_for_health = cfg.clickhouse_url.clone();
     tokio::spawn(async move {
-        if let Err(e) = health::serve(http_port).await {
+        if let Err(e) = health::serve(http_port, ch_url_for_health).await {
             tracing::error!(error = %e, "health server exited");
         }
     });

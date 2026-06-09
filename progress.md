@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T007 — Implement normalized data explorer query
+
+- Files: `services/ingestion/src/persist/clickhouse_query.rs` (new), `services/ingestion/src/persist/mod.rs`, `services/ingestion/src/health.rs`, `services/ingestion/src/main.rs`
+- Checks: `cargo test --workspace` — 162 pass; 7 new clickhouse_query tests
+- Assumptions: ClickHouse HTTP GET with `?query=` parameter used (same interface as INSERT). Returns `JSONEachRow` format, one object per line. Empty result when `CLICKHOUSE_URL` unset (fixture-first). Limit default 100, hard cap 1000. SQL injection prevention: single quotes escaped as `''`. `health::serve()` signature updated to accept `clickhouse_url: Option<String>`; `AppState` passed via axum `State`.
+- Follow-ups: none
+
 ### P08-T006 — Add source confidence metadata
 
 - Files: `services/feeds/src/confidence.rs` (new), `services/feeds/src/main.rs`, `services/feeds/src/onchain/mod.rs`, `services/feeds/src/news/mod.rs`, `services/feeds/src/calendar/mod.rs`, `services/feeds/src/persist.rs`, `services/feeds/src/dedupe.rs`, `services/feeds/src/news/entity_extractor.rs`, `services/feeds/src/news/relevance.rs`, `services/feeds/src/news/rss.rs`, `infra/migrations/postgres/0010_source_confidence.sql` (new)

@@ -731,7 +731,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: Briefings can show when context depends on weak or fixture/proxy data.
 
-### [ ] P08-T007 - Implement normalized data explorer query
+### [x] P08-T007 - Implement normalized data explorer query
 
 - Agent action: Build backend query to inspect recent normalized events by asset, venue, type, and time.
 
