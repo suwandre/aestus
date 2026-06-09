@@ -5,6 +5,7 @@
 //! hot-state to Redis, and archives to ClickHouse.
 
 mod config;
+mod feed_health;
 mod hash;
 mod health;
 mod metrics;
@@ -15,7 +16,9 @@ mod symbol_map;
 use std::sync::Arc;
 
 use config::Config;
+use event_model::health::{DependencyHealth, HealthStatus};
 use event_model::streams::{subject, NORMALIZED_MARKET, RAW_MARKET};
+use feed_health::{FeedHealth, FeedState};
 use nats_publisher::{Heartbeat, NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
 use persist::{clickhouse::ClickHouseSink, redis_store::RedisStore};
 use provider::{
@@ -39,6 +42,9 @@ async fn main() -> anyhow::Result<()> {
     metrics::init();
 
     let sym_map = SymbolMap::load(&cfg.symbol_map_path);
+
+    // Shared per-feed staleness tracker (P08-T004).
+    let feed_health = FeedHealth::new();
 
     // NATS: use live publisher if URL is set, otherwise record in-memory.
     let publisher: Arc<dyn Publisher> = match &cfg.nats_url {
@@ -64,9 +70,24 @@ async fn main() -> anyhow::Result<()> {
     // Periodic heartbeat on system.health.ingestion.
     let hb_publisher = Arc::clone(&publisher);
     let hb_interval = cfg.heartbeat_interval;
+    let hb_feed_health = feed_health.clone();
+    let hb_stale_secs = cfg.stale_timeout.as_secs();
     tokio::spawn(async move {
         Heartbeat::new("ingestion", env!("CARGO_PKG_VERSION"))
-            .run(hb_publisher.as_ref(), hb_interval, || vec![])
+            .run(hb_publisher.as_ref(), hb_interval, move || {
+                hb_feed_health
+                    .feed_statuses(hb_stale_secs)
+                    .into_iter()
+                    .map(|s| DependencyHealth {
+                        name: s.feed_id,
+                        status: match s.state {
+                            FeedState::Fresh => HealthStatus::Ok,
+                            FeedState::Stale | FeedState::Unknown => HealthStatus::Degraded,
+                        },
+                        detail: s.last_message_epoch_ms.map(|ms| format!("last_ms:{ms}")),
+                    })
+                    .collect()
+            })
             .await;
     });
 
@@ -129,6 +150,14 @@ async fn main() -> anyhow::Result<()> {
             let event_type = norm.event_type_str();
             let canonical = norm.canonical_asset_id();
             let venue = norm.venue();
+
+            // Track feed freshness: key is "venue:event_type".
+            let feed_id = format!("{venue}:{event_type}");
+            let now_ms = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|d| d.as_millis() as u64)
+                .unwrap_or(0);
+            feed_health.update(&feed_id, now_ms);
 
             let norm_subject = subject(&NORMALIZED_MARKET, &[canonical, event_type]);
 

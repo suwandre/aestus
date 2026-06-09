@@ -713,7 +713,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: BTCUSDT perp and BTC spot are not confused.
 
-### [ ] P08-T004 - Implement stale-feed detection
+### [x] P08-T004 - Implement stale-feed detection
 
 - Agent action: Mark a feed stale when no valid message arrives within configured thresholds per feed type.
 

@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T004 — Implement stale-feed detection
+
+- Files: `services/ingestion/src/feed_health.rs` (new), `services/ingestion/src/main.rs`
+- Checks: `cargo test --workspace` — 141 pass; 6 new FeedHealth tests (unknown_before_any_update, fresh_immediately_after_update, stale_after_threshold_exceeded, fresh_when_within_threshold, feed_statuses_reflects_all_feeds, clone_shares_state)
+- Assumptions: Feed ID key is `"{venue}:{event_type}"` (e.g. `binance:trade`). Threshold source is `cfg.stale_timeout` (default 60s, env `STALE_TIMEOUT_SECS`). `FeedState::Unknown` maps to `HealthStatus::Degraded` in heartbeat deps (never-seen feed is degraded, not ok). `FeedHealth` clones share state via `Arc<Mutex<...>>`. `last_message_epoch_ms` detail string format: `"last_ms:{ms}"`.
+- Follow-ups: none
+
 ### P08-T003 — Implement symbol normalization tests
 
 - Files: `services/ingestion/src/symbol_map.rs`, `fixtures/venues/instruments.json`
