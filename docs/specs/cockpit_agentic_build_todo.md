@@ -701,7 +701,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: Events always preserve provider and ingestion times separately.
 
-### [ ] P08-T002 - Implement decimal precision policy
+### [x] P08-T002 - Implement decimal precision policy
 
 - Agent action: Use decimal-safe types for prices, sizes, funding, OI, and notional values.
 

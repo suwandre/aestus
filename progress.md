@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T002 — Implement decimal precision policy
+
+- Files: `crates/market_math/src/prices.rs` (new), `Cargo.toml` (workspace: added `rust_decimal`)
+- Checks: `cargo test --workspace` — 141 pass; doc-tests pass for `parse_price_str`, `format_price`, `f64_to_decimal`
+- Assumptions: Event model stays `f64` for transport efficiency (NATS serialisation). Display and comparison layers must use `market_math::prices`. `f64_to_decimal` formats to 8 decimal places before parsing to avoid `Decimal::try_from(f64)` rounding artefacts. `rust_decimal` added with `serde-float` feature to workspace.
+- Follow-ups: none
+
 ### P08-T001 — Implement timestamp normalization
 
 - Files: `crates/market_math/src/timestamps.rs` (new), `crates/market_math/src/lib.rs`, `crates/market_math/Cargo.toml`, `services/ingestion/src/provider/binance/parser.rs`, `services/ingestion/src/provider/bybit/mod.rs`, `services/ingestion/src/provider/hyperliquid/mod.rs`, `services/ingestion/src/provider/okx/mod.rs`
