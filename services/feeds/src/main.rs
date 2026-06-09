@@ -6,6 +6,7 @@
 //! exchange ingestion service (`services/ingestion`).
 
 mod calendar;
+mod confidence;
 mod config;
 mod dedupe;
 mod health;

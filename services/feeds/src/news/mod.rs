@@ -5,6 +5,7 @@ pub mod entity_extractor;
 pub mod relevance;
 pub mod rss;
 
+use crate::confidence::Confidence;
 use serde::{Deserialize, Serialize};
 
 /// A normalised news or narrative item.
@@ -29,6 +30,9 @@ pub struct NewsItem {
     pub relevance_score: f64,
     pub sentiment: String,
     pub tags: Vec<String>,
+    /// Source data confidence (P08-T006): RSS/aggregated news defaults to Medium.
+    #[serde(default)]
+    pub source_confidence: Confidence,
 }
 
 /// Compute the sha256 hex digest of a URL (lowercased, trailing slash stripped).

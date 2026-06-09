@@ -6,6 +6,7 @@
 //! stage; connections are opened per-call (acceptable at 5-minute poll cadence).
 
 use crate::calendar::CalendarItem;
+use crate::confidence::Confidence;
 use crate::news::NewsItem;
 use crate::onchain::OnChainItem;
 
@@ -36,18 +37,22 @@ impl PostgresSink {
             }
         });
 
+        let confidence_str = confidence_to_str(item.source_confidence);
         // ENUM casts via SQL: $6::news_source_type, $10::sentiment
         client
             .execute(
                 "INSERT INTO news_items \
                  (id, title, url, url_hash, source, source_type, \
-                  published_at, summary, relevance_score, sentiment, tags) \
+                  published_at, summary, relevance_score, sentiment, tags, \
+                  source_confidence) \
                  VALUES ($1,$2,$3,$4,$5,$6::news_source_type,$7::timestamptz,\
-                         $8,$9,$10::sentiment,$11) \
+                         $8,$9,$10::sentiment,$11,\
+                         $12::source_confidence) \
                  ON CONFLICT (id) DO UPDATE SET \
-                   relevance_score = EXCLUDED.relevance_score, \
-                   sentiment       = EXCLUDED.sentiment, \
-                   tags            = EXCLUDED.tags",
+                   relevance_score   = EXCLUDED.relevance_score, \
+                   sentiment         = EXCLUDED.sentiment, \
+                   tags              = EXCLUDED.tags, \
+                   source_confidence = EXCLUDED.source_confidence",
                 &[
                     &item.id,
                     &item.title,
@@ -60,6 +65,7 @@ impl PostgresSink {
                     &item.relevance_score,
                     &item.sentiment.as_str(),
                     &item.tags,
+                    &confidence_str,
                 ],
             )
             .await?;
@@ -89,16 +95,18 @@ impl PostgresSink {
             }
         });
 
+        let confidence_str = confidence_to_str(item.source_confidence);
         client
             .execute(
                 "INSERT INTO macro_events \
                  (event_id, region, currency, title, scheduled_at, importance, \
-                  consensus, previous, actual, source) \
+                  consensus, previous, actual, source, source_confidence) \
                  VALUES ($1,$2,$3,$4,$5::timestamptz,$6::macro_importance,\
-                         $7,$8,$9,$10) \
+                         $7,$8,$9,$10,$11::source_confidence) \
                  ON CONFLICT (event_id) DO UPDATE SET \
-                   actual     = EXCLUDED.actual, \
-                   updated_at = now()",
+                   actual            = EXCLUDED.actual, \
+                   source_confidence = EXCLUDED.source_confidence, \
+                   updated_at        = now()",
                 &[
                     &item.event_id,
                     &item.region,
@@ -110,6 +118,7 @@ impl PostgresSink {
                     &item.previous,
                     &item.actual,
                     &item.source,
+                    &confidence_str,
                 ],
             )
             .await?;
@@ -193,11 +202,20 @@ impl PostgresSink {
     }
 }
 
+/// Map [`Confidence`] to the SQL ENUM string expected by Postgres.
+fn confidence_to_str(c: Confidence) -> &'static str {
+    match c {
+        Confidence::High => "high",
+        Confidence::Medium => "medium",
+        Confidence::Low => "low",
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::confidence::Confidence;
     use crate::news::url_hash;
-    use crate::onchain::Confidence;
 
     fn make_news() -> NewsItem {
         NewsItem {
@@ -213,6 +231,7 @@ mod tests {
             relevance_score: 0.7,
             sentiment: "positive".into(),
             tags: vec!["btc".into()],
+            source_confidence: Confidence::Medium,
         }
     }
 
@@ -228,6 +247,7 @@ mod tests {
             previous: Some(3.4),
             actual: None,
             source: "te".into(),
+            source_confidence: Confidence::High,
         }
     }
 

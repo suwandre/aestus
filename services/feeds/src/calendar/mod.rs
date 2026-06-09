@@ -7,6 +7,7 @@
 
 pub mod fixture;
 
+use crate::confidence::Confidence;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
@@ -25,6 +26,10 @@ pub struct CalendarItem {
     pub actual: Option<f64>,
     /// Calendar source identifier, e.g. `te`, `forexfactory`.
     pub source: String,
+    /// Source data confidence (P08-T006): official releases are High; aggregator
+    /// re-publishes default to Medium.
+    #[serde(default)]
+    pub source_confidence: Confidence,
 }
 
 /// Pluggable interface for economic-calendar data sources.
@@ -89,6 +94,7 @@ mod tests {
             previous: Some(3.4),
             actual: None,
             source: "te".into(),
+            source_confidence: Confidence::High,
         }
     }
 

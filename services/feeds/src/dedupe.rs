@@ -60,8 +60,8 @@ impl DedupeSet {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::confidence::Confidence;
     use crate::news::url_hash;
-    use crate::onchain::Confidence;
 
     fn make_news(url: &str) -> NewsItem {
         NewsItem {
@@ -77,6 +77,7 @@ mod tests {
             relevance_score: 0.0,
             sentiment: "neutral".into(),
             tags: vec![],
+            source_confidence: Confidence::Medium,
         }
     }
 
@@ -92,6 +93,7 @@ mod tests {
             previous: None,
             actual: None,
             source: "te".into(),
+            source_confidence: Confidence::Medium,
         }
     }
 

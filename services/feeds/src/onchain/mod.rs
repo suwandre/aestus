@@ -8,24 +8,16 @@
 pub mod fixture;
 
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
 
-/// Data confidence level, set by the provider based on its data quality.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-pub enum Confidence {
-    /// On-chain data confirmed directly on the blockchain.
-    High,
-    /// Derived or labelled data (some provider inference).
-    Medium,
-    /// Heuristic estimate or proxy.
-    Low,
-}
+/// Re-export the shared confidence type (P08-T006).
+pub use crate::confidence::Confidence;
 
 /// A normalised on-chain event. Maps to `on_chain_events` (P04-T005).
 ///
 /// `event_type` discriminates the variant; `attributes` carries
 /// variant-specific fields (matching the JSONB column in the DB schema).
+use serde::{Deserialize, Serialize};
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct OnChainItem {
     /// Stable key: provider-assigned tx hash, or a deterministic composite.

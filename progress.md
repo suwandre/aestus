@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T006 — Add source confidence metadata
+
+- Files: `services/feeds/src/confidence.rs` (new), `services/feeds/src/main.rs`, `services/feeds/src/onchain/mod.rs`, `services/feeds/src/news/mod.rs`, `services/feeds/src/calendar/mod.rs`, `services/feeds/src/persist.rs`, `services/feeds/src/dedupe.rs`, `services/feeds/src/news/entity_extractor.rs`, `services/feeds/src/news/relevance.rs`, `services/feeds/src/news/rss.rs`, `infra/migrations/postgres/0010_source_confidence.sql` (new)
+- Checks: `cargo test --workspace` — 155 pass
+- Assumptions: `Confidence` moved from `onchain/mod.rs` to shared `confidence.rs`; onchain/mod.rs re-exports via `pub use crate::confidence::Confidence`. Both `NewsItem` and `CalendarItem` gain `#[serde(default)] source_confidence: Confidence` — existing fixture JSON files parse fine without the field (defaults to `Medium`). RSS live-parse and fixture-parse paths set `Medium`; fixture JSON may override with `"high"/"low"`. Postgres migration adds `source_confidence source_confidence` column to `news_items` and `macro_events` (DEFAULT `'medium'`).
+- Follow-ups: none
+
 ### P08-T005 — Implement outlier guardrails
 
 - Files: `services/ingestion/src/validation.rs` (new), `services/ingestion/src/main.rs`

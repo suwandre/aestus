@@ -94,6 +94,8 @@ fn normalise_fixture_item(v: &serde_json::Value) -> Option<NewsItem> {
                     .collect()
             })
             .unwrap_or_default(),
+        source_confidence: serde_json::from_value(v["source_confidence"].clone())
+            .unwrap_or_default(),
     })
 }
 
@@ -139,6 +141,7 @@ fn parse_rss_xml(xml: &str, feed_url: &str) -> anyhow::Result<Vec<NewsItem>> {
                     relevance_score: 0.0,
                     sentiment: "neutral".into(),
                     tags: vec![],
+                    source_confidence: crate::confidence::Confidence::Medium,
                 });
             }
             in_item = false;

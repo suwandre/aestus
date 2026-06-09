@@ -725,7 +725,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: Bad payload fixtures do not corrupt hot state or features.
 
-### [ ] P08-T006 - Add source confidence metadata
+### [x] P08-T006 - Add source confidence metadata
 
 - Agent action: Attach source confidence/quality labels to contextual data and lower-confidence market proxies.
 

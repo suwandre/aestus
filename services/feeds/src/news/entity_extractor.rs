@@ -133,6 +133,7 @@ mod tests {
             relevance_score: 0.0,
             sentiment: "neutral".into(),
             tags: vec![],
+            source_confidence: crate::confidence::Confidence::Medium,
         }
     }
 
