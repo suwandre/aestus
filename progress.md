@@ -939,3 +939,20 @@ Failure: P07-T007 — missing embedding storage code (no upsert_news_embedding i
 - Checks: `cargo test -p feeds` — 54/54 pass; `cargo clippy -p feeds` — 0 errors
 - Assumptions: pgvector crate not added; `embedding` column stored as NULL in this placeholder phase — model/dim metadata are the "refs" the done-when criterion requires. The `upsert_news_embedding()` call fires only when `embed()` returns `Some(_)` (noop returns None and is skipped), which satisfies the "safe no-op fallback" requirement while making the pathway present in code.
 - Follow-ups: none
+
+### P07 REVIEW — PASS
+
+Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against actual repo files; ran `cargo test --workspace` (114/114 pass across all crates). No [!] tasks in P07.
+
+- P07-T001: `services/feeds` is a separate workspace member from `services/ingestion`; config/health/metrics/NATS/heartbeat wired in main.rs. PASS.
+- P07-T002: `CalendarProvider` async trait in `calendar/mod.rs` with `name()`/`fetch()`/`normalize()` + default `is_duplicate()`/`update_actuals()` helpers; 3 tests pass. PASS.
+- P07-T003: `FixtureCalendarProvider` reads `fixtures/macro/events.json`; CPI/FOMC/NFP/PPI/jobless variants confirmed present; 4 tests pass. PASS.
+- P07-T004: `RssFetcher` polls configured RSS sources, persists via `upsert_news_item`, publishes via `publish_bytes` to NATS `context.packet.*`; 5 tests pass. PASS.
+- P07-T005: `entity_extractor.rs` — ASSET_RULES (BTC/ETH/SOL/…), MACRO_RULES (CPI/FOMC/ETF/…), VENUE_RULES (Binance/…), TAG_RULES (whale/institutional/…); 9 tests pass. PASS.
+- P07-T006: `relevance.rs` sets `item.relevance_score` (clamped 0–1) using watched assets and tags; score stored via `upsert_news_item`; 5 tests pass. PASS.
+- P07-T007: `upsert_news_embedding()` present in `persist.rs`; called in main.rs poll loop when `embed()` returns `Some(_)`; `NoOpEmbeddingProvider` returns `None` (safe fallback); 5 tests pass. PASS.
+- P07-T008: `OnChainProvider` async trait with `name()`/`confidence()`/`fetch()`/`normalize()`; `Confidence` enum (High/Medium/Low); `OnChainItem` carries `source` and `confidence` fields; 3 tests pass. PASS.
+- P07-T009: `FixtureOnChainProvider` reads `fixtures/onchain/events.json`; exchange_flow/whale_transfer/stablecoin_mint_burn variants present; 4 tests pass. PASS.
+- P07-T010: `DedupeSet` deduplicates by url_hash (news), event_id:source (calendar), id (onchain); Postgres upserts use ON CONFLICT for cross-restart dedup; 6 tests pass. PASS.
+- P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
+- P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
