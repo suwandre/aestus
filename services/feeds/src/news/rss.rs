@@ -77,22 +77,27 @@ fn normalise_fixture_item(v: &serde_json::Value) -> Option<NewsItem> {
         published_at: v["published_at"].as_str().unwrap_or("").to_string(),
         entities: v["entities"]
             .as_array()
-            .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|x| x.as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_default(),
         summary: v["summary"].as_str().unwrap_or("").to_string(),
         relevance_score: v["relevance_score"].as_f64().unwrap_or(0.0),
         sentiment: v["sentiment"].as_str().unwrap_or("neutral").to_string(),
         tags: v["tags"]
             .as_array()
-            .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|x| x.as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_default(),
     })
 }
 
-async fn fetch_rss_feed(
-    client: &reqwest::Client,
-    url: &str,
-) -> anyhow::Result<Vec<NewsItem>> {
+async fn fetch_rss_feed(client: &reqwest::Client, url: &str) -> anyhow::Result<Vec<NewsItem>> {
     let body = client.get(url).send().await?.text().await?;
     parse_rss_xml(&body, url)
 }
@@ -194,7 +199,10 @@ mod tests {
     use super::*;
 
     fn fixture_path() -> &'static str {
-        concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/news/items.json")
+        concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../fixtures/news/items.json"
+        )
     }
 
     #[tokio::test]

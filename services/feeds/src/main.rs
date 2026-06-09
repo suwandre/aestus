@@ -100,10 +100,8 @@ async fn main() -> anyhow::Result<()> {
                             tracing::warn!(error = %e, "macro persist failed");
                             metrics::inc_errors("calendar");
                         }
-                        let subj = subject(
-                            &CONTEXT_PACKET,
-                            &["macro", &item.region.to_lowercase()],
-                        );
+                        let subj =
+                            subject(&CONTEXT_PACKET, &["macro", &item.region.to_lowercase()]);
                         if let Ok(bytes) = serde_json::to_vec(&item) {
                             if let Err(e) = publisher.publish_bytes(&subj, bytes).await {
                                 tracing::warn!(subject = %subj, error = %e, "calendar publish failed");

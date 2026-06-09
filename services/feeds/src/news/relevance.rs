@@ -34,7 +34,11 @@ pub fn score_relevance(item: &mut NewsItem, watched_assets: &[String]) {
         score += 0.3;
     }
 
-    if item.tags.iter().any(|t| t == "whale" || t == "institutional") {
+    if item
+        .tags
+        .iter()
+        .any(|t| t == "whale" || t == "institutional")
+    {
         score += 0.2;
     }
 
@@ -143,13 +147,7 @@ mod tests {
             "positive",
         );
         score_relevance(&mut item, &btc_watched());
-        assert!(
-            item.relevance_score <= 1.0,
-            "score must never exceed 1.0"
-        );
-        assert!(
-            item.relevance_score >= 0.0,
-            "score must never go below 0.0"
-        );
+        assert!(item.relevance_score <= 1.0, "score must never exceed 1.0");
+        assert!(item.relevance_score >= 0.0, "score must never go below 0.0");
     }
 }

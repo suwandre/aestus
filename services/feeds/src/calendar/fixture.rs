@@ -47,7 +47,10 @@ mod tests {
     use super::*;
 
     fn fixture_path() -> &'static str {
-        concat!(env!("CARGO_MANIFEST_DIR"), "/../../fixtures/macro/events.json")
+        concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../fixtures/macro/events.json"
+        )
     }
 
     #[test]

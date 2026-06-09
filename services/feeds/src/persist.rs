@@ -29,8 +29,7 @@ impl PostgresSink {
         let Some(ref url) = self.db_url else {
             return Ok(());
         };
-        let (client, conn) =
-            tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
         tokio::spawn(async move {
             if let Err(e) = conn.await {
                 tracing::error!(error = %e, "postgres connection error");
@@ -83,8 +82,7 @@ impl PostgresSink {
         let Some(ref url) = self.db_url else {
             return Ok(());
         };
-        let (client, conn) =
-            tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
         tokio::spawn(async move {
             if let Err(e) = conn.await {
                 tracing::error!(error = %e, "postgres connection error");
@@ -133,8 +131,7 @@ impl PostgresSink {
         let Some(ref url) = self.db_url else {
             return Ok(());
         };
-        let (client, conn) =
-            tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
         tokio::spawn(async move {
             if let Err(e) = conn.await {
                 tracing::error!(error = %e, "postgres connection error");
@@ -161,8 +158,7 @@ impl PostgresSink {
         let Some(ref url) = self.db_url else {
             return Ok(());
         };
-        let (client, conn) =
-            tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
         tokio::spawn(async move {
             if let Err(e) = conn.await {
                 tracing::error!(error = %e, "postgres connection error");
@@ -273,6 +269,8 @@ mod tests {
     #[tokio::test]
     async fn upsert_embedding_no_postgres_is_noop() {
         let sink = PostgresSink::new(None);
-        sink.upsert_news_embedding("news-001", "noop", 0).await.unwrap();
+        sink.upsert_news_embedding("news-001", "noop", 0)
+            .await
+            .unwrap();
     }
 }

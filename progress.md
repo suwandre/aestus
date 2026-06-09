@@ -931,7 +931,7 @@ Independent review. Verified all 12 [x] P07 tasks against actual repo files; ran
 - P07-T011: `PostgresSink::upsert_news_item/upsert_macro_event/upsert_on_chain_event` write into standard P04 tables; poll loop in main.rs wires all three; 3 no-op tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers all four categories (calendar/news/on-chain/macro proxy) with free tiers, rate limits, cost ceilings, and summary matrix. PASS.
 
-Failure: P07-T007 — missing embedding storage code (no upsert_news_embedding in PostgresSink; _embed discarded in main.rs).
+Failure: P07-T007 — missing embedding storage code (no upsert_news_embedding in PostgresSink; \_embed discarded in main.rs).
 
 ### P07-T007 — repair
 

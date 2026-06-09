@@ -136,7 +136,10 @@ mod tests {
         let p = FixtureOnChainProvider::load(fixture_path()).unwrap();
         for item in &p.items {
             assert!(!item.source.is_empty(), "every item must have a source");
-            assert!(!item.occurred_at.is_empty(), "every item must have a timestamp");
+            assert!(
+                !item.occurred_at.is_empty(),
+                "every item must have a timestamp"
+            );
         }
     }
 

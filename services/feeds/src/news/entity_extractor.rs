@@ -200,7 +200,10 @@ mod tests {
 
     #[test]
     fn unrelated_content_extracts_nothing() {
-        let mut item = make_item("Weather forecast for Berlin", "Cloudy with a chance of rain");
+        let mut item = make_item(
+            "Weather forecast for Berlin",
+            "Cloudy with a chance of rain",
+        );
         extract_entities(&mut item);
         assert!(item.entities.is_empty());
     }
