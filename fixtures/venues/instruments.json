@@ -39,7 +39,7 @@
     "venue_id": "binance",
     "market_type": "spot",
     "instrument_id": "BTCUSDT",
-    "canonical_asset_id": "crypto:btc-usdt",
+    "canonical_asset_id": "crypto:btc-spot",
     "tick_size": "0.01",
     "lot_size": "0.00001",
     "quote_currency": "USDT"

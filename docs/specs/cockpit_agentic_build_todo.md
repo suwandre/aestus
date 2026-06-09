@@ -707,7 +707,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 - Done when: No code uses floating point where precision errors would affect displayed prices/levels.
 
-### [ ] P08-T003 - Implement symbol normalization tests
+### [x] P08-T003 - Implement symbol normalization tests
 
 - Agent action: Add tests for mapping venue symbols to canonical assets, including perps vs spot.
 

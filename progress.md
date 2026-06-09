@@ -957,6 +957,13 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
 
+### P08-T003 — Implement symbol normalization tests
+
+- Files: `services/ingestion/src/symbol_map.rs`, `fixtures/venues/instruments.json`
+- Checks: `cargo test --workspace` — 141 pass; 6 symbol-map tests (btcusdt_perp_maps_same_canonical_across_venues, btcusdt_perp_and_spot_are_different_canonical_ids, perp_not_confused_with_spot_via_shorthand, macro_proxy_uses_typed_lookup, unknown_instrument_returns_fallback_string, loads_from_fixture_fallback)
+- Assumptions: `SymbolMap` key upgraded from `(venue_id, instrument_id)` to `(venue_id, market_type, instrument_id)`. `canonical_id()` shorthand keeps `market_type = "perp"` so all existing adapters compile unchanged. `fixtures/venues/instruments.json` BTC spot entry corrected from `crypto:btc-usdt` → `crypto:btc-spot`. Both TOML and JSON loaders use `#[serde(default = "default_perp")]` for backward compat.
+- Follow-ups: none
+
 ### P08-T002 — Implement decimal precision policy
 
 - Files: `crates/market_math/src/prices.rs` (new), `Cargo.toml` (workspace: added `rust_decimal`)
