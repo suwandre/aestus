@@ -8,6 +8,7 @@ workspace = true
 
 [dependencies]
 event_model = { path = "../../crates/event_model" }
+market_math = { path = "../../crates/market_math" }
 nats_publisher = { path = "../../crates/nats_publisher" }
 
 # Workspace deps

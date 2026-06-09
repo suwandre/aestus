@@ -8,6 +8,7 @@ use crate::symbol_map::SymbolMap;
 use async_trait::async_trait;
 use event_model::envelope::SCHEMA_VERSION;
 use event_model::market::{NormalizedMarketEvent, RawMarketEvent, Side};
+use market_math::timestamps::ms_to_rfc3339;
 use serde_json::Value;
 use std::time::Duration;
 use tokio::sync::{mpsc, watch};
@@ -70,7 +71,7 @@ impl HyperliquidAdapter {
                 let trade_id = t["tid"].as_i64().map(|id| id.to_string());
                 let ts_ms = t["time"].as_i64().unwrap_or(0);
                 let timestamp = if ts_ms > 0 {
-                    crate::provider::binance::parser::ms_to_rfc3339(ts_ms)
+                    ms_to_rfc3339(ts_ms)
                 } else {
                     received_at.into()
                 };

@@ -695,7 +695,7 @@ Goal: Add contextual feeds needed for briefings without relying on expensive pro
 
 Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale in the UI.
 
-### [ ] P08-T001 - Implement timestamp normalization
+### [x] P08-T001 - Implement timestamp normalization
 
 - Agent action: Standardize provider timestamp, received timestamp, and normalized timestamp handling across events.
 

@@ -2,32 +2,18 @@
 //!
 //! Parses Binance combined-stream wrapper messages into [`RawMarketEvent`] +
 //! [`NormalizedMarketEvent`] pairs. All price/size fields arrive as strings from
-//! Binance and are parsed to f64 during normalization.
+//! Binance and are parsed to f64 during normalization. Timestamp helpers are
+//! provided by [`market_math::timestamps`] (P08-T001) so all ingestion adapters
+//! use the same canonical conversion logic.
 
 use crate::hash::sha256_hex;
 use event_model::envelope::SCHEMA_VERSION;
 use event_model::market::{NormalizedMarketEvent, RawMarketEvent, Side};
+use market_math::timestamps::{ms_to_rfc3339, now_rfc3339};
 use serde::Deserialize;
 use serde_json::Value;
-use time::format_description::well_known::Rfc3339;
-use time::OffsetDateTime;
 
 use super::ProviderError;
-
-// ── helpers ─────────────────────────────────────────────────────────────────
-
-fn now_rfc3339() -> String {
-    OffsetDateTime::now_utc()
-        .format(&Rfc3339)
-        .unwrap_or_else(|_| "1970-01-01T00:00:00Z".to_string())
-}
-
-pub fn ms_to_rfc3339(ms: i64) -> String {
-    OffsetDateTime::from_unix_timestamp_nanos((ms as i128) * 1_000_000)
-        .ok()
-        .and_then(|dt| dt.format(&Rfc3339).ok())
-        .unwrap_or_else(|| format!("{ms}"))
-}
 
 fn parse_f64(v: &Value, field: &str) -> Result<f64, ProviderError> {
     match v {

@@ -9,6 +9,7 @@ use crate::symbol_map::SymbolMap;
 use async_trait::async_trait;
 use event_model::envelope::SCHEMA_VERSION;
 use event_model::market::{NormalizedMarketEvent, RawMarketEvent, Side};
+use market_math::timestamps::ms_to_rfc3339;
 use serde_json::Value;
 use std::time::Duration;
 use tokio::sync::{mpsc, watch};
@@ -69,7 +70,7 @@ impl OkxAdapter {
                     .and_then(|s| s.parse::<i64>().ok())
                     .unwrap_or(0);
                 let timestamp = if ts_ms > 0 {
-                    crate::provider::binance::parser::ms_to_rfc3339(ts_ms)
+                    ms_to_rfc3339(ts_ms)
                 } else {
                     received_at.into()
                 };
@@ -109,7 +110,7 @@ impl OkxAdapter {
                 let next_funding_time = d["fundingTime"]
                     .as_str()
                     .and_then(|s| s.parse::<i64>().ok())
-                    .map(crate::provider::binance::parser::ms_to_rfc3339);
+                    .map(ms_to_rfc3339);
                 Some(Ok(NormalizedMarketEvent::FundingRate {
                     schema_version: SCHEMA_VERSION,
                     venue: VENUE.into(),
@@ -146,7 +147,7 @@ impl OkxAdapter {
                     .and_then(|s| s.parse::<i64>().ok())
                     .unwrap_or(0);
                 let timestamp = if ts_ms > 0 {
-                    crate::provider::binance::parser::ms_to_rfc3339(ts_ms)
+                    ms_to_rfc3339(ts_ms)
                 } else {
                     received_at.into()
                 };

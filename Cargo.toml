@@ -33,6 +33,7 @@ anyhow = "1"
 thiserror = "1"
 uuid = { version = "1", features = ["v4"] }
 time = { version = "0.3", features = ["formatting"] }
+rust_decimal = { version = "1", features = ["serde-float"] }
 async-nats = "0.38"
 async-trait = "0.1"
 futures = "0.3"

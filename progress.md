@@ -956,3 +956,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P07-T010: `DedupeSet` deduplicates by url_hash (news), event_id:source (calendar), id (onchain); Postgres upserts use ON CONFLICT for cross-restart dedup; 6 tests pass. PASS.
 - P07-T011: `PostgresSink::upsert_news_item`/`upsert_macro_event`/`upsert_on_chain_event` wired in main.rs poll loop; all three no-op when `db_url` is None; 3 no-op persistence tests pass. PASS.
 - P07-T012: `docs/provider_candidates.md` covers calendar (TradingEconomics/ForexFactory), news (RSS/CryptoPanic/Alpaca), on-chain (Glassnode/Dune/Etherscan), macro proxy (Yahoo/FRED) with rate limits, cost ceilings, summary matrix. PASS.
+
+### P08-T001 — Implement timestamp normalization
+
+- Files: `crates/market_math/src/timestamps.rs` (new), `crates/market_math/src/lib.rs`, `crates/market_math/Cargo.toml`, `services/ingestion/src/provider/binance/parser.rs`, `services/ingestion/src/provider/bybit/mod.rs`, `services/ingestion/src/provider/hyperliquid/mod.rs`, `services/ingestion/src/provider/okx/mod.rs`
+- Checks: `cargo test --workspace` — 141 pass
+- Assumptions: `TimestampSet` lives in `market_math` (not `event_model`) because it is a processing utility, not a wire type. `ms_to_rfc3339` returns a fallback "epoch" string rather than panicking on out-of-range inputs (negative ms, very large ms). All four exchange adapters now import from `market_math::timestamps`; their local copies removed.
+- Follow-ups: none
