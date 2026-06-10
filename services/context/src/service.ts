@@ -17,6 +17,7 @@ import type { ContextConfig } from "./config";
 import { assembleContextPacket } from "./builder";
 import { publishContextPacket } from "./publish";
 import type { ContextMetrics } from "./health";
+import type { ContextDataSource } from "./data/source";
 
 export interface ContextServiceDeps {
   bus: EventBus;
@@ -26,6 +27,8 @@ export interface ContextServiceDeps {
   assemble?: (trigger: AnomalyEvent) => ContextPacket | Promise<ContextPacket>;
   /** Clock injected into the default assembler. */
   now?: () => Date;
+  /** Data source the default assembler reads from. */
+  dataSource?: ContextDataSource;
 }
 
 /** Assemble and publish a packet for one anomaly; returns the packet. */
@@ -37,7 +40,10 @@ export async function processAnomaly(
   const assemble =
     deps.assemble ??
     ((t: AnomalyEvent) =>
-      assembleContextPacket(t, deps.now !== undefined ? { now: deps.now } : {}));
+      assembleContextPacket(t, {
+        ...(deps.now !== undefined ? { now: deps.now } : {}),
+        ...(deps.dataSource !== undefined ? { dataSource: deps.dataSource } : {}),
+      }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {
     source: deps.config.service,

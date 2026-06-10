@@ -14,12 +14,15 @@ import {
   SCHEMA_VERSION,
 } from "@aestus/contracts";
 import { placeholderLevels } from "./levels";
+import type { ContextDataSource } from "./data/source";
 
 export interface BuildOptions {
   /** Clock for `generated_at`. Defaults to the current time. */
   now?: () => Date;
   /** Packet id from the trigger. Defaults to `ctx:<trigger.id>`. */
   idFor?: (trigger: AnomalyEvent) => string;
+  /** Source for market/news/macro/on-chain state; placeholders used if absent. */
+  dataSource?: ContextDataSource;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -49,13 +52,19 @@ export function assembleContextPacket(
   const idFor = opts.idFor ?? ((t) => `ctx:${t.id}`);
   const primaryAsset = trigger.assets[0]!;
 
+  // Current market state for the trigger asset (T002): the real feature
+  // snapshot when available, otherwise a neutral placeholder.
+  const marketSnapshot =
+    opts.dataSource?.featureSnapshot(primaryAsset) ??
+    placeholderSnapshot(primaryAsset, trigger.detected_at);
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
     generated_at: now().toISOString(),
     primary_asset: primaryAsset,
     trigger,
-    market_snapshot: placeholderSnapshot(primaryAsset, trigger.detected_at),
+    market_snapshot: marketSnapshot,
     correlated_assets: [],
     news: [],
     macro: [],

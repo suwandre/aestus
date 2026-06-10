@@ -10,6 +10,7 @@ import { type EventBus, InMemoryBus, NatsBus, startHeartbeat } from "@aestus/eve
 import { loadConfig } from "./config";
 import { newMetrics, startHealthServer } from "./health";
 import { startContextService } from "./service";
+import { FixtureDataSource } from "./data/fixtures";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -52,7 +53,8 @@ async function main(): Promise<void> {
     dependencies,
   });
 
-  const sub = await startContextService({ bus, config, metrics });
+  const dataSource = new FixtureDataSource(config);
+  const sub = await startContextService({ bus, config, metrics, dataSource });
   console.log(`[context] consuming anomalies; health on :${config.httpPort}`);
 
   const shutdown = async () => {

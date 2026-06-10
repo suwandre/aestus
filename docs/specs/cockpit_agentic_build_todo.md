@@ -965,7 +965,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Service emits heartbeat and placeholder context.packet events.
 
-### [ ] P11-T002 - Implement market snapshot query
+### [x] P11-T002 - Implement market snapshot query
 
 - Agent action: Fetch latest price, returns, funding, OI, volume, volatility, basis, and liquidation features for anomaly assets.
 
