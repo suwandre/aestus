@@ -837,7 +837,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Feature calculations are deterministic and regression-tested.
 
-### [ ] P09-T016 - Document feature formulas
+### [x] P09-T016 - Document feature formulas
 
 - Agent action: Create `docs/feature_formulas.md` with formulas, windows, thresholds, and known limitations.
 
