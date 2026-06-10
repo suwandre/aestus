@@ -190,6 +190,19 @@ impl NormalizedMarketEvent {
         }
     }
 
+    pub fn timestamp(&self) -> &str {
+        match self {
+            Self::PriceTick { timestamp, .. }
+            | Self::Trade { timestamp, .. }
+            | Self::OrderbookDelta { timestamp, .. }
+            | Self::FundingRate { timestamp, .. }
+            | Self::OpenInterest { timestamp, .. }
+            | Self::Liquidation { timestamp, .. }
+            | Self::MarkPrice { timestamp, .. }
+            | Self::IndexPrice { timestamp, .. } => timestamp,
+        }
+    }
+
     pub fn canonical_asset_id(&self) -> &str {
         match self {
             Self::PriceTick {

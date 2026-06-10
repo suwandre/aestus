@@ -1025,3 +1025,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - P08-T007: `clickhouse_query.rs` — `NormalizedEventsQuery` with asset/venue/event_type/from/limit filters; exposed as `GET /data/normalized-events`; empty result in fixture mode (no live ClickHouse). PASS.
 - P08-T008: `health.rs` `data_quality_handler` — `GET /data-quality` returns `Vec<FeedQualityRecord>` with `feed_id`, `last_message_at` (RFC-3339), `last_message_epoch_ms`, `is_stale`, `state`; route registered in `serve()`. PASS.
 - Follow-ups: none
+
+### P09-T001 — Create feature service skeleton
+
+- Files: services/features/Cargo.toml (deps: nats_publisher, async-nats, redis, axum, reqwest, futures, async-trait, thiserror), services/features/src/main.rs, services/features/src/config.rs, services/features/src/state.rs, services/features/src/snapshot.rs, services/features/src/window.rs, services/features/src/candle.rs, services/features/src/basis.rs, services/features/src/breadth.rs, services/features/src/correlation.rs, services/features/src/funding.rs, services/features/src/liquidations.rs, services/features/src/oi.rs, services/features/src/persist.rs, services/features/src/publish.rs, services/features/src/returns.rs, services/features/src/volatility.rs, services/features/src/volume.rs, crates/event_model/src/market.rs (timestamp() helper), crates/market_math/src/timestamps.rs (rfc3339_to_ms), Cargo.lock
+- Checks: `cargo check --workspace` passes; `cargo test --package features` — 64 pass; `cargo fmt --check` clean
+- Assumptions: All 16 feature modules were written as one body of work by an interrupted previous worker; recovered, bug-fixed (volume z-score flat-baseline edge case), formatted, and committed here as T001. T002–T015 commits below carry only progress.md/todo updates. `rfc3339_to_ms` added to market_math for timestamp parsing in state.rs. `NormalizedMarketEvent::timestamp()` accessor added to event_model. Fixture-first: service runs with no NATS/Redis/ClickHouse configured — all sinks no-op when URL is absent.
+- Follow-ups: none

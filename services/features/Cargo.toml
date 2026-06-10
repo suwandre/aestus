@@ -9,9 +9,19 @@ workspace = true
 [dependencies]
 event_model = { path = "../../crates/event_model" }
 market_math = { path = "../../crates/market_math" }
+nats_publisher = { path = "../../crates/nats_publisher" }
+
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+futures = { workspace = true }
+async-nats = { workspace = true }
+
+axum = { version = "0.8", features = ["tokio"] }
+reqwest = { version = "0.12", features = ["json"] }
+redis = { version = "0.26", features = ["tokio-comp"] }

@@ -33,6 +33,14 @@ pub fn ms_to_rfc3339(ms: i64) -> String {
         .unwrap_or_else(|| format!("{ms}"))
 }
 
+/// Parse an RFC-3339 timestamp string to milliseconds since Unix epoch.
+/// Returns None if the string cannot be parsed.
+pub fn rfc3339_to_ms(s: &str) -> Option<i64> {
+    OffsetDateTime::parse(s, &Rfc3339)
+        .ok()
+        .map(|dt| dt.unix_timestamp() * 1_000 + i64::from(dt.millisecond()))
+}
+
 /// Provider-stamped and ingestion timestamps for one event, always kept separate.
 ///
 /// Construct with [`TimestampSet::new`]; use [`event_ts`] to get the best
@@ -113,6 +121,23 @@ mod tests {
         assert!(!ts.ingested_at.is_empty());
         // event_ts falls back to ingested_at when provider_ts is absent
         assert_eq!(ts.event_ts(), ts.ingested_at.as_str());
+    }
+
+    #[test]
+    fn rfc3339_to_ms_known_epoch() {
+        let ms = rfc3339_to_ms("2024-01-01T00:00:00Z");
+        assert_eq!(ms, Some(1_704_067_200_000));
+    }
+
+    #[test]
+    fn rfc3339_to_ms_with_millis() {
+        let ms = rfc3339_to_ms("2024-01-01T00:00:00.100Z");
+        assert_eq!(ms, Some(1_704_067_200_100));
+    }
+
+    #[test]
+    fn rfc3339_to_ms_invalid_returns_none() {
+        assert_eq!(rfc3339_to_ms("not-a-date"), None);
     }
 
     #[test]

@@ -747,7 +747,7 @@ Goal: Ensure all incoming data is comparable, auditable, and visibly fresh/stale
 
 Goal: Compute deterministic rolling features that power anomaly detection, market state, and chart overlays.
 
-### [ ] P09-T001 - Create feature service skeleton
+### [x] P09-T001 - Create feature service skeleton
 
 - Agent action: Build Rust feature engine with NATS consumer, Redis hot state access, ClickHouse writer, health heartbeat.
 
