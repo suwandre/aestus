@@ -1275,7 +1275,7 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 
 - Files: services/anomaly/src/detectors/basis.rs (new), detectors/mod.rs, detect.rs, registry.rs (basis_dislocation → Magnitude basis)
 - Checks: `cargo test -p anomaly` → 43 passed. BTC fixture basis [12.5, 8.1] → spread 4.4 bps > 3.0 threshold → basis_dislocation; venues binance+okx derived from references; tight 0.5 bps spread and single-reference cases do not fire.
-- Assumptions: Corrected T002 guess — basis_dislocation is Magnitude basis (bps spread, no z-score); required_fields drops "sigma". Spread = max−min basis_bps across references. Venues parsed from reference label prefix (split on -/_/:). Detector focuses on cross-venue basis spread (the done-when + fixture); funding divergence (funding_spread) left as future enhancement since the done-when is basis-specific. Severity: ≥3×threshold high, ≥2× medium, else low (4.4/3.0=1.47→low, matches fixture anom-005 severity).
+- Assumptions: Corrected T002 guess — basis*dislocation is Magnitude basis (bps spread, no z-score); required_fields drops "sigma". Spread = max−min basis_bps across references. Venues parsed from reference label prefix (split on -/*/:). Detector focuses on cross-venue basis spread (the done-when + fixture); funding divergence (funding_spread) left as future enhancement since the done-when is basis-specific. Severity: ≥3×threshold high, ≥2× medium, else low (4.4/3.0=1.47→low, matches fixture anom-005 severity).
 - Follow-ups: none
 
 ### P10-T008 — Implement correlation break detector

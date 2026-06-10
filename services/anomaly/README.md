@@ -20,12 +20,12 @@ NATS_URL=nats://127.0.0.1:4222 cargo run -p anomaly
 
 ## Config (env)
 
-| Var | Default | Purpose |
-| --- | --- | --- |
-| `NATS_URL` | _unset_ | NATS server; unset → fixture mode |
-| `ANOMALY_PORT` | `8083` | health HTTP port (`/health`) |
-| `ANOMALY_EVAL_INTERVAL_SECS` | `30` | detection pass cadence |
-| `HEARTBEAT_INTERVAL_MS` | `10000` | `system.health.anomaly` cadence |
+| Var                                             | Default | Purpose                              |
+| ----------------------------------------------- | ------- | ------------------------------------ |
+| `NATS_URL`                                      | _unset_ | NATS server; unset → fixture mode    |
+| `ANOMALY_PORT`                                  | `8083`  | health HTTP port (`/health`)         |
+| `ANOMALY_EVAL_INTERVAL_SECS`                    | `30`    | detection pass cadence               |
+| `HEARTBEAT_INTERVAL_MS`                         | `10000` | `system.health.anomaly` cadence      |
 | `REDIS_URL` / `CLICKHOUSE_URL` / `POSTGRES_URL` | _unset_ | persistence sinks (no-op when unset) |
 
 See `docs/anomaly_detection.md` for per-detector logic, thresholds, and edge
