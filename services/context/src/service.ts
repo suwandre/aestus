@@ -52,6 +52,7 @@ export async function processAnomaly(
         newsMinRelevance: deps.config.newsMinRelevance,
         macroWindowHours: deps.config.macroWindowHours,
         macroMinImportance: deps.config.macroMinImportance,
+        onChainWindowHours: deps.config.onChainWindowHours,
       }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {

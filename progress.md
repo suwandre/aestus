@@ -1419,3 +1419,9 @@ All T001–T018 "Done when" criteria satisfied. T014 was found failing in the pr
 - Checks: `bun run typecheck` (pass), `bun test` (11 pass), `bun run lint` (pass), prettier applied — macro_approaching anomaly's nearest macro is CPI (30m ahead); ±96h window around a 06-07 anomaly captures both recent NFP and upcoming CPI.
 - Assumptions: Macro window is ±MACRO_WINDOW_HOURS (default 72) around detected_at (both upcoming and recent), filtered to MACRO_MIN_IMPORTANCE (default medium → includes medium+high), sorted by |scheduled − anomaly| so proximity surfaces first. The default 72h window keeps CPI at 06-10 12:30 just outside for the 06-07 funding-spike anomaly — that's correct (it's ~2.5 days out); the macro_approaching anomaly at 06-10 picks it up immediately.
 - Follow-ups: none
+
+### P11-T007 — Implement on-chain retrieval
+- Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/onchain.t007.test.ts
+- Checks: `bun run typecheck` (pass), `bun test` (13 pass), `bun run lint` (pass), prettier applied — BTC anomaly packet.on_chain includes exchange_flow + whale_transfer (asset-matched) and stablecoin_mint_burn (market-wide), sorted most-recent-first; tight window correctly drops older events.
+- Assumptions: Included when event.asset ∈ trigger.assets OR event_type == stablecoin_mint_burn (market-wide context, regardless of asset), within [detected_at − ONCHAIN_WINDOW_HOURS (48), detected_at]. `asset`/`timestamp` read from the OnChainEvent discriminated-union base.
+- Follow-ups: none

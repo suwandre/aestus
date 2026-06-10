@@ -16,11 +16,13 @@ import {
   type MacroImportance,
   type NewsItem,
   NewsItem as NewsItemSchema,
+  type OnChainEvent,
+  OnChainEvent as OnChainEventSchema,
   type VenueQuote,
   VenueQuote as VenueQuoteSchema,
 } from "@aestus/contracts";
 import type { ContextConfig } from "../config";
-import type { ContextDataSource, MacroQuery, NewsQuery } from "./source";
+import type { ContextDataSource, MacroQuery, NewsQuery, OnChainQuery } from "./source";
 
 /** Importance ordering for "at least this important" filtering. */
 const IMPORTANCE_RANK: Record<MacroImportance, number> = { low: 0, medium: 1, high: 2 };
@@ -38,6 +40,7 @@ export class FixtureDataSource implements ContextDataSource {
   private venueQuotesCache?: VenueQuote[];
   private newsCache?: NewsItem[];
   private macroCache?: MacroEvent[];
+  private onChainCache?: OnChainEvent[];
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -130,5 +133,26 @@ export class FixtureDataSource implements ContextDataSource {
           Math.abs(Date.parse(a.scheduled_at) - center) -
           Math.abs(Date.parse(b.scheduled_at) - center),
       );
+  }
+
+  private onChainAll(): OnChainEvent[] {
+    if (!this.onChainCache) {
+      this.onChainCache = loadArray(this.config.fixtures.onChain, OnChainEventSchema);
+    }
+    return this.onChainCache;
+  }
+
+  onChain(query: OnChainQuery): OnChainEvent[] {
+    const before = Date.parse(query.before);
+    const earliest = before - query.windowHours * 3_600_000;
+    const wanted = new Set(query.assets);
+    return this.onChainAll()
+      .filter((e) => {
+        const ts = Date.parse(e.timestamp);
+        if (ts > before || ts < earliest) return false;
+        // Asset-specific flows/whale moves, plus market-wide stablecoin context.
+        return wanted.has(e.asset) || e.event_type === "stablecoin_mint_burn";
+      })
+      .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
   }
 }

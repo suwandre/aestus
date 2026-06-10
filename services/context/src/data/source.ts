@@ -13,6 +13,7 @@ import type {
   MacroEvent,
   MacroImportance,
   NewsItem,
+  OnChainEvent,
   VenueQuote,
 } from "@aestus/contracts";
 
@@ -54,6 +55,13 @@ export interface ContextDataSource {
    * by proximity to the anomaly time so CPI/FOMC/NFP nearness surfaces first.
    */
   macro(query: MacroQuery): MacroEvent[];
+
+  /**
+   * Recent on-chain events (T007): exchange flows / whale transfers for the
+   * query's assets, plus market-wide stablecoin mint/burn context, within the
+   * look-back window. Sorted most-recent first.
+   */
+  onChain(query: OnChainQuery): OnChainEvent[];
 }
 
 /** Window/importance filter for macro retrieval (T006). */
@@ -64,4 +72,14 @@ export interface MacroQuery {
   windowHours: number;
   /** Lowest importance to include. */
   minImportance: MacroImportance;
+}
+
+/** Window/asset filter for on-chain retrieval (T007). */
+export interface OnChainQuery {
+  /** Canonical asset ids to match against `OnChainEvent.asset`. */
+  assets: string[];
+  /** Anomaly time; only events at or before this are "recent". */
+  before: string;
+  /** Look-back window in hours. */
+  windowHours: number;
 }

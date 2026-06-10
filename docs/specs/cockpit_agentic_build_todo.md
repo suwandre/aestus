@@ -995,7 +995,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet identifies CPI/FOMC/NFP proximity when relevant.
 
-### [ ] P11-T007 - Implement on-chain retrieval
+### [x] P11-T007 - Implement on-chain retrieval
 
 - Agent action: Retrieve recent on-chain events for asset and market-wide stablecoin/flow context.
 

@@ -37,6 +37,8 @@ export interface BuildOptions {
   macroWindowHours?: number;
   /** Lowest macro importance to include (T006). */
   macroMinImportance?: MacroImportance;
+  /** On-chain look-back window in hours (T007). */
+  onChainWindowHours?: number;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -102,6 +104,14 @@ export function assembleContextPacket(
       minImportance: opts.macroMinImportance ?? "medium",
     }) ?? [];
 
+  // Recent on-chain context (T007): asset flows/whale moves + market-wide stablecoin.
+  const onChain =
+    opts.dataSource?.onChain({
+      assets: trigger.assets,
+      before: trigger.detected_at,
+      windowHours: opts.onChainWindowHours ?? 48,
+    }) ?? [];
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -113,7 +123,7 @@ export function assembleContextPacket(
     ...(venueComparison ? { venue_comparison: venueComparison } : {}),
     news,
     macro,
-    on_chain: [],
+    on_chain: onChain,
     historical_analogues: [],
     deterministic_levels: placeholderLevels(),
   };
