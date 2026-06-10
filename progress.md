@@ -1137,3 +1137,22 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: Covers all 9 feature modules (RollingWindow, returns, volatility+regime, volume anomaly, funding, OI, liquidation clusters, basis, correlation, breadth, OHLCV). Each section includes formula, parameter table, return type, edge cases. Known limitations section covers window eviction, flat-baseline z-scores, correlation sparsity, single-price basis, and liquidation side convention.
 - Assumptions: none
 - Follow-ups: none
+
+---
+
+### P09 REVIEW — FAIL
+
+Reviewer: independent review agent (claude-sonnet-4-6), 2026-06-10.
+Tests run: `cargo test -p features` → **64 passed, 0 failed**.
+T001–T015: all "Done when" criteria satisfied by code.
+
+**T016: docs/code discrepancies violate "Future agents can update formulas without guessing intent"**
+
+1. `oi_state` string labels — docs: `"oi_increasing"` / `"oi_decreasing"` / `None`; code (oi.rs:62–68): `"increasing"` / `"decreasing"` / `"stable"` (no `"oi_"` prefix, different null handling).
+2. `oi_state` thresholds — docs: ±2% (0.02); code (oi.rs:61): ±0.5% (0.005).
+3. breadth return horizon — docs: `return_1h`; code (breadth.rs:33): `returns.get("24h")`.
+4. breadth value scale — docs: `100 × …` (0–100); code: raw fraction (0.0–1.0); snapshot fields `breadth_up_pct` / `breadth_down_pct` are fractions.
+5. breadth risk_off condition — docs: `down_pct > 60%`; code (breadth.rs:60): `up_pct < 0.4` (different boundary; diverges when `up_pct + down_pct < 1`).
+6. liquidation cluster bucket width — docs: `0.1%` (0.001); code (liquidations.rs:7): `0.5%` (0.005).
+7. liquidation cluster lookback window — docs: `1 hour`; code (liquidations.rs:8): `4 hours`.
+8. liquidation cluster min_events filter — docs: `min_events = 2 per bucket`; code: no such filter (all non-empty buckets are included).
