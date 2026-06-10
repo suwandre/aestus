@@ -983,7 +983,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet can explain whether a dislocation is venue-specific.
 
-### [ ] P11-T005 - Implement recent news retrieval
+### [x] P11-T005 - Implement recent news retrieval
 
 - Agent action: Retrieve recent news by asset/entity and relevance score within configurable windows.
 

@@ -28,6 +28,10 @@ export interface BuildOptions {
   correlatedAssets?: string[];
   /** Thresholds for the venue-specific dislocation decision (T004). */
   venueThresholds?: VenueThresholds;
+  /** News look-back window in minutes (T005). */
+  newsWindowMinutes?: number;
+  /** Minimum news relevance to include (T005). */
+  newsMinRelevance?: number;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -76,6 +80,15 @@ export function assembleContextPacket(
       ? buildVenueComparison(primaryAsset, quotes, opts.venueThresholds)
       : undefined;
 
+  // Recent, relevant news for the anomaly assets (T005).
+  const news =
+    opts.dataSource?.news({
+      assets: trigger.assets,
+      before: trigger.detected_at,
+      windowMinutes: opts.newsWindowMinutes ?? 240,
+      minRelevance: opts.newsMinRelevance ?? 0.5,
+    }) ?? [];
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -85,7 +98,7 @@ export function assembleContextPacket(
     market_snapshot: marketSnapshot,
     correlated_assets: correlatedAssets,
     ...(venueComparison ? { venue_comparison: venueComparison } : {}),
-    news: [],
+    news,
     macro: [],
     on_chain: [],
     historical_analogues: [],

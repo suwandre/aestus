@@ -1407,3 +1407,9 @@ All T001–T018 "Done when" criteria satisfied. T014 was found failing in the pr
 - Checks: contracts `bun test` (21 pass, incl. venue_quotes fixture + context packet), `bun run gen:schema` (19 files), context `bun run typecheck`/`bun test` (7 pass)/`bun run lint` pass, prettier applied.
 - Assumptions: CONTRACT CHANGE (rule #8) — added `VenueQuote` contract + `fixtures/market/venue_quotes.json` (mapped in fixtures.test + gen-schema), and added optional `VenueComparison` (`venue_comparison`) to ContextPacket. Optional so the existing context fixture still validates; no frontend types reference ContextPacket yet (web is P14+) so none updated. Venue-specific decision is deterministic: funding spread > VENUE_FUNDING_DISPERSION (0.0003) OR basis spread > VENUE_BASIS_DISPERSION_BPS (15); outlier = venue with max normalized deviation from median. Fixture: btc-usdt okx diverges (funding 0.00065, basis 41bps) → venue-specific; eth-usdt aligned → market-wide.
 - Follow-ups: T009 freshness can extend VenueQuote/comparison with per-venue staleness; T013 fixture test asserts venue_comparison.
+
+### P11-T005 — Implement recent news retrieval
+- Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/news.t005.test.ts
+- Checks: `bun run typecheck` (pass), `bun test` (9 pass), `bun run lint` (pass), prettier applied — BTC anomaly packet includes news-001/003 (relevance 0.82/0.88), excludes ETH whale item; relevance floor and window correctly drop items.
+- Assumptions: News matched when any `trigger.assets` id appears in `NewsItem.entities`; recency window is [detected_at − NEWS_WINDOW_MINUTES (240), detected_at]; floor NEWS_MIN_RELEVANCE (0.5); sorted by relevance desc. Semantic/embedding retrieval (spec §101) deferred — fixture-first keyword/entity + relevance is the deterministic stand-in; NewsItem already carries source/source_type metadata.
+- Follow-ups: none

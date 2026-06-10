@@ -48,6 +48,8 @@ export async function processAnomaly(
           fundingDispersion: deps.config.venueFundingDispersion,
           basisDispersionBps: deps.config.venueBasisDispersionBps,
         },
+        newsWindowMinutes: deps.config.newsWindowMinutes,
+        newsMinRelevance: deps.config.newsMinRelevance,
       }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {

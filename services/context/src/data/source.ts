@@ -8,7 +8,19 @@
  * implementation can be added later without changing the builder. Methods are
  * added as P11 tasks need them.
  */
-import type { FeatureSnapshot, VenueQuote } from "@aestus/contracts";
+import type { FeatureSnapshot, NewsItem, VenueQuote } from "@aestus/contracts";
+
+/** Window/relevance filter for news retrieval (T005). */
+export interface NewsQuery {
+  /** Canonical asset ids / entities to match against `NewsItem.entities`. */
+  assets: string[];
+  /** Anomaly time; only news at or before this is "recent". */
+  before: string;
+  /** Look-back window in minutes. */
+  windowMinutes: number;
+  /** Minimum relevance score to include. */
+  minRelevance: number;
+}
 
 export interface ContextDataSource {
   /** Latest feature snapshot (current market state) for an asset, if known. */
@@ -22,4 +34,11 @@ export interface ContextDataSource {
 
   /** Latest per-venue quotes for an asset (T004); empty if none known. */
   venueQuotes(asset: string): VenueQuote[];
+
+  /**
+   * Recent, relevant news for the query's assets (T005): matched by entity,
+   * within the look-back window, at/above the relevance floor. Sorted by
+   * relevance descending.
+   */
+  news(query: NewsQuery): NewsItem[];
 }

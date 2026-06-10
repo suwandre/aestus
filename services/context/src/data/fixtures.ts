@@ -11,11 +11,13 @@ import { z } from "zod/v4";
 import {
   type FeatureSnapshot,
   FeatureSnapshot as FeatureSnapshotSchema,
+  type NewsItem,
+  NewsItem as NewsItemSchema,
   type VenueQuote,
   VenueQuote as VenueQuoteSchema,
 } from "@aestus/contracts";
 import type { ContextConfig } from "../config";
-import type { ContextDataSource } from "./source";
+import type { ContextDataSource, NewsQuery } from "./source";
 
 /** Parse a JSON fixture file as an array validated against `schema`. */
 function loadArray<T>(path: string, schema: z.ZodType<T>): T[] {
@@ -28,6 +30,7 @@ export class FixtureDataSource implements ContextDataSource {
   private readonly config: ContextConfig;
   private featuresCache?: FeatureSnapshot[];
   private venueQuotesCache?: VenueQuote[];
+  private newsCache?: NewsItem[];
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -76,5 +79,26 @@ export class FixtureDataSource implements ContextDataSource {
       if (!prev || Date.parse(q.timestamp) > Date.parse(prev.timestamp)) byVenue.set(q.venue, q);
     }
     return [...byVenue.values()];
+  }
+
+  private newsAll(): NewsItem[] {
+    if (!this.newsCache) {
+      this.newsCache = loadArray(this.config.fixtures.news, NewsItemSchema);
+    }
+    return this.newsCache;
+  }
+
+  news(query: NewsQuery): NewsItem[] {
+    const before = Date.parse(query.before);
+    const earliest = before - query.windowMinutes * 60_000;
+    const wanted = new Set(query.assets);
+    return this.newsAll()
+      .filter((n) => {
+        if (n.relevance_score < query.minRelevance) return false;
+        const published = Date.parse(n.published_at);
+        if (published > before || published < earliest) return false;
+        return n.entities.some((e) => wanted.has(e));
+      })
+      .sort((a, b) => b.relevance_score - a.relevance_score);
   }
 }
