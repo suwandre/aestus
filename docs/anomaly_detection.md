@@ -189,7 +189,16 @@ States: `active`, `acknowledged`, `snoozed`, `resolved`, `expired`, `dismissed`.
 Terminal = resolved/expired/dismissed (sinks). `active` → any; `acknowledged`/
 `snoozed` → active or close. `StatusStore.tick` wakes elapsed snoozes → active and
 expires aged active/acknowledged → expired. The store is the in-process source of
-truth; the API endpoint to drive transitions lands in P17.
+truth, seeded from the durable inbox (`load_active`) on startup.
+
+The API/UI drive transitions over HTTP on `ANOMALY_PORT`:
+
+- `GET /anomalies/{id}/status` → `{ "id", "status" }` (current status; `active` if untracked).
+- `POST /anomalies/{id}/status` with `{ "status", "snooze_until_ms"? }` → applies the
+  change (legal transitions enforced; `409` on illegal, `400` on unknown status) and
+  persists it via `PostgresAnomalySink::update_status` so it survives a restart.
+
+A richer P17 API layer may front this; the engine owns the authoritative store.
 
 ## Persistence (`persist.rs`, T015)
 
@@ -212,4 +221,5 @@ description) are never published.
 
 ## Health
 
-Heartbeat on `system.health.anomaly`; HTTP `/health` on `ANOMALY_PORT` (default 8083).
+Heartbeat on `system.health.anomaly`; HTTP `/health` (plus the status-lifecycle routes
+above) on `ANOMALY_PORT` (default 8083).

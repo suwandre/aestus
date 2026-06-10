@@ -22,11 +22,13 @@ mod state;
 
 use std::sync::Arc;
 
+use anomaly::AnomalyStatus;
 use async_nats::Subject;
 use config::Config;
 use event_model::envelope::Envelope;
 use futures::StreamExt;
 use input::{FeatureSnapshot, MacroEvent, NewsItem, OnChainEvent};
+use lifecycle::StatusStore;
 use nats_publisher::{Heartbeat, NatsPublisher, Publisher, RecordingPublisher, RetryConfig};
 use state::EngineState;
 use tokio::sync::Mutex;
@@ -124,14 +126,78 @@ async fn evaluate(
     published
 }
 
-// ── Health HTTP server ───────────────────────────────────────────────────────
+// ── HTTP server (health + status lifecycle) ───────────────────────────────────
 
-async fn health_server(port: u16) -> anyhow::Result<()> {
+/// Shared HTTP state: the in-process status source of truth plus the Postgres
+/// URL used to persist status changes (P10-T014).
+#[derive(Clone)]
+struct HttpState {
+    store: Arc<Mutex<StatusStore>>,
+    pg_url: Option<String>,
+}
+
+/// Body of a status-change request from the API/UI.
+#[derive(serde::Deserialize)]
+struct StatusChange {
+    status: String,
+    /// Wake time (epoch ms) when transitioning to `snoozed`.
+    #[serde(default)]
+    snooze_until_ms: Option<i64>,
+}
+
+/// `GET /anomalies/{id}/status` — current lifecycle status of an anomaly.
+async fn get_status(
+    axum::extract::State(state): axum::extract::State<HttpState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> axum::Json<serde_json::Value> {
+    let status = state.store.lock().await.status_of(&id);
+    axum::Json(serde_json::json!({ "id": id, "status": status.as_str() }))
+}
+
+/// `POST /anomalies/{id}/status` — change an anomaly's status. Enforces legal
+/// transitions via [`StatusStore`] and persists the change to Postgres so it
+/// survives a restart. This is the externally-callable interface the API/UI
+/// drive (P10-T014 "API/UI can change status and status persists").
+async fn set_status(
+    axum::extract::State(state): axum::extract::State<HttpState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+    axum::Json(req): axum::Json<StatusChange>,
+) -> axum::response::Response {
+    use axum::http::StatusCode;
+    use axum::response::IntoResponse;
+
+    let Some(to) = AnomalyStatus::from_str(&req.status) else {
+        return (
+            StatusCode::BAD_REQUEST,
+            format!("unknown status '{}'", req.status),
+        )
+            .into_response();
+    };
+    let now_ms = market_math::timestamps::rfc3339_to_ms(&market_math::timestamps::now_rfc3339())
+        .unwrap_or(0);
+    {
+        let mut store = state.store.lock().await;
+        if let Err(e) = store.set_status(&id, to, now_ms, req.snooze_until_ms) {
+            return (StatusCode::CONFLICT, e.to_string()).into_response();
+        }
+    }
+    // Persist so the change survives a restart (no-op when no DB is configured).
+    let pg = persist::PostgresAnomalySink::new(state.pg_url.clone());
+    if let Err(e) = pg.update_status(&id, to).await {
+        tracing::warn!(error = %e, id = %id, "anomaly status persist failed");
+    }
+    axum::Json(serde_json::json!({ "id": id, "status": to.as_str() })).into_response()
+}
+
+async fn http_server(port: u16, state: HttpState) -> anyhow::Result<()> {
     use axum::{routing::get, Router};
-    let app = Router::new().route("/health", get(|| async { "ok" }));
+    let app = Router::new()
+        .route("/health", get(|| async { "ok" }))
+        .route("/anomalies/{id}/status", get(get_status).post(set_status))
+        .with_state(state);
     let addr = format!("0.0.0.0:{port}");
     let listener = tokio::net::TcpListener::bind(&addr).await?;
-    tracing::info!(addr = %addr, "health server listening");
+    tracing::info!(addr = %addr, "http server listening");
     axum::serve(listener, app).await?;
     Ok(())
 }
@@ -162,6 +228,9 @@ async fn main() -> anyhow::Result<()> {
     };
 
     let state = Arc::new(Mutex::new(EngineState::new()));
+    // In-process status source of truth, driven by the HTTP status endpoint and
+    // seeded from the durable inbox on startup (P10-T014).
+    let status_store = Arc::new(Mutex::new(StatusStore::new()));
 
     // Heartbeat on system.health.anomaly.
     let hb_pub = Arc::clone(&publisher);
@@ -171,11 +240,15 @@ async fn main() -> anyhow::Result<()> {
         hb.run(hb_pub.as_ref(), hb_interval, || vec![]).await;
     });
 
-    // HTTP health endpoint.
+    // HTTP server: health + anomaly status lifecycle endpoint.
     let http_port = cfg.http_port;
+    let http_state = HttpState {
+        store: Arc::clone(&status_store),
+        pg_url: cfg.postgres_url.clone(),
+    };
     tokio::spawn(async move {
-        if let Err(e) = health_server(http_port).await {
-            tracing::error!(error = %e, "health server error");
+        if let Err(e) = http_server(http_port, http_state).await {
+            tracing::error!(error = %e, "http server error");
         }
     });
 
@@ -207,6 +280,7 @@ async fn main() -> anyhow::Result<()> {
     let eval_interval = cfg.eval_interval;
     let pg_url = cfg.postgres_url.clone();
     let ch_url = cfg.clickhouse_url.clone();
+    let status_store_e = Arc::clone(&status_store);
     let evaluator = tokio::spawn(async move {
         let mut interval = tokio::time::interval(eval_interval);
         let mut deduper = dedupe::Deduper::new();
@@ -233,6 +307,17 @@ async fn main() -> anyhow::Result<()> {
                 let seed_ms =
                     market_math::timestamps::rfc3339_to_ms(&market_math::timestamps::now_rfc3339())
                         .unwrap_or(0);
+                // Seed the status store with persisted statuses so the HTTP
+                // endpoint validates transitions against the restored state and
+                // reports the restart-surviving status (P10-T014/T015).
+                {
+                    let mut store = status_store_e.lock().await;
+                    for a in &existing {
+                        if a.status != AnomalyStatus::Active {
+                            let _ = store.set_status(&a.id, a.status, seed_ms, None);
+                        }
+                    }
+                }
                 let cooldown_ms = rules_cfg.cooldown_minutes * 60_000;
                 deduper.process(existing.clone(), seed_ms, cooldown_ms);
                 tracing::info!(
@@ -359,6 +444,63 @@ mod tests {
         assert!(records
             .iter()
             .any(|(s, _)| s.starts_with("anomaly.detected.funding_spike")));
+    }
+
+    /// P10-T014: the externally-callable status endpoint changes an anomaly's
+    /// status, the change persists in the in-process store, and illegal/unknown
+    /// transitions are rejected. (Postgres persistence is a no-op without a DB.)
+    #[tokio::test]
+    async fn http_status_endpoint_changes_and_reports_status() {
+        use axum::extract::{Path, State};
+        use axum::http::StatusCode;
+        use axum::Json;
+
+        let state = HttpState {
+            store: Arc::new(Mutex::new(StatusStore::new())),
+            pg_url: None,
+        };
+
+        // Untracked anomalies default to active.
+        let resp = get_status(State(state.clone()), Path("anom-001".into())).await;
+        assert_eq!(resp.0["status"], "active");
+
+        // API changes status to snoozed → 200, and the change is readable back.
+        let r = set_status(
+            State(state.clone()),
+            Path("anom-001".into()),
+            Json(StatusChange {
+                status: "snoozed".into(),
+                snooze_until_ms: Some(5000),
+            }),
+        )
+        .await;
+        assert_eq!(r.status(), StatusCode::OK);
+        let resp = get_status(State(state.clone()), Path("anom-001".into())).await;
+        assert_eq!(resp.0["status"], "snoozed");
+
+        // Unknown status string → 400.
+        let r = set_status(
+            State(state.clone()),
+            Path("anom-001".into()),
+            Json(StatusChange {
+                status: "bogus".into(),
+                snooze_until_ms: None,
+            }),
+        )
+        .await;
+        assert_eq!(r.status(), StatusCode::BAD_REQUEST);
+
+        // Illegal transition (self-transition) → 409.
+        let r = set_status(
+            State(state.clone()),
+            Path("anom-001".into()),
+            Json(StatusChange {
+                status: "snoozed".into(),
+                snooze_until_ms: None,
+            }),
+        )
+        .await;
+        assert_eq!(r.status(), StatusCode::CONFLICT);
     }
 
     #[test]

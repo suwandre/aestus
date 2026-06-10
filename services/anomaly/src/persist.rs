@@ -113,6 +113,30 @@ impl PostgresAnomalySink {
         Ok(())
     }
 
+    /// Update just the status (+ `updated_at`) of an existing anomaly by id, so a
+    /// status change driven by the API/UI survives a restart (P10-T014). Returns
+    /// whether a row was updated; `false` (not an error) when no DB is configured.
+    pub async fn update_status(&self, id: &str, status: AnomalyStatus) -> Result<bool> {
+        let Some(ref url) = self.db_url else {
+            return Ok(false);
+        };
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        tokio::spawn(async move {
+            if let Err(e) = conn.await {
+                tracing::error!(error = %e, "postgres connection error");
+            }
+        });
+        let n = client
+            .execute(
+                "UPDATE anomalies SET status = $2::anomaly_status, updated_at = now() \
+                 WHERE id = $1",
+                &[&id, &status.as_str()],
+            )
+            .await
+            .context("update anomaly status")?;
+        Ok(n > 0)
+    }
+
     /// Load enabled user-defined rule rows from `alert_rules` (P10-T017). Empty
     /// when no DB — the engine then runs on built-in defaults.
     pub async fn load_alert_rules(&self) -> Result<Vec<RuleRow>> {
@@ -334,6 +358,11 @@ mod tests {
         assert!(!sink.is_enabled());
         sink.upsert_anomaly(&sample()).await.expect("noop upsert");
         assert!(sink.load_active().await.expect("noop load").is_empty());
+        // Status update is a no-op (false) without a DB, never an error.
+        assert!(!sink
+            .update_status("anom-001", AnomalyStatus::Dismissed)
+            .await
+            .expect("noop status update"));
     }
 
     #[tokio::test]
