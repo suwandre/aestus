@@ -1354,3 +1354,17 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: prettier --check clean. Doc covers pipeline, configuration table (alert_rules condition→field→default), type registry (labels/severity basis/UI colors), all 10 detectors (input/rule/threshold/severity/edge cases), severity scoring formula + weights, dedupe/cooldown, status lifecycle, persistence, publishing subjects, health.
 - Assumptions: Documented exactly as implemented across T001–T017 so future agents can tune detectors without re-inferring behavior (done-when). Cross-references task IDs and source files.
 - Follow-ups: none
+
+---
+
+### P10 REVIEW — FAIL
+
+Reviewer: independent review agent (claude-sonnet-4-6), 2026-06-10.
+Tests run: `cargo test -p anomaly` → **76 passed, 0 failed**; `bun test` (contracts) → **20 passed, 0 failed**.
+T001–T013, T015–T018: all "Done when" criteria satisfied by code and tests.
+
+**T014: "API/UI can change status and status persists" — partially unmet**
+
+- `lifecycle.rs` correctly implements `StatusStore` with `set_status()`, legal transition enforcement, `tick()` for snooze-wake/expiry, and 5 passing unit tests.
+- `main.rs` declares `mod lifecycle;` but never instantiates `StatusStore` at runtime. There is no HTTP route in the anomaly service (only `/health`) and no route in `apps/api` that exposes status changes to an external caller.
+- "API/UI can change status" is therefore not met — the mechanism exists but is not wired to any externally-callable interface. Progress.md for T014 explicitly defers the API endpoint to P17; that deferral means the done-when criterion is not satisfied in P10.
