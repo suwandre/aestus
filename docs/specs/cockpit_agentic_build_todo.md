@@ -847,7 +847,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 Goal: Detect unusual conditions through deterministic rules, statistical deviation, and narrative clustering placeholders.
 
-### [ ] P10-T001 - Create anomaly service skeleton
+### [x] P10-T001 - Create anomaly service skeleton
 
 - Agent action: Build Rust or TS service consuming feature snapshots and contextual events, publishing anomaly.detected.
 
