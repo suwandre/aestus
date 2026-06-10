@@ -50,6 +50,10 @@ pub struct RulesConfig {
     /// Dedupe cooldown: an identical (type, asset) anomaly is re-emitted at most
     /// once per this many minutes; repeats inside the window bump count/last_seen.
     pub cooldown_minutes: i64,
+    /// Per-asset priority (0..1) feeding severity scoring; higher = the user
+    /// cares more. Defaults below; unknown assets fall back to `asset_priority_default`.
+    pub asset_priority: HashMap<String, f64>,
+    pub asset_priority_default: f64,
 }
 
 /// Macro importance ordering (low < medium < high). Mirrors `MacroImportance`.
@@ -90,6 +94,12 @@ impl Default for RulesConfig {
             news_cluster_window_minutes: 120,
             news_cluster_min_relevance: 0.5,
             cooldown_minutes: 30,
+            asset_priority: HashMap::from([
+                ("crypto:btc-usdt".to_string(), 1.0),
+                ("crypto:eth-usdt".to_string(), 0.9),
+                ("crypto:sol-usdt".to_string(), 0.7),
+            ]),
+            asset_priority_default: 0.5,
         }
     }
 }
@@ -102,6 +112,15 @@ impl RulesConfig {
             .get(asset)
             .copied()
             .unwrap_or(self.funding)
+    }
+
+    /// Priority (0..1) for an asset, falling back to the default.
+    #[must_use]
+    pub fn priority_for(&self, asset: &str) -> f64 {
+        self.asset_priority
+            .get(asset)
+            .copied()
+            .unwrap_or(self.asset_priority_default)
     }
 }
 

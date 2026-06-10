@@ -1312,3 +1312,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 58 passed. Repeat of same (type, asset) within cooldown → emitted once, record.count bumped to 2, last_seen updated; re-fires after cooldown elapses; distinct assets are independent alerts.
 - Assumptions: Dedupe key = `<type>|<primary_asset>` (logical alert identity, independent of exact timestamp). Within cooldown_minutes (default 30) a repeat is suppressed (not re-published) but count/last_seen update on the active DedupeRecord; first occurrence and post-cooldown re-fire are emitted. count/last_seen are dedupe-internal metadata (not AnomalyEvent contract fields) — persisted in T015. Also fixed a non-determinism in the T011 news detector: top-tag selection used HashMap-order `max_by_key` (flaky on count ties); now sorts by count desc then tag asc.
 - Follow-ups: none
+
+### P10-T013 — Implement severity scoring
+
+- Files: services/anomaly/src/severity.rs (new), rules.rs (+asset_priority map/default + priority_for), main.rs (mod severity; rescore each detected anomaly before dedupe)
+- Checks: `cargo test -p anomaly` → 63 passed. Conviction score is 0–100, stable for fixed inputs; bucket() spans low/medium/high/critical; high-sigma BTC funding outranks weak DOGE news; rescore maps a fresh sigma-3.6 BTC funding spike to high/critical; older observation scores lower recency.
+- Assumptions: Unified score = 0.40·magnitude + 0.25·confidence + 0.15·recency + 0.20·priority, ×100. magnitude = |sigma|/critical_band for sigma types, else bucket proxy (low .3/med .55/high .8/crit 1.0). confidence per type (funding/volume 0.9, macro 0.95, oi/basis/liq 0.8, correlation 0.75, whale/exchange 0.7, news 0.5). recency decays linearly over 24h. priority = max asset priority (BTC 1.0/ETH 0.9/SOL 0.7, default 0.5). Bucket cuts: ≤44 low, 45–64 medium, 65–84 high, ≥85 critical. Applied in the evaluate pipeline (detect → rescore → dedupe → publish), overriding the detector's coarse bucket. The 0–100 score also feeds briefing conviction in P12; contract stores the enum severity ("low/medium/high" satisfies the done-when).
+- Follow-ups: none

@@ -919,7 +919,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Repeated fixture events produce one active anomaly plus update count/last_seen.
 
-### [ ] P10-T013 - Implement severity scoring
+### [x] P10-T013 - Implement severity scoring
 
 - Agent action: Convert feature magnitude, source confidence, recency, and asset priority into severity/conviction input score.
 

@@ -15,6 +15,7 @@ mod input;
 mod publish;
 mod registry;
 mod rules;
+mod severity;
 mod state;
 
 use std::sync::Arc;
@@ -91,8 +92,13 @@ async fn evaluate(
     publisher: &dyn Publisher,
 ) -> usize {
     let detected = detect::run_detectors(state, rules, now_ms);
+    // Unified severity scoring (magnitude/confidence/recency/priority).
+    let scored: Vec<_> = detected
+        .into_iter()
+        .map(|a| severity::rescore(a, rules, now_ms))
+        .collect();
     let cooldown_ms = rules.cooldown_minutes * 60_000;
-    let anomalies = deduper.process(detected, now_ms, cooldown_ms);
+    let anomalies = deduper.process(scored, now_ms, cooldown_ms);
     let mut published = 0;
     for anomaly in &anomalies {
         match publish::publish_anomaly(publisher, anomaly).await {
