@@ -943,7 +943,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: NATS tail shows schema-valid anomaly events.
 
-### [ ] P10-T017 - Add rule config storage
+### [x] P10-T017 - Add rule config storage
 
 - Agent action: Store user-defined rule thresholds in Postgres with defaults in seed data.
 

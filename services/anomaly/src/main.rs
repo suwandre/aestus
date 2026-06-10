@@ -205,7 +205,6 @@ async fn main() -> anyhow::Result<()> {
     let state_e = Arc::clone(&state);
     let eval_pub = Arc::clone(&publisher);
     let eval_interval = cfg.eval_interval;
-    let rules_cfg = rules::RulesConfig::default();
     let pg_url = cfg.postgres_url.clone();
     let ch_url = cfg.clickhouse_url.clone();
     let evaluator = tokio::spawn(async move {
@@ -213,6 +212,19 @@ async fn main() -> anyhow::Result<()> {
         let mut deduper = dedupe::Deduper::new();
         let pg = persist::PostgresAnomalySink::new(pg_url);
         let ch = persist::ClickHouseAnomalyMetrics::new(ch_url);
+
+        // Load user-defined rule thresholds from Postgres, overlaying defaults
+        // (P10-T017). With no DB the built-in defaults stand.
+        let rules_cfg = match pg.load_alert_rules().await {
+            Ok(rows) => {
+                tracing::info!(rules = rows.len(), "loaded alert rules from postgres");
+                rules::RulesConfig::with_rules(&rows)
+            }
+            Err(e) => {
+                tracing::warn!(error = %e, "alert rule load failed — using defaults");
+                rules::RulesConfig::default()
+            }
+        };
 
         // Reload the open inbox so a restart neither loses active anomalies nor
         // re-alerts ones already seen (P10-T015 Done-when).

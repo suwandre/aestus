@@ -79,14 +79,65 @@ const ALERT_RULES = [
     name: "BTC open-interest surge",
     asset: "crypto:btc-usdt",
     condition: "oi_surge",
-    params: { sigma: 3 },
+    params: { oi_delta: 0.05 },
   },
   {
     id: "default-macro-approaching",
     name: "High-importance macro approaching",
     asset: null,
     condition: "macro_approaching",
-    params: { importance: "high", lead_minutes: 30 },
+    params: { importance: "high", lead_minutes: 60 },
+  },
+  // Engine defaults (P10) — thresholds the anomaly detectors load at startup.
+  // Editing a row changes detector behavior on reload (P10-T017).
+  {
+    id: "default-volume-anomaly",
+    name: "Volume anomaly z-score",
+    asset: null,
+    condition: "volume_anomaly",
+    params: { sigma: 2 },
+  },
+  {
+    id: "default-basis-dislocation",
+    name: "Cross-venue basis dislocation",
+    asset: null,
+    condition: "basis_dislocation",
+    params: { bps: 3 },
+  },
+  {
+    id: "default-correlation-break",
+    name: "Correlation break vs baseline",
+    asset: null,
+    condition: "correlation_break",
+    params: { delta: 0.5 },
+  },
+  {
+    id: "default-liquidation-cluster",
+    name: "Liquidation cluster size",
+    asset: null,
+    condition: "liquidation_cluster",
+    params: { min_size: 1 },
+  },
+  {
+    id: "default-whale-flow",
+    name: "Whale / exchange flow notional",
+    asset: null,
+    condition: "whale_flow",
+    params: { amount_usd: 50000000 },
+  },
+  {
+    id: "default-news-cluster",
+    name: "News cluster velocity",
+    asset: null,
+    condition: "news_cluster",
+    params: { min_items: 2, min_relevance: 0.5 },
+  },
+  {
+    id: "default-cooldown",
+    name: "Alert dedupe cooldown",
+    asset: null,
+    condition: "cooldown",
+    params: { minutes: 30 },
   },
 ];
 

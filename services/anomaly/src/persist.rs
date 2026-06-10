@@ -20,6 +20,7 @@ use std::time::Duration;
 
 use crate::anomaly::{AnomalyEvent, AnomalySeverity, AnomalyStatus, AnomalyType};
 use crate::input::FeatureSnapshot;
+use crate::rules::RuleRow;
 
 // ── Postgres inbox ────────────────────────────────────────────────────────────
 
@@ -110,6 +111,39 @@ impl PostgresAnomalySink {
             }
         }
         Ok(())
+    }
+
+    /// Load enabled user-defined rule rows from `alert_rules` (P10-T017). Empty
+    /// when no DB — the engine then runs on built-in defaults.
+    pub async fn load_alert_rules(&self) -> Result<Vec<RuleRow>> {
+        let Some(ref url) = self.db_url else {
+            return Ok(Vec::new());
+        };
+        let (client, conn) = tokio_postgres::connect(url, tokio_postgres::NoTls).await?;
+        tokio::spawn(async move {
+            if let Err(e) = conn.await {
+                tracing::error!(error = %e, "postgres connection error");
+            }
+        });
+        let rows = client
+            .query(
+                "SELECT condition, canonical_asset_id, params, enabled \
+                 FROM alert_rules WHERE enabled = TRUE",
+                &[],
+            )
+            .await
+            .context("load alert_rules")?;
+        let mut out = Vec::with_capacity(rows.len());
+        for row in rows {
+            let params_json: serde_json::Value = row.get(2);
+            out.push(RuleRow {
+                condition: row.get(0),
+                canonical_asset_id: row.get(1),
+                params: params_json,
+                enabled: row.get(3),
+            });
+        }
+        Ok(out)
     }
 
     /// Reload the open inbox (non-terminal statuses) so a restart does not lose
