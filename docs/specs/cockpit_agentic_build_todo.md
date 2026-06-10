@@ -853,7 +853,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Service emits heartbeat and validates anomaly payloads.
 
-### [ ] P10-T002 - Define anomaly type registry
+### [x] P10-T002 - Define anomaly type registry
 
 - Agent action: Create registry for funding_spike, oi_surge, volume_anomaly, correlation_break, whale_flow, basis_dislocation, macro_approaching, news_cluster.
 

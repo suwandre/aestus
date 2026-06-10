@@ -11,6 +11,7 @@ mod config;
 mod detect;
 mod input;
 mod publish;
+mod registry;
 mod state;
 
 use std::sync::Arc;

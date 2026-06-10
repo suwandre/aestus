@@ -17,7 +17,8 @@
         "correlation_break",
         "basis_dislocation",
         "whale_flow",
-        "macro_approaching"
+        "macro_approaching",
+        "news_cluster"
       ]
     },
     "severity": {

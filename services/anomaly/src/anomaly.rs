@@ -17,9 +17,22 @@ pub enum AnomalyType {
     BasisDislocation,
     WhaleFlow,
     MacroApproaching,
+    NewsCluster,
 }
 
 impl AnomalyType {
+    /// Every variant, for exhaustive iteration (registry coverage, tests).
+    pub const ALL: &'static [AnomalyType] = &[
+        Self::FundingSpike,
+        Self::OiSurge,
+        Self::VolumeAnomaly,
+        Self::CorrelationBreak,
+        Self::BasisDislocation,
+        Self::WhaleFlow,
+        Self::MacroApproaching,
+        Self::NewsCluster,
+    ];
+
     #[must_use]
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -30,6 +43,7 @@ impl AnomalyType {
             Self::BasisDislocation => "basis_dislocation",
             Self::WhaleFlow => "whale_flow",
             Self::MacroApproaching => "macro_approaching",
+            Self::NewsCluster => "news_cluster",
         }
     }
 }
