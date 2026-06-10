@@ -813,7 +813,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Correlation matrix and correlation break detector have inputs.
 
-### [ ] P09-T012 - Implement market breadth features
+### [x] P09-T012 - Implement market breadth features
 
 - Agent action: Compute percent of watched assets up/down, volatility distribution, and risk-on/risk-off proxy.
 
