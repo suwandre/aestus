@@ -1277,3 +1277,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 43 passed. BTC fixture basis [12.5, 8.1] → spread 4.4 bps > 3.0 threshold → basis_dislocation; venues binance+okx derived from references; tight 0.5 bps spread and single-reference cases do not fire.
 - Assumptions: Corrected T002 guess — basis_dislocation is Magnitude basis (bps spread, no z-score); required_fields drops "sigma". Spread = max−min basis_bps across references. Venues parsed from reference label prefix (split on -/_/:). Detector focuses on cross-venue basis spread (the done-when + fixture); funding divergence (funding_spread) left as future enhancement since the done-when is basis-specific. Severity: ≥3×threshold high, ≥2× medium, else low (4.4/3.0=1.47→low, matches fixture anom-005 severity).
 - Follow-ups: none
+
+### P10-T008 — Implement correlation break detector
+
+- Files: services/anomaly/src/detectors/correlation.rs (new), state.rs (correlation_history + correlation_key, appended on ingest), detectors/mod.rs, detect.rs, registry.rs (correlation_break → Magnitude basis)
+- Checks: `cargo test -p anomaly` → 46 passed. BTC/SPX correlation flip +0.42→-0.18 (departure 0.60 ≥ 0.5 delta) → correlation_break; stable +0.42→+0.45 does not fire; single observation only seeds baseline.
+- Assumptions: Corrected T002 — correlation_break is Magnitude basis. The snapshot carries only the current correlation, so the rolling baseline is reconstructed in EngineState.correlation_history (per `<primary>|<other>|<window>` key, bounded 60, newest last, appended on ingest). Baseline = mean of prior readings; current = latest; fire when |current−baseline| ≥ correlation_break_delta (0.5). Needs ≥2 observations (a single fixture load establishes baseline only — matches "when correlation shifts"). Anomaly references both assets [primary, other]. Severity: ≥2.5×delta high, ≥1.5× medium, else low.
+- Follow-ups: none

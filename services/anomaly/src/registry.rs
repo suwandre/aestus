@@ -107,11 +107,13 @@ pub fn meta_for(anomaly_type: AnomalyType) -> AnomalyTypeMeta {
             ui_color: "--teal",
         },
         T::CorrelationBreak => AnomalyTypeMeta {
+            // Magnitude-driven by the correlation departure from the rolling
+            // baseline; the snapshot carries a correlation value, not a z-score.
             anomaly_type,
             label: "Correlation Break",
-            severity_basis: SeverityBasis::Sigma,
-            sigma_bands: Some(SIGMA_DEFAULT),
-            required_fields: &["sigma", "assets"],
+            severity_basis: SeverityBasis::Magnitude,
+            sigma_bands: None,
+            required_fields: &["assets"],
             ui_color: "--purple",
         },
         T::BasisDislocation => AnomalyTypeMeta {

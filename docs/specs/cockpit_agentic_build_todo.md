@@ -889,7 +889,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Fixture with venue divergence emits basis_dislocation anomaly.
 
-### [ ] P10-T008 - Implement correlation break detector
+### [x] P10-T008 - Implement correlation break detector
 
 - Agent action: Detect correlation departure vs rolling baseline for selected cross-asset pairs.
 

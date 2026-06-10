@@ -14,6 +14,9 @@ const MAX_NEWS: usize = 500;
 const MAX_ONCHAIN: usize = 500;
 const MAX_MACRO: usize = 500;
 
+/// Cap on retained correlation history points per pair (rolling baseline).
+const MAX_CORR_HISTORY: usize = 60;
+
 #[derive(Debug, Default)]
 pub struct EngineState {
     /// Latest feature snapshot per canonical asset id.
@@ -24,6 +27,16 @@ pub struct EngineState {
     pub news_items: HashMap<String, NewsItem>,
     /// Recent on-chain events (append-only ring, newest last).
     pub onchain_events: Vec<OnChainEvent>,
+    /// Rolling correlation history per pair, keyed `<primary>|<other>|<window>`,
+    /// newest last. Provides the baseline the correlation-break detector
+    /// compares the latest reading against (P10-T008).
+    pub correlation_history: HashMap<String, Vec<f64>>,
+}
+
+/// Key for a correlation pair's history.
+#[must_use]
+pub fn correlation_key(primary: &str, other: &str, window: &str) -> String {
+    format!("{primary}|{other}|{window}")
 }
 
 impl EngineState {
@@ -33,6 +46,16 @@ impl EngineState {
     }
 
     pub fn ingest_snapshot(&mut self, snap: FeatureSnapshot) {
+        // Append each correlation reading to its rolling history (newest last).
+        for entry in &snap.correlation_set {
+            let key = correlation_key(&snap.canonical_asset_id, &entry.asset, &entry.window);
+            let hist = self.correlation_history.entry(key).or_default();
+            hist.push(entry.correlation);
+            if hist.len() > MAX_CORR_HISTORY {
+                let overflow = hist.len() - MAX_CORR_HISTORY;
+                hist.drain(0..overflow);
+            }
+        }
         self.snapshots.insert(snap.canonical_asset_id.clone(), snap);
     }
 

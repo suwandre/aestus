@@ -20,6 +20,7 @@ pub fn run_detectors(state: &EngineState, rules: &RulesConfig, _now_ms: i64) -> 
     out.extend(detectors::volume::detect(state, rules));
     out.extend(detectors::liquidations::detect(state, rules));
     out.extend(detectors::basis::detect(state, rules));
-    // Further detectors (correlation, macro, …) are appended here as they land.
+    out.extend(detectors::correlation::detect(state, rules));
+    // Further detectors (macro, whale, …) are appended here as they land.
     out
 }
