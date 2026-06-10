@@ -1375,3 +1375,11 @@ T001–T013, T015–T018: all "Done when" criteria satisfied by code and tests.
 - Checks: `cargo test -p anomaly` → 77 passed, 0 failed (was 76; +1 `http_status_endpoint_changes_and_reports_status`, plus an `update_status` no-op assertion). New test exercises the handlers end-to-end in fixture mode: default `active`, `POST snoozed` → 200 and readable back via `GET`, unknown status → 400, illegal self-transition → 409.
 - Assumptions: The anomaly engine owns the authoritative `StatusStore`, so the externally-callable status interface lives on its existing HTTP server (`ANOMALY_PORT`) rather than `apps/api` — minimal wiring, no new service. `POST /anomalies/{id}/status` applies the transition through `StatusStore::set_status` (legal-transition enforcement) and persists via `PostgresAnomalySink::update_status` (no-op without a DB, fixture-first). The store is seeded from `load_active` on startup so a restart restores persisted statuses and the endpoint validates against them — together this satisfies "API/UI can change status **and** status persists." A richer P17 API layer can front this endpoint later; T014's done-when is now met in P10. No scope expansion beyond wiring the existing T014 mechanism to an interface + a targeted persist method.
 - Follow-ups: P17 may add an `apps/api` proxy/auth layer in front of this endpoint.
+
+---
+
+### P10 REVIEW — PASS
+
+Reviewer: independent review agent (claude-sonnet-4-6), 2026-06-10.
+Tests run: `cargo test -p anomaly` → **77 passed, 0 failed**; `bun test` (contracts) → **20 passed, 0 failed**; `cargo build -p anomaly` clean.
+All T001–T018 "Done when" criteria satisfied. T014 was found failing in the prior review (no externally-callable status interface); the repair commit (`fix(P10-T014)`) wired `GET`/`POST /anomalies/{id}/status` routes on the engine's HTTP server, instantiated `StatusStore` at runtime, seeded it from `load_active` on startup, and added a passing end-to-end handler test — criterion met.
