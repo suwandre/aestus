@@ -789,7 +789,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Funding spike and funding divergence detectors can use features.
 
-### [ ] P09-T008 - Implement open-interest features
+### [x] P09-T008 - Implement open-interest features
 
 - Agent action: Compute OI deltas, OI z-score, OI/price divergence flags.
 

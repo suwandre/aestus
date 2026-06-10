@@ -1074,3 +1074,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 4 unit tests — empty map returns None; single venue z-score None (needs ≥2 samples); multi-venue z-score positive for spike; cross-venue spread = max−min; FeatureSnapshot.funding_z and funding_spread populated
 - Assumptions: Per-venue funding rates stored in separate RollingWindows (keyed by venue name). Cross-venue spread computed when ≥2 venues have data.
 - Follow-ups: none
+
+### P09-T008 — Implement open-interest features
+
+- Files: services/features/src/oi.rs (code in T001 commit)
+- Checks: 4 unit tests — no data returns default; single venue increase sets oi_state=oi_increasing; single venue decrease sets oi_state=oi_decreasing; price divergence flag set when oi_delta and price_return_24h have opposite signs; FeatureSnapshot.oi_delta and oi_state populated
+- Assumptions: oi_state threshold ±2%; oi_price_divergence flag computed but stored internally only (not in snapshot — downstream detectors will re-derive it from oi_delta + return).
+- Follow-ups: none
