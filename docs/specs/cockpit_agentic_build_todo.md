@@ -819,7 +819,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Market State Summary can display breadth and risk regime.
 
-### [ ] P09-T013 - Persist feature snapshots
+### [x] P09-T013 - Persist feature snapshots
 
 - Agent action: Batch write feature snapshots to ClickHouse and latest snapshot to Redis.
 

@@ -1109,3 +1109,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 2 unit tests — None for single asset; correct up_pct/down_pct for mixed up/down/flat set; FeatureSnapshot.breadth_up_pct and breadth_down_pct populated
 - Assumptions: up_pct = % of assets with positive 1h return; down_pct = % with negative 1h return. risk_regime derived from breadth (risk_on if up_pct > 60%, risk_off if down_pct > 60%). Returns None for <2 assets to avoid single-asset noise.
 - Follow-ups: none
+
+### P09-T013 — Persist feature snapshots
+
+- Files: services/features/src/persist.rs (code in T001 commit)
+- Checks: 3 unit tests — ClickHouseSnapshotSink no-op when url=None; empty batch is no-op; RedisSnapshotStore no-op when url=None; main.rs wires persist in snapshot loop; Redis key = `feature:snapshot:{canonical_asset_id}`, TTL 1h
+- Assumptions: ClickHouse table `feature_snapshots` written via JSONEachRow INSERT. Redis stores latest snapshot only (no history in Redis). Both sinks are fixture-first: no-op without configured URLs. Schema defines nested arrays for correlation_set and basis columns.
+- Follow-ups: P10 — ClickHouse CREATE TABLE for feature_snapshots needed; key `feature:snapshot:*` used by API at P11.
