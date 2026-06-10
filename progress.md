@@ -1060,3 +1060,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 5 unit tests — None for <3 samples; positive vol for moving prices; vol regime thresholds (very_low/low/normal/high/extreme); trend regime from 24h return; risk regime logic (risk_on/risk_off/neutral); FeatureSnapshot.volatility and regime populated
 - Assumptions: Realized vol = std_dev of log-returns, Bessel-corrected, requires ≥3 samples. Regime thresholds documented in docs/feature_formulas.md.
 - Follow-ups: none
+
+### P09-T006 — Implement volume anomaly features
+
+- Files: services/features/src/volume.rs (code in T001 commit; bug fixed: flat-baseline z-score returned 0 instead of spike value)
+- Checks: 3 unit tests — None for <3 bars; positive z-score > 3 for spike bar vs flat history; percentile > 95 for spike bar; FeatureSnapshot.volume_z populated
+- Assumptions: Trade sizes aggregated into 1-minute bars; z-score uses last 30 bars as history; relative std floor (mean × 0.01) prevents flat-baseline z-scores collapsing to zero.
+- Follow-ups: none

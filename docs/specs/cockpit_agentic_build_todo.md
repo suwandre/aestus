@@ -777,7 +777,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Market State Summary can show volatility regime.
 
-### [ ] P09-T006 - Implement volume anomaly features
+### [x] P09-T006 - Implement volume anomaly features
 
 - Agent action: Compute rolling volume z-score and volume percentile per asset/venue.
 
