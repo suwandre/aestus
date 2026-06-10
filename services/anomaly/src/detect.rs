@@ -22,6 +22,7 @@ pub fn run_detectors(state: &EngineState, rules: &RulesConfig, now_ms: i64) -> V
     out.extend(detectors::basis::detect(state, rules));
     out.extend(detectors::correlation::detect(state, rules));
     out.extend(detectors::macro_event::detect(state, rules, now_ms));
-    // Further detectors (whale, news, …) are appended here as they land.
+    out.extend(detectors::onchain::detect(state, rules));
+    // Further detectors (news, …) are appended here as they land.
     out
 }

@@ -1291,3 +1291,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 49 passed. At now=2026-06-10T12:00Z, CPI (high, 12:30Z, 30 min away) → exactly one macro_approaching; FOMC (week out), NFP (passed), PPI/jobless (medium) all filtered. Passed-event and medium-importance cases do not fire.
 - Assumptions: Schedule-driven (uses now_ms threaded from eval loop / passed in tests for determinism). Fires when 0 ≤ scheduled_at−now ≤ window (default 60 min) AND importance ≥ macro_min_importance (default High). MacroEvent carries no asset list, so the anomaly attaches all watched crypto assets from snapshots (sorted), falling back to `macro:<region>` when none — keeps assets non-empty per contract. Severity: ≤15 min lead → high, else medium. context_ref `macro:<event_id>`; rule_ref `rule:macro_window<60m`.
 - Follow-ups: none
+
+### P10-T010 — Implement whale/on-chain detector
+
+- Files: services/anomaly/src/detectors/onchain.rs (new), anomaly.rs (+ExchangeFlow type), registry.rs (+exchange_flow, --green), detectors/mod.rs, detect.rs, packages/contracts/src/anomaly.ts (+exchange_flow), schema regen
+- Checks: `cargo test -p anomaly` → 52 passed; contracts `bun test` → 20 pass; schema regenerated. Fixture 950 BTC ($64.8M) accumulation → whale_flow ("accumulation"); -$126.3M net → exchange_flow ("outflow"); $340k transfer below threshold skipped.
+- Assumptions: Added exchange_flow anomaly type (the action says "whale_flow or exchange_flow"; fixture has both onchain event kinds). whale_transfer → whale_flow, exchange_flow onchain event → exchange_flow anomaly; both gated on |amount_usd| ≥ whale_min_amount_usd (default $50M), falling back to raw amount when amount_usd absent. context_ref `onchain:<event_type>:<tx_hash[..8] or timestamp>` (matches fixture anom-006 "onchain:whale_transfer:f3a1c9e0"). Severity by USD/threshold ratio. stablecoin_mint_burn/token_unlock/dex_activity left for future detectors (out of scope here).
+- Follow-ups: none

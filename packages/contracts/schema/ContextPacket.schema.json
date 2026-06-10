@@ -40,7 +40,8 @@
             "whale_flow",
             "macro_approaching",
             "news_cluster",
-            "liquidation_cluster"
+            "liquidation_cluster",
+            "exchange_flow"
           ]
         },
         "severity": {

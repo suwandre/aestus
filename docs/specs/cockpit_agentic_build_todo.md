@@ -901,7 +901,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: CPI/FOMC fixture emits macro_approaching anomaly at correct lead time.
 
-### [ ] P10-T010 - Implement whale/on-chain detector
+### [x] P10-T010 - Implement whale/on-chain detector
 
 - Agent action: Emit whale_flow or exchange_flow anomaly based on on-chain event thresholds.
 

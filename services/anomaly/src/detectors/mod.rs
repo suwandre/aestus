@@ -11,6 +11,7 @@ pub mod funding;
 pub mod liquidations;
 pub mod macro_event;
 pub mod oi;
+pub mod onchain;
 pub mod volume;
 
 use crate::anomaly::{AnomalyEvent, AnomalySeverity, AnomalyStatus, AnomalyType};

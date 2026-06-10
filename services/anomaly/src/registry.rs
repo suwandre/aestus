@@ -158,6 +158,15 @@ pub fn meta_for(anomaly_type: AnomalyType) -> AnomalyTypeMeta {
             required_fields: &["assets"],
             ui_color: "--orange",
         },
+        T::ExchangeFlow => AnomalyTypeMeta {
+            // Magnitude-driven by net exchange flow notional (USD).
+            anomaly_type,
+            label: "Exchange Flow",
+            severity_basis: SeverityBasis::Magnitude,
+            sigma_bands: None,
+            required_fields: &["assets", "context_refs"],
+            ui_color: "--green",
+        },
     }
 }
 
