@@ -31,7 +31,8 @@ pub fn compute_basis(
 
     // Perp (mid price) vs spot (mid price from another venue if available).
     // Heuristic: compare venues that have a price tick; first venue is perp, rest are spot.
-    let venues_with_price: Vec<&String> = price_ticks.keys().collect();
+    let mut venues_with_price: Vec<&String> = price_ticks.keys().collect();
+    venues_with_price.sort();
     if venues_with_price.len() >= 2 {
         let venue_a = venues_with_price[0];
         let price_a = price_ticks[venue_a];
