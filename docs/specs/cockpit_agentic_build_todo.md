@@ -807,7 +807,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Venue comparison table can display basis divergence.
 
-### [ ] P09-T011 - Implement rolling correlation features
+### [x] P09-T011 - Implement rolling correlation features
 
 - Agent action: Compute BTC/ETH/SOL vs SPX/DXY/GOLD/OIL/VIX rolling correlations when data exists or fixtures available.
 

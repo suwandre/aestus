@@ -1095,3 +1095,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 3 unit tests — no mark/index returns empty; mark/index present returns mark-index entry; multi-venue spot prices produce cross-venue entries; FeatureSnapshot.basis populated as Vec<BasisEntry> in bps
 - Assumptions: Basis expressed in basis points (bps). Single "primary" price used per asset for now; full multi-venue basis tracking (separate per-venue perp price series) deferred to P10.
 - Follow-ups: none
+
+### P09-T011 — Implement rolling correlation features
+
+- Files: services/features/src/correlation.rs (code in T001 commit)
+- Checks: 3 unit tests — perfectly correlated series returns r=1; anti-correlated returns r=−1; insufficient aligned samples returns empty; FeatureSnapshot.correlation_set populated
+- Assumptions: Pearson correlation over aligned samples (±1s tolerance). Window label is "price_window". Requires ≥3 aligned points per pair. At P09 only one price series per asset exists; BTC/ETH/macro cross-correlations work when all assets are in MarketState.
+- Follow-ups: none
