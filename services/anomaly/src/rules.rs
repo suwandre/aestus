@@ -47,6 +47,9 @@ pub struct RulesConfig {
     pub news_cluster_min_items: usize,
     pub news_cluster_window_minutes: i64,
     pub news_cluster_min_relevance: f64,
+    /// Dedupe cooldown: an identical (type, asset) anomaly is re-emitted at most
+    /// once per this many minutes; repeats inside the window bump count/last_seen.
+    pub cooldown_minutes: i64,
 }
 
 /// Macro importance ordering (low < medium < high). Mirrors `MacroImportance`.
@@ -86,6 +89,7 @@ impl Default for RulesConfig {
             news_cluster_min_items: 2,
             news_cluster_window_minutes: 120,
             news_cluster_min_relevance: 0.5,
+            cooldown_minutes: 30,
         }
     }
 }

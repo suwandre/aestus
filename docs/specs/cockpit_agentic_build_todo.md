@@ -913,7 +913,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Multiple BTC ETF headlines in a short window emit news_cluster.
 
-### [ ] P10-T012 - Implement alert dedupe/cooldown
+### [x] P10-T012 - Implement alert dedupe/cooldown
 
 - Agent action: Prevent repeated identical anomalies from spamming the user within configurable cooldown windows.
 

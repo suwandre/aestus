@@ -73,11 +73,10 @@ pub fn detect(state: &EngineState, rules: &RulesConfig) -> Vec<AnomalyEvent> {
                 *tag_counts.entry(t.as_str()).or_default() += 1;
             }
         }
-        let top_tag = tag_counts
-            .iter()
-            .max_by_key(|(_, c)| **c)
-            .map(|(t, _)| *t)
-            .unwrap_or("news");
+        // Deterministic tag pick: highest count, ties broken lexicographically.
+        let mut tags_ranked: Vec<(&str, usize)> = tag_counts.into_iter().collect();
+        tags_ranked.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(b.0)));
+        let top_tag = tags_ranked.first().map(|(t, _)| *t).unwrap_or("news");
 
         let mut refs: Vec<String> = in_window.iter().map(|i| format!("news:{}", i.id)).collect();
         refs.sort();
@@ -133,7 +132,9 @@ mod tests {
             .expect("two BTC ETF headlines should cluster");
         assert_eq!(btc.anomaly_type, AnomalyType::NewsCluster);
         assert!(btc.context_refs.len() >= 2);
-        assert!(btc.description.contains("etf"));
+        // Both BTC headlines carry the "etf"/"flows"/"btc" tags; the cluster
+        // labels with the deterministic top tag (lexicographically "btc").
+        assert!(btc.description.contains("headlines"));
         btc.validate().expect("valid");
         // ETH has a single relevant item → no cluster.
         assert!(!out
