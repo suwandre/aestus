@@ -1088,3 +1088,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 3 unit tests — empty returns no clusters; buy-side events cluster into buy bucket; mixed events split into buy/sell buckets; FeatureSnapshot.liq_clusters populated; buckets below min_events (2) filtered out
 - Assumptions: Bucket size = 0.1% of mid_price; lookback = 1h (3_600_000 ms); side="buy" means long position liquidated (buy liquidation). Cluster output is a Vec<LiquidationCluster> directly in the snapshot for chart overlay consumption.
 - Follow-ups: none
+
+### P09-T010 — Implement cross-venue basis features
+
+- Files: services/features/src/basis.rs (code in T001 commit)
+- Checks: 3 unit tests — no mark/index returns empty; mark/index present returns mark-index entry; multi-venue spot prices produce cross-venue entries; FeatureSnapshot.basis populated as Vec<BasisEntry> in bps
+- Assumptions: Basis expressed in basis points (bps). Single "primary" price used per asset for now; full multi-venue basis tracking (separate per-venue perp price series) deferred to P10.
+- Follow-ups: none

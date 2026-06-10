@@ -801,7 +801,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Chart overlays can display liquidation clusters.
 
-### [ ] P09-T010 - Implement cross-venue basis features
+### [x] P09-T010 - Implement cross-venue basis features
 
 - Agent action: Compute mark/index/spot/perp basis where data exists.
 
