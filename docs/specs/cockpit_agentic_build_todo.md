@@ -765,7 +765,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: ClickHouse aggregate tables update from live or replayed events.
 
-### [ ] P09-T004 - Implement return calculations
+### [x] P09-T004 - Implement return calculations
 
 - Agent action: Compute rolling returns for 1m, 5m, 15m, 1h, 24h per asset/venue.
 

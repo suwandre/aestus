@@ -1046,3 +1046,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: state.rs test `update_trade_populates_both_windows_and_candles` verifies `candles.current_open(60_000).is_some()` after one trade; CandleAggregator covers 4 timeframes (1m/5m/15m/1h); 3 candle-specific unit tests pass (new candle created, ohlcv accumulation, closed candle on new bucket)
 - Assumptions: ClickHouse write for candles deferred to the batch persist path in persist.rs (feature_snapshots table); a dedicated `candles` ClickHouse table will be created at P10/P11 when the schema is finalized. In-memory candles serve the feature snapshot builder in the meantime.
 - Follow-ups: none
+
+### P09-T004 — Implement return calculations
+
+- Files: services/features/src/returns.rs (code in T001 commit)
+- Checks: 3 unit tests — empty window returns empty map; 1h return (5% up) correct to 1e-9; 24h return (−10% down) correct to 1e-9; FeatureSnapshot.returns populated by build_snapshot in main.rs
+- Assumptions: Simple arithmetic return (not log return) used for display; horizons: 1m/5m/15m/1h/24h/7d; tolerance = horizon width; horizon omitted when no sample falls within tolerance.
+- Follow-ups: none
