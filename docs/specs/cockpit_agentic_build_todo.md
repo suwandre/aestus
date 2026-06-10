@@ -883,7 +883,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Fixture cluster above price emits liquidation_cluster anomaly.
 
-### [ ] P10-T007 - Implement basis dislocation detector
+### [x] P10-T007 - Implement basis dislocation detector
 
 - Agent action: Detect cross-venue basis/funding divergence above threshold.
 

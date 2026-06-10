@@ -5,6 +5,7 @@
 //! invent price levels and never touch the LLM — purely deterministic rules and
 //! statistics (hard rules #1, #2). Shared construction helpers live here.
 
+pub mod basis;
 pub mod funding;
 pub mod liquidations;
 pub mod oi;

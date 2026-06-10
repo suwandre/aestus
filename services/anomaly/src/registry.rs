@@ -115,11 +115,12 @@ pub fn meta_for(anomaly_type: AnomalyType) -> AnomalyTypeMeta {
             ui_color: "--purple",
         },
         T::BasisDislocation => AnomalyTypeMeta {
+            // Magnitude-driven by the cross-venue basis spread in bps.
             anomaly_type,
             label: "Basis Dislocation",
-            severity_basis: SeverityBasis::Sigma,
-            sigma_bands: Some(SIGMA_DEFAULT),
-            required_fields: &["sigma", "assets", "venues"],
+            severity_basis: SeverityBasis::Magnitude,
+            sigma_bands: None,
+            required_fields: &["assets", "venues"],
             ui_color: "--pink",
         },
         T::WhaleFlow => AnomalyTypeMeta {
