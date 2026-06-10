@@ -931,7 +931,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: API/UI can change status and status persists.
 
-### [ ] P10-T015 - Persist anomalies
+### [x] P10-T015 - Persist anomalies
 
 - Agent action: Write anomaly records and metric snapshots to Postgres/ClickHouse as appropriate.
 

@@ -13,6 +13,7 @@ mod detect;
 mod detectors;
 mod input;
 mod lifecycle;
+mod persist;
 mod publish;
 mod registry;
 mod rules;
@@ -91,6 +92,8 @@ async fn evaluate(
     now_ms: i64,
     deduper: &mut dedupe::Deduper,
     publisher: &dyn Publisher,
+    pg: &persist::PostgresAnomalySink,
+    ch: &persist::ClickHouseAnomalyMetrics,
 ) -> usize {
     let detected = detect::run_detectors(state, rules, now_ms);
     // Unified severity scoring (magnitude/confidence/recency/priority).
@@ -104,7 +107,18 @@ async fn evaluate(
     for anomaly in &anomalies {
         match publish::publish_anomaly(publisher, anomaly).await {
             Ok(()) => published += 1,
-            Err(e) => tracing::warn!(error = %e, id = %anomaly.id, "anomaly publish skipped"),
+            Err(e) => {
+                tracing::warn!(error = %e, id = %anomaly.id, "anomaly publish skipped");
+                continue;
+            }
+        }
+        // Persist the durable inbox record + analytics metric snapshot.
+        if let Err(e) = pg.upsert_anomaly(anomaly).await {
+            tracing::warn!(error = %e, id = %anomaly.id, "anomaly postgres upsert failed");
+        }
+        let snap = anomaly.assets.first().and_then(|a| state.snapshots.get(a));
+        if let Err(e) = ch.write_metric(anomaly, snap).await {
+            tracing::warn!(error = %e, id = %anomaly.id, "anomaly metric write failed");
         }
     }
     published
@@ -192,16 +206,48 @@ async fn main() -> anyhow::Result<()> {
     let eval_pub = Arc::clone(&publisher);
     let eval_interval = cfg.eval_interval;
     let rules_cfg = rules::RulesConfig::default();
+    let pg_url = cfg.postgres_url.clone();
+    let ch_url = cfg.clickhouse_url.clone();
     let evaluator = tokio::spawn(async move {
         let mut interval = tokio::time::interval(eval_interval);
         let mut deduper = dedupe::Deduper::new();
+        let pg = persist::PostgresAnomalySink::new(pg_url);
+        let ch = persist::ClickHouseAnomalyMetrics::new(ch_url);
+
+        // Reload the open inbox so a restart neither loses active anomalies nor
+        // re-alerts ones already seen (P10-T015 Done-when).
+        match pg.load_active().await {
+            Ok(existing) if !existing.is_empty() => {
+                let seed_ms =
+                    market_math::timestamps::rfc3339_to_ms(&market_math::timestamps::now_rfc3339())
+                        .unwrap_or(0);
+                let cooldown_ms = rules_cfg.cooldown_minutes * 60_000;
+                deduper.process(existing.clone(), seed_ms, cooldown_ms);
+                tracing::info!(
+                    count = existing.len(),
+                    "reloaded anomaly inbox from postgres"
+                );
+            }
+            Ok(_) => {}
+            Err(e) => tracing::warn!(error = %e, "anomaly inbox reload failed"),
+        }
+
         loop {
             interval.tick().await;
             let now_ms =
                 market_math::timestamps::rfc3339_to_ms(&market_math::timestamps::now_rfc3339())
                     .unwrap_or(0);
             let st = state_e.lock().await;
-            let n = evaluate(&st, &rules_cfg, now_ms, &mut deduper, eval_pub.as_ref()).await;
+            let n = evaluate(
+                &st,
+                &rules_cfg,
+                now_ms,
+                &mut deduper,
+                eval_pub.as_ref(),
+                &pg,
+                &ch,
+            )
+            .await;
             if n > 0 {
                 tracing::info!(published = n, "evaluation pass emitted anomalies");
             }
@@ -261,7 +307,18 @@ mod tests {
         let st = EngineState::new();
         let pubr = RecordingPublisher::new();
         let mut deduper = dedupe::Deduper::new();
-        let n = evaluate(&st, &rules::RulesConfig::default(), 0, &mut deduper, &pubr).await;
+        let pg = persist::PostgresAnomalySink::new(None);
+        let ch = persist::ClickHouseAnomalyMetrics::new(None);
+        let n = evaluate(
+            &st,
+            &rules::RulesConfig::default(),
+            0,
+            &mut deduper,
+            &pubr,
+            &pg,
+            &ch,
+        )
+        .await;
         assert_eq!(n, 0);
         assert!(pubr.is_empty().await);
     }
@@ -272,7 +329,18 @@ mod tests {
         load_fixtures(&mut st, "../../fixtures");
         let pubr = RecordingPublisher::new();
         let mut deduper = dedupe::Deduper::new();
-        let n = evaluate(&st, &rules::RulesConfig::default(), 0, &mut deduper, &pubr).await;
+        let pg = persist::PostgresAnomalySink::new(None);
+        let ch = persist::ClickHouseAnomalyMetrics::new(None);
+        let n = evaluate(
+            &st,
+            &rules::RulesConfig::default(),
+            0,
+            &mut deduper,
+            &pubr,
+            &pg,
+            &ch,
+        )
+        .await;
         // BTC fixture has funding_z 2.6 → one funding_spike.
         assert!(n >= 1, "fixture funding spike should publish");
         let records = pubr.records().await;

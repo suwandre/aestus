@@ -52,6 +52,12 @@ impl AnomalyType {
             Self::ExchangeFlow => "exchange_flow",
         }
     }
+
+    /// Parse the contract string back into a variant (for DB reload).
+    #[must_use]
+    pub fn from_str(s: &str) -> Option<Self> {
+        Self::ALL.iter().copied().find(|t| t.as_str() == s)
+    }
 }
 
 /// Severity buckets. Mirrors `AnomalySeverity` in the TS contract.
@@ -72,6 +78,18 @@ impl AnomalySeverity {
             Self::Medium => "medium",
             Self::High => "high",
             Self::Critical => "critical",
+        }
+    }
+
+    /// Parse the contract string back into a variant (for DB reload).
+    #[must_use]
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s {
+            "low" => Some(Self::Low),
+            "medium" => Some(Self::Medium),
+            "high" => Some(Self::High),
+            "critical" => Some(Self::Critical),
+            _ => None,
         }
     }
 }
@@ -105,6 +123,20 @@ impl AnomalyStatus {
     #[must_use]
     pub fn is_terminal(&self) -> bool {
         matches!(self, Self::Resolved | Self::Expired | Self::Dismissed)
+    }
+
+    /// Parse the contract string back into a variant (for DB reload).
+    #[must_use]
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s {
+            "active" => Some(Self::Active),
+            "acknowledged" => Some(Self::Acknowledged),
+            "snoozed" => Some(Self::Snoozed),
+            "resolved" => Some(Self::Resolved),
+            "expired" => Some(Self::Expired),
+            "dismissed" => Some(Self::Dismissed),
+            _ => None,
+        }
     }
 }
 
