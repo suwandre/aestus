@@ -1256,3 +1256,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 35 passed. Fires on `|oi_delta| >= oi_delta_threshold` (default 0.05); fixture 0.085 → one oi_surge, severity medium, description carries price direction ("new longs building") + oi_state context ref.
 - Assumptions: FeatureSnapshot carries `oi_delta` (fraction) + `oi_state`, NOT an OI z-score → corrected the T002 registry guess: oi_surge is Magnitude basis (sigma=None, required_fields dropped "sigma"). Severity bands on |delta|: ≥0.15 critical, ≥0.10 high, ≥(threshold+0.10)/2 medium, else low. Price direction from returns map (1h preferred, then 24h/15m/5m): rising→new longs, falling→new shorts.
 - Follow-ups: none
+
+### P10-T005 — Implement volume anomaly detector
+
+- Files: services/anomaly/src/detectors/volume.rs (new), detectors/mod.rs (mod volume + test_support fixture loader), detect.rs (wire), fixtures/features/snapshots.json (+crypto:sol-usdt entry, volume_z 3.2)
+- Checks: `cargo test -p anomaly` → 37 passed; contracts `bun test` → 20 pass (SOL snapshot validates against FeatureSnapshot contract). SOL volume_z 3.2 → volume_anomaly (severity high via sigma bands); BTC volume_z 1.9 stays below 2.0 threshold and does not fire.
+- Assumptions: volume_z is a genuine z-score (P09-T006) → sigma-based detector using registry SIGMA_DEFAULT bands; percentile breakout is already folded into the upstream z-score, so this layer only applies the threshold rule. Added a SOL feature snapshot to the shared fixture (TS fixtures.test.ts has no length assertion; entry uses TS RegimeLabels enum values — volatility "high"). One-sided test (`z >= threshold`): low volume is not anomalous.
+- Follow-ups: none

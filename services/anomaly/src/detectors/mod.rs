@@ -7,6 +7,7 @@
 
 pub mod funding;
 pub mod oi;
+pub mod volume;
 
 use crate::anomaly::{AnomalyEvent, AnomalySeverity, AnomalyStatus, AnomalyType};
 
@@ -53,6 +54,19 @@ pub fn new_anomaly(
         status: AnomalyStatus::Active,
         context_refs,
         rule_ref,
+    }
+}
+
+/// Test-only helpers shared across detector test modules.
+#[cfg(test)]
+pub mod test_support {
+    use crate::input::FeatureSnapshot;
+
+    /// Load the repo feature-snapshot fixtures (crate-relative path).
+    pub fn load_snapshots() -> Vec<FeatureSnapshot> {
+        let raw = std::fs::read_to_string("../../fixtures/features/snapshots.json")
+            .expect("read snapshots fixture");
+        serde_json::from_str(&raw).expect("parse snapshots fixture")
     }
 }
 

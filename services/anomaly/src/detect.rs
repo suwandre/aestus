@@ -17,6 +17,7 @@ pub fn run_detectors(state: &EngineState, rules: &RulesConfig, _now_ms: i64) -> 
     let mut out = Vec::new();
     out.extend(detectors::funding::detect(state, rules));
     out.extend(detectors::oi::detect(state, rules));
-    // Further detectors (volume, …) are appended here as they land.
+    out.extend(detectors::volume::detect(state, rules));
+    // Further detectors (liquidations, basis, …) are appended here as they land.
     out
 }

@@ -871,7 +871,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Fixture OI jump emits oi_surge with price/OI context.
 
-### [ ] P10-T005 - Implement volume anomaly detector
+### [x] P10-T005 - Implement volume anomaly detector
 
 - Agent action: Detect volume z-score or percentile breakouts over rolling windows.
 

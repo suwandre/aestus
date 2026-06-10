@@ -32,5 +32,19 @@
     "correlation_set": [{ "asset": "crypto:btc-usdt", "correlation": 0.42, "window": "30d" }],
     "basis": [],
     "regime": { "trend": "ranging", "volatility": "normal", "risk": "neutral" }
+  },
+  {
+    "schema_version": 1,
+    "canonical_asset_id": "crypto:sol-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "returns": { "1h": 0.018, "24h": 0.064 },
+    "volatility": { "24h": 0.058 },
+    "z_scores": { "price": 2.2 },
+    "funding_z": 1.1,
+    "oi_delta": 0.022,
+    "volume_z": 3.2,
+    "correlation_set": [],
+    "basis": [],
+    "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" }
   }
 ]
