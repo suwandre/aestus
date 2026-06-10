@@ -1123,3 +1123,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 1 unit test — RecordingPublisher captures subject `feature.snapshot.crypto_btc_usdt` (canonical_id sanitized); payload decodes as valid `Envelope<FeatureSnapshot>`; source="features", payload_type="FeatureSnapshot"; main.rs calls publish_snapshot for each built snapshot
 - Assumptions: Subject pattern: `feature.snapshot.{sanitized_canonical_asset_id}` where sanitization replaces `:` and `-` with `_`. Uses existing `publish_envelope` helper from nats_publisher crate.
 - Follow-ups: none
+
+### P09-T015 — Add feature replay test
+
+- Files: services/features/src/main.rs (replay tests in `#[cfg(test)]` block, code in T001 commit)
+- Checks: 4 replay tests — `replay_produces_nonzero_returns_and_vol` (24h return ~5%, vol > 0); `replay_vol_regime_classified_correctly` (linear up series = trending_up); `replay_funding_z_positive_for_spike` (z > 2.0 for 10× spike); `replay_snapshot_publishes_to_nats` (all snapshots publish to feature.snapshot.* with valid Envelope)
+- Assumptions: Replay fixture: 1441 trade events (50k→52.5k over 24h) + 9 normal + 1 spike funding rate. Deterministic because price/funding series are constructed inline (no file read). All 64 tests pass.
+- Follow-ups: none

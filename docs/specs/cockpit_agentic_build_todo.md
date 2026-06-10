@@ -831,7 +831,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Downstream services receive schema-valid feature snapshot events.
 
-### [ ] P09-T015 - Add feature replay test
+### [x] P09-T015 - Add feature replay test
 
 - Agent action: Replay fixtures through feature service and assert known z-score/regime outputs.
 
