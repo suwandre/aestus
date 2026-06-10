@@ -1,0 +1,66 @@
+/**
+ * Context packet assembly (P11-T001 skeleton).
+ *
+ * Turns a trigger `AnomalyEvent` into a schema-valid {@link ContextPacket}.
+ * At T001 every data section is a placeholder; subsequent P11 tasks replace
+ * each placeholder with a real deterministic query (market snapshot, correlated
+ * assets, venues, news, macro, on-chain, analogues). Ids/timestamps are
+ * injectable so fixtures and tests stay deterministic.
+ */
+import {
+  type AnomalyEvent,
+  type ContextPacket,
+  type FeatureSnapshot,
+  SCHEMA_VERSION,
+} from "@aestus/contracts";
+import { placeholderLevels } from "./levels";
+
+export interface BuildOptions {
+  /** Clock for `generated_at`. Defaults to the current time. */
+  now?: () => Date;
+  /** Packet id from the trigger. Defaults to `ctx:<trigger.id>`. */
+  idFor?: (trigger: AnomalyEvent) => string;
+}
+
+/** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
+export function placeholderSnapshot(asset: string, timestamp: string): FeatureSnapshot {
+  return {
+    schema_version: SCHEMA_VERSION,
+    canonical_asset_id: asset,
+    timestamp,
+    returns: {},
+    volatility: {},
+    z_scores: {},
+    funding_z: null,
+    oi_delta: null,
+    volume_z: null,
+    correlation_set: [],
+    basis: [],
+    regime: { trend: "ranging", volatility: "normal", risk: "neutral" },
+  };
+}
+
+/** Assemble a (currently placeholder) context packet for a trigger anomaly. */
+export function assembleContextPacket(
+  trigger: AnomalyEvent,
+  opts: BuildOptions = {},
+): ContextPacket {
+  const now = opts.now ?? (() => new Date());
+  const idFor = opts.idFor ?? ((t) => `ctx:${t.id}`);
+  const primaryAsset = trigger.assets[0]!;
+
+  return {
+    id: idFor(trigger),
+    schema_version: SCHEMA_VERSION,
+    generated_at: now().toISOString(),
+    primary_asset: primaryAsset,
+    trigger,
+    market_snapshot: placeholderSnapshot(primaryAsset, trigger.detected_at),
+    correlated_assets: [],
+    news: [],
+    macro: [],
+    on_chain: [],
+    historical_analogues: [],
+    deterministic_levels: placeholderLevels(),
+  };
+}

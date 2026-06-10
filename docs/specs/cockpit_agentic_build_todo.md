@@ -959,7 +959,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 Goal: Assemble the context around an anomaly so the LLM and user see more than a raw signal.
 
-### [ ] P11-T001 - Create context service skeleton
+### [x] P11-T001 - Create context service skeleton
 
 - Agent action: Build TS service consuming anomaly.detected and creating context packets via Redis/Postgres/ClickHouse queries.
 
