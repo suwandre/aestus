@@ -1168,3 +1168,17 @@ T001–T015: all "Done when" criteria satisfied by code.
   4. `liquidations.rs` — bucket width corrected from 0.5% (0.005) to 0.1% (0.001); lookback window corrected from 4 hours to 1 hour; min_events=2 filter added (buckets with fewer than 2 events are dropped).
 - Assumptions: `BreadthResult.up_pct`/`down_pct` remain 0–1 internally; the ×100 scaling is applied at the snapshot layer in `build_snapshot`. No external consumers of `BreadthResult` exist yet (P10+ will use snapshot fields).
 - Follow-ups: none
+
+---
+
+### P09 REVIEW — FAIL
+
+Reviewer: independent review agent (claude-sonnet-4-6), 2026-06-10.
+Tests run: `cargo test -p features` → **64 passed, 0 failed**.
+T001–T015: all "Done when" criteria satisfied by code and migrations.
+Prior FAIL (8 items) was repaired; 7 of 8 fixes verified correct. One residual discrepancy found:
+
+**T016: docs/feature_formulas.md breadth `None` guard does not match code**
+
+- `docs/feature_formulas.md` line 225 states "Returns `None` when fewer than 2 assets are tracked."
+- `breadth.rs:23` guards only on `assets.is_empty()` (0 assets). A single asset with a computable 1h return produces `Some(BreadthResult)` — no `< 2` guard exists.
