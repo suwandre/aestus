@@ -44,6 +44,10 @@ export async function processAnomaly(
         ...(deps.now !== undefined ? { now: deps.now } : {}),
         ...(deps.dataSource !== undefined ? { dataSource: deps.dataSource } : {}),
         correlatedAssets: deps.config.correlatedAssets,
+        venueThresholds: {
+          fundingDispersion: deps.config.venueFundingDispersion,
+          basisDispersionBps: deps.config.venueBasisDispersionBps,
+        },
       }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {
@@ -64,7 +68,8 @@ export async function startContextService(deps: ContextServiceDeps): Promise<Sub
     `${ANOMALY_DETECTED.base}.>`,
     AnomalyEventSchema,
     async (trigger, envelope) => {
-      deps.metrics.lastAnomalyEpochMs = Date.parse(envelope.emitted_at) || deps.metrics.lastAnomalyEpochMs;
+      deps.metrics.lastAnomalyEpochMs =
+        Date.parse(envelope.emitted_at) || deps.metrics.lastAnomalyEpochMs;
       try {
         await processAnomaly(trigger, deps, envelope.trace_id);
       } catch (err) {

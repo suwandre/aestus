@@ -37,7 +37,10 @@ describe("P11-T002 market snapshot", () => {
 
   test("falls back to a placeholder snapshot for an unknown asset", () => {
     const ds = new FixtureDataSource(loadConfig());
-    const packet = assembleContextPacket({ ...trigger, assets: ["crypto:doge-usdt"] }, { dataSource: ds });
+    const packet = assembleContextPacket(
+      { ...trigger, assets: ["crypto:doge-usdt"] },
+      { dataSource: ds },
+    );
     expect(packet.market_snapshot.canonical_asset_id).toBe("crypto:doge-usdt");
     expect(packet.market_snapshot.funding_z).toBeNull();
   });

@@ -5,6 +5,7 @@ export * from "./dlq";
 export * from "./health";
 export * from "./asset";
 export * from "./venue";
+export * from "./venue-quote";
 export * from "./raw-event";
 export * from "./normalized-event";
 export * from "./macro";

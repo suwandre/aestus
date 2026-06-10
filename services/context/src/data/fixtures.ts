@@ -8,7 +8,12 @@
  */
 import { readFileSync } from "node:fs";
 import { z } from "zod/v4";
-import { type FeatureSnapshot, FeatureSnapshot as FeatureSnapshotSchema } from "@aestus/contracts";
+import {
+  type FeatureSnapshot,
+  FeatureSnapshot as FeatureSnapshotSchema,
+  type VenueQuote,
+  VenueQuote as VenueQuoteSchema,
+} from "@aestus/contracts";
 import type { ContextConfig } from "../config";
 import type { ContextDataSource } from "./source";
 
@@ -22,6 +27,7 @@ function loadArray<T>(path: string, schema: z.ZodType<T>): T[] {
 export class FixtureDataSource implements ContextDataSource {
   private readonly config: ContextConfig;
   private featuresCache?: FeatureSnapshot[];
+  private venueQuotesCache?: VenueQuote[];
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -52,5 +58,23 @@ export class FixtureDataSource implements ContextDataSource {
       if (snap) out.push(snap);
     }
     return out;
+  }
+
+  private venueQuotesAll(): VenueQuote[] {
+    if (!this.venueQuotesCache) {
+      this.venueQuotesCache = loadArray(this.config.fixtures.venueQuotes, VenueQuoteSchema);
+    }
+    return this.venueQuotesCache;
+  }
+
+  venueQuotes(asset: string): VenueQuote[] {
+    // Latest quote per venue for the asset.
+    const byVenue = new Map<string, VenueQuote>();
+    for (const q of this.venueQuotesAll()) {
+      if (q.canonical_asset_id !== asset) continue;
+      const prev = byVenue.get(q.venue);
+      if (!prev || Date.parse(q.timestamp) > Date.parse(prev.timestamp)) byVenue.set(q.venue, q);
+    }
+    return [...byVenue.values()];
   }
 }

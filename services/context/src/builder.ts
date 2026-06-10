@@ -15,6 +15,7 @@ import {
 } from "@aestus/contracts";
 import { placeholderLevels } from "./levels";
 import type { ContextDataSource } from "./data/source";
+import { buildVenueComparison, type VenueThresholds } from "./venue";
 
 export interface BuildOptions {
   /** Clock for `generated_at`. Defaults to the current time. */
@@ -25,6 +26,8 @@ export interface BuildOptions {
   dataSource?: ContextDataSource;
   /** Canonical asset ids to include as correlated-asset context (T003). */
   correlatedAssets?: string[];
+  /** Thresholds for the venue-specific dislocation decision (T004). */
+  venueThresholds?: VenueThresholds;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -65,6 +68,14 @@ export function assembleContextPacket(
   const correlatedAssets =
     opts.dataSource?.correlatedSnapshots(primaryAsset, opts.correlatedAssets ?? []) ?? [];
 
+  // Cross-venue comparison (T004): explains whether a dislocation is isolated
+  // to one venue or market-wide. Omitted when no venue quotes are available.
+  const quotes = opts.dataSource?.venueQuotes(primaryAsset) ?? [];
+  const venueComparison =
+    quotes.length > 0 && opts.venueThresholds
+      ? buildVenueComparison(primaryAsset, quotes, opts.venueThresholds)
+      : undefined;
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -73,6 +84,7 @@ export function assembleContextPacket(
     trigger,
     market_snapshot: marketSnapshot,
     correlated_assets: correlatedAssets,
+    ...(venueComparison ? { venue_comparison: venueComparison } : {}),
     news: [],
     macro: [],
     on_chain: [],

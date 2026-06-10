@@ -8,7 +8,7 @@
  * implementation can be added later without changing the builder. Methods are
  * added as P11 tasks need them.
  */
-import type { FeatureSnapshot } from "@aestus/contracts";
+import type { FeatureSnapshot, VenueQuote } from "@aestus/contracts";
 
 export interface ContextDataSource {
   /** Latest feature snapshot (current market state) for an asset, if known. */
@@ -19,4 +19,7 @@ export interface ContextDataSource {
    * `exclude` (the primary asset). Assets with no snapshot are omitted.
    */
   correlatedSnapshots(exclude: string, assets: string[]): FeatureSnapshot[];
+
+  /** Latest per-venue quotes for an asset (T004); empty if none known. */
+  venueQuotes(asset: string): VenueQuote[];
 }

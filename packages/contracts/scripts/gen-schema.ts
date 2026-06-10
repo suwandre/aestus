@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 
 import { AssetIdentity } from "../src/asset";
 import { Venue, VenueInstrument } from "../src/venue";
+import { VenueQuote } from "../src/venue-quote";
 import { RawMarketEvent } from "../src/raw-event";
 import { NormalizedMarketEvent } from "../src/normalized-event";
 import { MacroEvent } from "../src/macro";
@@ -36,6 +37,7 @@ const contracts: Record<string, z.ZodType> = {
   AssetIdentity,
   Venue,
   VenueInstrument,
+  VenueQuote,
   RawMarketEvent,
   NormalizedMarketEvent,
   MacroEvent,

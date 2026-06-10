@@ -977,7 +977,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet includes cross-asset snapshot for BTC anomaly.
 
-### [ ] P11-T004 - Implement venue comparison query
+### [x] P11-T004 - Implement venue comparison query
 
 - Agent action: Fetch funding, OI, price, basis, and freshness across venues for same canonical asset.
 

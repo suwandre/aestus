@@ -64,6 +64,10 @@ export interface ContextConfig {
   onChainWindowHours: number;
   /** Seconds after which a contributing feed is considered stale. */
   freshnessStaleSeconds: number;
+  /** Funding-rate spread across venues above which a dislocation is venue-specific. */
+  venueFundingDispersion: number;
+  /** Basis spread (bps) across venues above which a dislocation is venue-specific. */
+  venueBasisDispersionBps: number;
   /** Fixture file locations (resolved absolute paths). */
   fixtures: {
     features: string;
@@ -96,6 +100,8 @@ export function loadConfig(): ContextConfig {
     macroWindowHours: envInt("MACRO_WINDOW_HOURS", 72),
     onChainWindowHours: envInt("ONCHAIN_WINDOW_HOURS", 48),
     freshnessStaleSeconds: envInt("FRESHNESS_STALE_SECONDS", 900),
+    venueFundingDispersion: Number.parseFloat(env("VENUE_FUNDING_DISPERSION", "0.0003")),
+    venueBasisDispersionBps: Number.parseFloat(env("VENUE_BASIS_DISPERSION_BPS", "15")),
     fixtures: {
       features: resolveFixture(env("FEATURES_FIXTURE_PATH", "fixtures/features/snapshots.json")),
       assets: resolveFixture(env("ASSETS_FIXTURE_PATH", "fixtures/assets/identities.json")),

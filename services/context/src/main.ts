@@ -17,9 +17,7 @@ async function main(): Promise<void> {
   const startedAtMs = Date.now();
   const metrics = newMetrics();
 
-  const bus: EventBus = config.natsUrl
-    ? await NatsBus.connect(config.natsUrl)
-    : new InMemoryBus();
+  const bus: EventBus = config.natsUrl ? await NatsBus.connect(config.natsUrl) : new InMemoryBus();
   const busMode = config.natsUrl ? "nats" : "memory";
   console.log(`[context] starting (bus=${busMode}) v${config.version}`);
 

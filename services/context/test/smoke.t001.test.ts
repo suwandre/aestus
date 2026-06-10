@@ -39,12 +39,22 @@ describe("P11-T001 skeleton", () => {
     await bus.subscribe(`${CONTEXT_PACKET.base}.>`, ContextPacketSchema, (p) => {
       received.push(p);
     });
-    await startContextService({ bus, config, metrics, now: () => new Date("2026-06-07T12:00:05Z") });
-
-    await bus.publish(subject(ANOMALY_DETECTED, trigger.type, trigger.assets[0]!), trigger, AnomalyEventSchema, {
-      source: "anomaly",
-      payload_type: PAYLOAD_TYPES.AnomalyEvent,
+    await startContextService({
+      bus,
+      config,
+      metrics,
+      now: () => new Date("2026-06-07T12:00:05Z"),
     });
+
+    await bus.publish(
+      subject(ANOMALY_DETECTED, trigger.type, trigger.assets[0]!),
+      trigger,
+      AnomalyEventSchema,
+      {
+        source: "anomaly",
+        payload_type: PAYLOAD_TYPES.AnomalyEvent,
+      },
+    );
 
     expect(received.length).toBe(1);
     const packet = ContextPacketSchema.parse(received[0]);

@@ -1,0 +1,52 @@
+[
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "price": 68250.4,
+    "funding_rate": 0.0001,
+    "open_interest": 91234.5,
+    "basis_bps": 12.5
+  },
+  {
+    "schema_version": 1,
+    "venue": "bybit",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "price": 68248.0,
+    "funding_rate": 0.00012,
+    "open_interest": 50210.0,
+    "basis_bps": 11.8
+  },
+  {
+    "schema_version": 1,
+    "venue": "okx",
+    "canonical_asset_id": "crypto:btc-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "price": 68190.0,
+    "funding_rate": 0.00065,
+    "open_interest": 30120.0,
+    "basis_bps": 41.0
+  },
+  {
+    "schema_version": 1,
+    "venue": "binance",
+    "canonical_asset_id": "crypto:eth-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "price": 3620.5,
+    "funding_rate": 0.00009,
+    "open_interest": 410200.0,
+    "basis_bps": 9.4
+  },
+  {
+    "schema_version": 1,
+    "venue": "bybit",
+    "canonical_asset_id": "crypto:eth-usdt",
+    "timestamp": "2026-06-07T12:00:00.000Z",
+    "price": 3620.1,
+    "funding_rate": 0.0001,
+    "open_interest": 220150.0,
+    "basis_bps": 9.1
+  }
+]
