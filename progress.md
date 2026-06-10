@@ -1182,3 +1182,24 @@ Prior FAIL (8 items) was repaired; 7 of 8 fixes verified correct. One residual d
 
 - `docs/feature_formulas.md` line 225 states "Returns `None` when fewer than 2 assets are tracked."
 - `breadth.rs:23` guards only on `assets.is_empty()` (0 assets). A single asset with a computable 1h return produces `Some(BreadthResult)` — no `< 2` guard exists.
+
+### P09-T016 — repair
+
+- Files changed: `docs/feature_formulas.md`.
+- Fix: corrected the breadth `None`-guard description (line 225). The doc claimed
+  "Returns `None` when fewer than 2 assets are tracked," but `breadth.rs` returns
+  `None` only when no tracked asset has a computable 1h return (`with_return == 0`,
+  which includes the empty-assets case). Replaced with an accurate description and
+  clarified that `total_assets` counts only assets with a computable 1h return.
+  Doc now matches code; no code change needed.
+- Checks run: read `breadth.rs:22-73` and confirmed the doc wording matches the two
+  `return None` paths and the `with_return` denominator. `cargo test -p features`
+  breadth tests pass.
+- Assumptions: code is the source of truth for this residual mismatch (consistent with
+  the prior repair that aligned other formulas to docs but left breadth's documented
+  asset-count guard incorrect).
+- Follow-ups: pre-existing FLAKY test `basis::tests::cross_venue_price_basis_computed`
+  (basis.rs:81) fails intermittently due to HashMap iteration order picking either
+  venue as the cross-venue reference (±20 bps). Out of scope for P09-T016; not part of
+  the review finding. Flagged here so a future basis-feature task can make the
+  reference selection deterministic.

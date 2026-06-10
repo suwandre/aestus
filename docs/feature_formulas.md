@@ -222,7 +222,9 @@ Computed across all assets currently in `MarketState`.
 | `avg_vol` | Mean 24h realized volatility across assets |
 | `risk_regime` | `risk_on` if up_pct > 60%; `risk_off` if down_pct > 60%; else `neutral` |
 
-Returns `None` when fewer than 2 assets are tracked.
+`total_assets` counts only assets with a computable 1h return (assets lacking
+sufficient price history are excluded from the denominator). Returns `None`
+when no tracked asset has a computable 1h return (including the no-assets case).
 
 ---
 
