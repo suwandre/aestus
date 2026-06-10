@@ -1032,3 +1032,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: `cargo check --workspace` passes; `cargo test --package features` — 64 pass; `cargo fmt --check` clean
 - Assumptions: All 16 feature modules were written as one body of work by an interrupted previous worker; recovered, bug-fixed (volume z-score flat-baseline edge case), formatted, and committed here as T001. T002–T015 commits below carry only progress.md/todo updates. `rfc3339_to_ms` added to market_math for timestamp parsing in state.rs. `NormalizedMarketEvent::timestamp()` accessor added to event_model. Fixture-first: service runs with no NATS/Redis/ClickHouse configured — all sinks no-op when URL is absent.
 - Follow-ups: none
+
+### P09-T002 — Implement rolling window library
+
+- Files: services/features/src/window.rs (code in T001 commit)
+- Checks: 8 unit tests in window.rs cover mean, variance (Bessel), min/max, percentile (50th/0th/100th), z-score (mean=0, 1σ above), evict_before, capacity eviction, value_near; all pass
+- Assumptions: Capacity-bounded deque (not time-bounded); callers must call evict_before to age out old samples. `count()` retained as alias for `len()` for readability.
+- Follow-ups: none

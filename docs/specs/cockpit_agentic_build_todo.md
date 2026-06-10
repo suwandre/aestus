@@ -753,7 +753,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Service can consume normalized events and publish placeholder feature snapshots.
 
-### [ ] P09-T002 - Implement rolling window library
+### [x] P09-T002 - Implement rolling window library
 
 - Agent action: Create reusable rolling windows for count, sum, mean, variance, min, max, percentile, z-score.
 
