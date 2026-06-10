@@ -937,7 +937,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Anomaly inbox survives service restart.
 
-### [ ] P10-T016 - Publish anomalies
+### [x] P10-T016 - Publish anomalies
 
 - Agent action: Emit anomaly.detected events for context builder, API, alerts, and UI.
 

@@ -91,5 +91,47 @@
     "status": "active",
     "context_refs": ["macro:us-cpi-2026-06"],
     "rule_ref": "rule:macro_window<30m"
+  },
+  {
+    "id": "anom-008",
+    "type": "liquidation_cluster",
+    "severity": "medium",
+    "sigma": null,
+    "assets": ["crypto:btc-usdt"],
+    "venues": ["binance"],
+    "title": "Liquidation cluster",
+    "description": "Liquidation cluster of 820.5 units between 69200 and 69400, above current price (short liquidations).",
+    "detected_at": "2026-06-07T12:00:00.000Z",
+    "status": "active",
+    "context_refs": ["feature:crypto:btc-usdt:2026-06-07T12:00:00Z"],
+    "rule_ref": "rule:liq_cluster_size>1"
+  },
+  {
+    "id": "anom-009",
+    "type": "news_cluster",
+    "severity": "medium",
+    "sigma": null,
+    "assets": ["crypto:btc-usdt"],
+    "venues": [],
+    "title": "News cluster forming",
+    "description": "2 relevant 'etf' headlines on crypto:btc-usdt within 120 min (avg relevance 0.85).",
+    "detected_at": "2026-06-07T11:52:00.000Z",
+    "status": "snoozed",
+    "context_refs": ["news:news-2026-06-07-001", "news:news-2026-06-07-003"],
+    "rule_ref": "rule:news_cluster>=2"
+  },
+  {
+    "id": "anom-010",
+    "type": "exchange_flow",
+    "severity": "high",
+    "sigma": null,
+    "assets": ["crypto:btc-usdt"],
+    "venues": [],
+    "title": "Exchange flow",
+    "description": "1850 crypto:btc-usdt net outflow from exchanges (~$126.3M).",
+    "detected_at": "2026-06-07T00:00:00.000Z",
+    "status": "active",
+    "context_refs": ["onchain:exchange_flow:2026-06-07T00:00:00Z"],
+    "rule_ref": "rule:exchange_amount_usd"
   }
 ]

@@ -356,4 +356,47 @@ mod tests {
         ingest_context(&mut st, "context.packet.macro.us", macro_json);
         assert_eq!(st.macro_events.len(), 1);
     }
+
+    /// P10-T016: every event published to NATS is a schema-valid AnomalyEvent
+    /// envelope on an `anomaly.detected.<type>.<asset>` subject — i.e. a NATS
+    /// tail would show only valid anomaly events for the context builder / API /
+    /// alerts / UI to consume.
+    #[tokio::test]
+    async fn all_published_events_are_valid_anomaly_detected_envelopes() {
+        use anomaly::AnomalyEvent;
+        let mut st = EngineState::new();
+        load_fixtures(&mut st, "../../fixtures");
+        // Seed correlation history so the correlation detector can fire too.
+        let pubr = RecordingPublisher::new();
+        let mut deduper = dedupe::Deduper::new();
+        let pg = persist::PostgresAnomalySink::new(None);
+        let ch = persist::ClickHouseAnomalyMetrics::new(None);
+        let now_ms = market_math::timestamps::rfc3339_to_ms("2026-06-10T12:00:00Z").unwrap_or(0);
+        let n = evaluate(
+            &st,
+            &rules::RulesConfig::default(),
+            now_ms,
+            &mut deduper,
+            &pubr,
+            &pg,
+            &ch,
+        )
+        .await;
+        assert!(n >= 1, "fixtures should emit at least one anomaly");
+        let records = pubr.records().await;
+        assert_eq!(records.len(), n, "every published anomaly recorded");
+        for (subject, payload) in &records {
+            assert!(
+                subject.starts_with("anomaly.detected."),
+                "subject must route under anomaly.detected.*: {subject}"
+            );
+            let env: Envelope<AnomalyEvent> =
+                serde_json::from_slice(payload).expect("payload is a valid AnomalyEvent envelope");
+            assert_eq!(env.payload_type, "AnomalyEvent");
+            assert_eq!(env.source, "anomaly");
+            env.payload
+                .validate()
+                .expect("payload satisfies contract invariants");
+        }
+    }
 }
