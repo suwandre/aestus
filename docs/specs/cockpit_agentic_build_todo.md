@@ -771,7 +771,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Feature snapshots include return fields required by UI.
 
-### [ ] P09-T005 - Implement realized volatility features
+### [x] P09-T005 - Implement realized volatility features
 
 - Agent action: Compute rolling realized volatility and volatility regime labels.
 

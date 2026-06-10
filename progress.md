@@ -1053,3 +1053,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 3 unit tests — empty window returns empty map; 1h return (5% up) correct to 1e-9; 24h return (−10% down) correct to 1e-9; FeatureSnapshot.returns populated by build_snapshot in main.rs
 - Assumptions: Simple arithmetic return (not log return) used for display; horizons: 1m/5m/15m/1h/24h/7d; tolerance = horizon width; horizon omitted when no sample falls within tolerance.
 - Follow-ups: none
+
+### P09-T005 — Implement realized volatility features
+
+- Files: services/features/src/volatility.rs (code in T001 commit)
+- Checks: 5 unit tests — None for <3 samples; positive vol for moving prices; vol regime thresholds (very_low/low/normal/high/extreme); trend regime from 24h return; risk regime logic (risk_on/risk_off/neutral); FeatureSnapshot.volatility and regime populated
+- Assumptions: Realized vol = std_dev of log-returns, Bessel-corrected, requires ≥3 samples. Regime thresholds documented in docs/feature_formulas.md.
+- Follow-ups: none
