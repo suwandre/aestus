@@ -859,7 +859,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Every anomaly type has display label, severity policy, required fields, and UI color semantics.
 
-### [ ] P10-T003 - Implement funding spike detector
+### [x] P10-T003 - Implement funding spike detector
 
 - Agent action: Detect funding current/z-score above configured thresholds, with per-asset/venue rule config.
 

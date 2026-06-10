@@ -9,9 +9,11 @@
 mod anomaly;
 mod config;
 mod detect;
+mod detectors;
 mod input;
 mod publish;
 mod registry;
+mod rules;
 mod state;
 
 use std::sync::Arc;
@@ -80,8 +82,13 @@ fn load_fixtures(state: &mut EngineState, base: &str) {
 // ── Evaluation pass ─────────────────────────────────────────────────────────
 
 /// Run one detection pass: collect anomalies, validate, publish.
-async fn evaluate(state: &EngineState, publisher: &dyn Publisher) -> usize {
-    let anomalies = detect::run_detectors(state);
+async fn evaluate(
+    state: &EngineState,
+    rules: &rules::RulesConfig,
+    now_ms: i64,
+    publisher: &dyn Publisher,
+) -> usize {
+    let anomalies = detect::run_detectors(state, rules, now_ms);
     let mut published = 0;
     for anomaly in &anomalies {
         match publish::publish_anomaly(publisher, anomaly).await {
@@ -173,12 +180,16 @@ async fn main() -> anyhow::Result<()> {
     let state_e = Arc::clone(&state);
     let eval_pub = Arc::clone(&publisher);
     let eval_interval = cfg.eval_interval;
+    let rules_cfg = rules::RulesConfig::default();
     let evaluator = tokio::spawn(async move {
         let mut interval = tokio::time::interval(eval_interval);
         loop {
             interval.tick().await;
+            let now_ms =
+                market_math::timestamps::rfc3339_to_ms(&market_math::timestamps::now_rfc3339())
+                    .unwrap_or(0);
             let st = state_e.lock().await;
-            let n = evaluate(&st, eval_pub.as_ref()).await;
+            let n = evaluate(&st, &rules_cfg, now_ms, eval_pub.as_ref()).await;
             if n > 0 {
                 tracing::info!(published = n, "evaluation pass emitted anomalies");
             }
@@ -234,12 +245,26 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn evaluate_with_no_detectors_publishes_nothing() {
+    async fn evaluate_on_empty_state_publishes_nothing() {
         let st = EngineState::new();
         let pubr = RecordingPublisher::new();
-        let n = evaluate(&st, &pubr).await;
+        let n = evaluate(&st, &rules::RulesConfig::default(), 0, &pubr).await;
         assert_eq!(n, 0);
         assert!(pubr.is_empty().await);
+    }
+
+    #[tokio::test]
+    async fn evaluate_publishes_funding_spike_from_fixtures() {
+        let mut st = EngineState::new();
+        load_fixtures(&mut st, "../../fixtures");
+        let pubr = RecordingPublisher::new();
+        let n = evaluate(&st, &rules::RulesConfig::default(), 0, &pubr).await;
+        // BTC fixture has funding_z 2.6 → one funding_spike.
+        assert!(n >= 1, "fixture funding spike should publish");
+        let records = pubr.records().await;
+        assert!(records
+            .iter()
+            .any(|(s, _)| s.starts_with("anomaly.detected.funding_spike")));
     }
 
     #[test]
