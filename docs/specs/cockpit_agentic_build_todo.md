@@ -795,7 +795,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Feature snapshots include OI increase/decrease state.
 
-### [ ] P09-T009 - Implement liquidation cluster features
+### [x] P09-T009 - Implement liquidation cluster features
 
 - Agent action: Aggregate liquidation events by price bucket and time window.
 
