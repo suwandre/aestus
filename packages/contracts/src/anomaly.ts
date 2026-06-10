@@ -11,6 +11,7 @@ export const AnomalyType = z.enum([
   "whale_flow",
   "macro_approaching",
   "news_cluster",
+  "liquidation_cluster",
 ]);
 export type AnomalyType = z.infer<typeof AnomalyType>;
 

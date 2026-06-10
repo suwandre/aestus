@@ -17,6 +17,10 @@
       { "reference": "binance-spot", "basis_bps": 12.5 },
       { "reference": "okx-perp", "basis_bps": 8.1 }
     ],
+    "liq_clusters": [
+      { "price_low": 69200, "price_high": 69400, "total_size": 820.5, "side": "buy" },
+      { "price_low": 66700, "price_high": 66900, "total_size": 12.0, "side": "sell" }
+    ],
     "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" }
   },
   {

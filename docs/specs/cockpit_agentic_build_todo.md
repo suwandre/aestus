@@ -877,7 +877,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Fixture high-volume SOL event emits volume_anomaly.
 
-### [ ] P10-T006 - Implement liquidation cluster detector
+### [x] P10-T006 - Implement liquidation cluster detector
 
 - Agent action: Detect large liquidation cluster near current price using bucketed liquidation features.
 

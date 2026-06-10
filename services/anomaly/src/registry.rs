@@ -146,6 +146,15 @@ pub fn meta_for(anomaly_type: AnomalyType) -> AnomalyTypeMeta {
             required_fields: &["assets", "context_refs"],
             ui_color: "--red",
         },
+        T::LiquidationCluster => AnomalyTypeMeta {
+            // Magnitude-driven by aggregate cluster size near price.
+            anomaly_type,
+            label: "Liquidation Cluster",
+            severity_basis: SeverityBasis::Magnitude,
+            sigma_bands: None,
+            required_fields: &["assets"],
+            ui_color: "--orange",
+        },
     }
 }
 

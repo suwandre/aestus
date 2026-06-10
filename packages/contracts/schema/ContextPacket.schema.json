@@ -39,7 +39,8 @@
             "basis_dislocation",
             "whale_flow",
             "macro_approaching",
-            "news_cluster"
+            "news_cluster",
+            "liquidation_cluster"
           ]
         },
         "severity": {

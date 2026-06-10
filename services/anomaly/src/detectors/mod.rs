@@ -6,6 +6,7 @@
 //! statistics (hard rules #1, #2). Shared construction helpers live here.
 
 pub mod funding;
+pub mod liquidations;
 pub mod oi;
 pub mod volume;
 

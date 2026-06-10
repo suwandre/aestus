@@ -18,6 +18,7 @@ pub enum AnomalyType {
     WhaleFlow,
     MacroApproaching,
     NewsCluster,
+    LiquidationCluster,
 }
 
 impl AnomalyType {
@@ -31,6 +32,7 @@ impl AnomalyType {
         Self::WhaleFlow,
         Self::MacroApproaching,
         Self::NewsCluster,
+        Self::LiquidationCluster,
     ];
 
     #[must_use]
@@ -44,6 +46,7 @@ impl AnomalyType {
             Self::WhaleFlow => "whale_flow",
             Self::MacroApproaching => "macro_approaching",
             Self::NewsCluster => "news_cluster",
+            Self::LiquidationCluster => "liquidation_cluster",
         }
     }
 }
