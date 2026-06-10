@@ -1116,3 +1116,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 3 unit tests — ClickHouseSnapshotSink no-op when url=None; empty batch is no-op; RedisSnapshotStore no-op when url=None; main.rs wires persist in snapshot loop; Redis key = `feature:snapshot:{canonical_asset_id}`, TTL 1h
 - Assumptions: ClickHouse table `feature_snapshots` written via JSONEachRow INSERT. Redis stores latest snapshot only (no history in Redis). Both sinks are fixture-first: no-op without configured URLs. Schema defines nested arrays for correlation_set and basis columns.
 - Follow-ups: P10 — ClickHouse CREATE TABLE for feature_snapshots needed; key `feature:snapshot:*` used by API at P11.
+
+### P09-T014 — Publish feature snapshots
+
+- Files: services/features/src/publish.rs (code in T001 commit)
+- Checks: 1 unit test — RecordingPublisher captures subject `feature.snapshot.crypto_btc_usdt` (canonical_id sanitized); payload decodes as valid `Envelope<FeatureSnapshot>`; source="features", payload_type="FeatureSnapshot"; main.rs calls publish_snapshot for each built snapshot
+- Assumptions: Subject pattern: `feature.snapshot.{sanitized_canonical_asset_id}` where sanitization replaces `:` and `-` with `_`. Uses existing `publish_envelope` helper from nats_publisher crate.
+- Follow-ups: none

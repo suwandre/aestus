@@ -825,7 +825,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: API can read latest and historical feature data.
 
-### [ ] P09-T014 - Publish feature snapshots
+### [x] P09-T014 - Publish feature snapshots
 
 - Agent action: Emit feature.snapshot events to NATS for anomaly engine and UI realtime updates.
 
