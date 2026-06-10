@@ -9,6 +9,7 @@ pub mod basis;
 pub mod correlation;
 pub mod funding;
 pub mod liquidations;
+pub mod macro_event;
 pub mod oi;
 pub mod volume;
 

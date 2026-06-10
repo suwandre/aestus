@@ -895,7 +895,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: BTC vs DXY/SPX fixture emits correlation_break when correlation shifts.
 
-### [ ] P10-T009 - Implement macro approaching detector
+### [x] P10-T009 - Implement macro approaching detector
 
 - Agent action: Emit alert when high-importance macro event is within configured window.
 

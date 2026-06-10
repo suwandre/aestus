@@ -13,7 +13,7 @@ use crate::state::EngineState;
 /// anomalies they produce (pre-dedupe, pre-severity-rescore). `now_ms` is the
 /// reference wall-clock for schedule-driven detectors (macro proximity).
 #[must_use]
-pub fn run_detectors(state: &EngineState, rules: &RulesConfig, _now_ms: i64) -> Vec<AnomalyEvent> {
+pub fn run_detectors(state: &EngineState, rules: &RulesConfig, now_ms: i64) -> Vec<AnomalyEvent> {
     let mut out = Vec::new();
     out.extend(detectors::funding::detect(state, rules));
     out.extend(detectors::oi::detect(state, rules));
@@ -21,6 +21,7 @@ pub fn run_detectors(state: &EngineState, rules: &RulesConfig, _now_ms: i64) -> 
     out.extend(detectors::liquidations::detect(state, rules));
     out.extend(detectors::basis::detect(state, rules));
     out.extend(detectors::correlation::detect(state, rules));
-    // Further detectors (macro, whale, …) are appended here as they land.
+    out.extend(detectors::macro_event::detect(state, rules, now_ms));
+    // Further detectors (whale, news, …) are appended here as they land.
     out
 }

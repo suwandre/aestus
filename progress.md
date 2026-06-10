@@ -1284,3 +1284,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 46 passed. BTC/SPX correlation flip +0.42→-0.18 (departure 0.60 ≥ 0.5 delta) → correlation_break; stable +0.42→+0.45 does not fire; single observation only seeds baseline.
 - Assumptions: Corrected T002 — correlation_break is Magnitude basis. The snapshot carries only the current correlation, so the rolling baseline is reconstructed in EngineState.correlation_history (per `<primary>|<other>|<window>` key, bounded 60, newest last, appended on ingest). Baseline = mean of prior readings; current = latest; fire when |current−baseline| ≥ correlation_break_delta (0.5). Needs ≥2 observations (a single fixture load establishes baseline only — matches "when correlation shifts"). Anomaly references both assets [primary, other]. Severity: ≥2.5×delta high, ≥1.5× medium, else low.
 - Follow-ups: none
+
+### P10-T009 — Implement macro approaching detector
+
+- Files: services/anomaly/src/detectors/macro_event.rs (new), detectors/mod.rs, detect.rs (pass now_ms)
+- Checks: `cargo test -p anomaly` → 49 passed. At now=2026-06-10T12:00Z, CPI (high, 12:30Z, 30 min away) → exactly one macro_approaching; FOMC (week out), NFP (passed), PPI/jobless (medium) all filtered. Passed-event and medium-importance cases do not fire.
+- Assumptions: Schedule-driven (uses now_ms threaded from eval loop / passed in tests for determinism). Fires when 0 ≤ scheduled_at−now ≤ window (default 60 min) AND importance ≥ macro_min_importance (default High). MacroEvent carries no asset list, so the anomaly attaches all watched crypto assets from snapshots (sorted), falling back to `macro:<region>` when none — keeps assets non-empty per contract. Severity: ≤15 min lead → high, else medium. context_ref `macro:<event_id>`; rule_ref `rule:macro_window<60m`.
+- Follow-ups: none
