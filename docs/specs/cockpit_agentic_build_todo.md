@@ -865,7 +865,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Fixture with elevated funding emits one funding_spike anomaly.
 
-### [ ] P10-T004 - Implement OI surge detector
+### [x] P10-T004 - Implement OI surge detector
 
 - Agent action: Detect unusual OI delta and combine with price direction metadata.
 

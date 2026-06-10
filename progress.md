@@ -1249,3 +1249,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 31 passed. Funding detector fires on `|funding_z| >= z_threshold` (default 2.0); fixture BTC funding_z 2.6 → exactly one funding_spike; end-to-end test confirms publish on `anomaly.detected.funding_spike.*`.
 - Assumptions: funding_z is computed upstream (P09 features); detector only applies the rule (hard rule #2 — no recomputation of levels). Per-asset/venue config modeled as `RulesConfig.funding_overrides` keyed by canonical_asset_id (venue-level override deferred — current FeatureSnapshot carries a single aggregate funding_z, not per-venue, so venue granularity isn't available at this layer; funding_spread exists but venue-keyed funding_z does not). Severity from registry sigma bands. Deterministic id `funding_spike:<asset>:<timestamp>`; results sorted by id (HashMap order). rule_ref `rule:funding_z>2.0`. RulesConfig defaults seeded here; storage/reload in T017.
 - Follow-ups: none
+
+### P10-T004 — Implement OI surge detector
+
+- Files: services/anomaly/src/detectors/oi.rs (new), detectors/mod.rs (mod oi), detect.rs (wire), registry.rs (oi_surge → Magnitude basis)
+- Checks: `cargo test -p anomaly` → 35 passed. Fires on `|oi_delta| >= oi_delta_threshold` (default 0.05); fixture 0.085 → one oi_surge, severity medium, description carries price direction ("new longs building") + oi_state context ref.
+- Assumptions: FeatureSnapshot carries `oi_delta` (fraction) + `oi_state`, NOT an OI z-score → corrected the T002 registry guess: oi_surge is Magnitude basis (sigma=None, required_fields dropped "sigma"). Severity bands on |delta|: ≥0.15 critical, ≥0.10 high, ≥(threshold+0.10)/2 medium, else low. Price direction from returns map (1h preferred, then 24h/15m/5m): rising→new longs, falling→new shorts.
+- Follow-ups: none

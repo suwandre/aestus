@@ -88,11 +88,14 @@ pub fn meta_for(anomaly_type: AnomalyType) -> AnomalyTypeMeta {
             ui_color: "--orange",
         },
         T::OiSurge => AnomalyTypeMeta {
+            // Magnitude-driven: the feature snapshot carries `oi_delta` (a
+            // fraction), not an OI z-score, so severity comes from the delta,
+            // not sigma bands.
             anomaly_type,
             label: "OI Surge",
-            severity_basis: SeverityBasis::Sigma,
-            sigma_bands: Some(SIGMA_DEFAULT),
-            required_fields: &["sigma", "assets"],
+            severity_basis: SeverityBasis::Magnitude,
+            sigma_bands: None,
+            required_fields: &["assets"],
             ui_color: "--blue",
         },
         T::VolumeAnomaly => AnomalyTypeMeta {

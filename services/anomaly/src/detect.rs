@@ -16,6 +16,7 @@ use crate::state::EngineState;
 pub fn run_detectors(state: &EngineState, rules: &RulesConfig, _now_ms: i64) -> Vec<AnomalyEvent> {
     let mut out = Vec::new();
     out.extend(detectors::funding::detect(state, rules));
-    // Further detectors (OI, volume, …) are appended here as they land.
+    out.extend(detectors::oi::detect(state, rules));
+    // Further detectors (volume, …) are appended here as they land.
     out
 }
