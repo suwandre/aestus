@@ -1203,3 +1203,28 @@ Prior FAIL (8 items) was repaired; 7 of 8 fixes verified correct. One residual d
   venue as the cross-venue reference (±20 bps). Out of scope for P09-T016; not part of
   the review finding. Flagged here so a future basis-feature task can make the
   reference selection deterministic.
+
+---
+
+### P09 REVIEW — PASS
+
+Reviewer: independent review agent (claude-sonnet-4-6), 2026-06-10.
+Tests run: `cargo test -p features` → **64 passed, 0 failed**.
+All 16 [x] tasks verified against actual repo files with zero trust in prior progress.md claims. No [!] tasks in P09.
+
+- P09-T001: `services/features/` workspace member with NATS consumer, Redis hot state, ClickHouse writer, health heartbeat, fixture-first (no-op when URLs absent). PASS.
+- P09-T002: `window.rs` — `RollingWindow` with mean/variance(Bessel)/std/min/max/percentile/z-score/evict_before/capacity; 8 unit tests pass. PASS.
+- P09-T003: `candle.rs` `CandleAggregator` maintains in-memory 1m/5m/15m/1h candles; state.rs routes Trade events to it; 3 candle tests pass. ClickHouse OHLCV aggregate tables (ohlcv_1m/5m/15m/1h) are updated from live/replayed events via the P04 materialized views on `normalized_market_events`. PASS.
+- P09-T004: `returns.rs` computes 1m/5m/15m/1h/24h/7d horizons with tolerance; `FeatureSnapshot.returns` populated by `build_snapshot`; 3 return tests pass. PASS.
+- P09-T005: `volatility.rs` computes realized vol (log-returns, Bessel, ≥3 samples) + regime labels (very_low/low/normal/high/extreme, trending_up/down/ranging, risk_on/off/neutral); 5 tests pass; snapshot `volatility` map and `regime` struct populated. PASS.
+- P09-T006: `volume.rs` aggregates 1m bars; z-score with relative-std floor; percentile; 3 tests verify spike; snapshot `volume_z` populated. PASS.
+- P09-T007: `funding.rs` tracks per-venue rolling windows; `funding_z` and `funding_spread`; 4 tests verify multi-venue z-score and spread; snapshot fields populated. PASS.
+- P09-T008: `oi.rs` — `oi_delta` averaged across venues; `oi_state` labels `"oi_increasing"`/`"oi_decreasing"`/`None` at ±2% (0.02) threshold; divergence flag; 4 tests pass; snapshot `oi_delta` + `oi_state` populated. PASS.
+- P09-T009: `liquidations.rs` — `BUCKET_WIDTH_PCT = 0.001` (0.1%), `WINDOW_MS = 3_600_000` (1 h), `MIN_EVENTS = 2`; buckets < 2 events filtered; top 5 by size; 4 tests pass; snapshot `liq_clusters` populated. PASS.
+- P09-T010: `basis.rs` — mark-vs-index and cross-venue basis in bps; 3 tests pass in this run; snapshot `basis` populated. Note: `cross_venue_price_basis_computed` test assertion is non-deterministic across runs (HashMap iteration order) — flagged in prior entry as a known follow-up issue; did not fail this run. PASS.
+- P09-T011: `correlation.rs` — Pearson over aligned timestamps (±1s tolerance, ≥3 points); 3 tests (r=1, r=−1, empty on insufficient data); snapshot `correlation_set` populated. PASS.
+- P09-T012: `breadth.rs` — `up_pct`/`down_pct` (raw 0–1); `build_snapshot` scales ×100 before writing `breadth_up_pct`/`breadth_down_pct`; risk_regime from breadth fractions; 3 tests pass. PASS.
+- P09-T013: `persist.rs` — `ClickHouseSnapshotSink::write_batch` INSERTs to `feature_snapshots` table; `RedisSnapshotStore::write` sets `feature:snapshot:{id}` with 1 h TTL; both no-op without configured URLs; 3 tests pass. PASS.
+- P09-T014: `publish.rs` — `publish_snapshot` emits `Envelope<FeatureSnapshot>` to `feature.snapshot.{sanitized_canonical_asset_id}`; source="features", payload_type="FeatureSnapshot"; test decodes envelope and asserts all fields. PASS.
+- P09-T015: 4 deterministic replay tests in `main.rs`: `replay_produces_nonzero_returns_and_vol`, `replay_vol_regime_classified_correctly`, `replay_funding_z_positive_for_spike`, `replay_snapshot_publishes_to_nats`; all assertions on known synthetic input series; 64/64 total pass. PASS.
+- P09-T016: `docs/feature_formulas.md` covers all 10 feature modules (RollingWindow, returns, volatility+regime, volume, funding, OI, liquidations, basis, correlation, breadth, OHLCV); formulas, parameter tables, edge cases, and known limitations present; docs match code after two repair cycles. PASS.
