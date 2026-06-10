@@ -43,6 +43,7 @@ export async function processAnomaly(
       assembleContextPacket(t, {
         ...(deps.now !== undefined ? { now: deps.now } : {}),
         ...(deps.dataSource !== undefined ? { dataSource: deps.dataSource } : {}),
+        correlatedAssets: deps.config.correlatedAssets,
       }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {

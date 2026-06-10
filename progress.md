@@ -1395,3 +1395,9 @@ All T001–T018 "Done when" criteria satisfied. T014 was found failing in the pr
 - Checks: `bun run typecheck` (pass), `bun test` (4 pass), `bun run lint` (pass) — packet.market_snapshot for crypto:btc-usdt carries funding_z 2.6, oi_delta 0.085, volume_z 1.9, returns/volatility/basis/regime from fixtures; unknown asset falls back to placeholder snapshot.
 - Assumptions: market_snapshot IS the FeatureSnapshot contract (returns, volatility, funding_z, oi_delta, volume_z, basis, correlation_set, regime) — "current market state for trigger asset". Absolute price and liquidation-cluster arrays are NOT in the FeatureSnapshot contract (they live in normalized events / fixture `liq_clusters` extra), so they're not part of market_snapshot; the deterministic level engine (P12) consumes price separately. FixtureDataSource validates each fixture item against its contract on load (zod strips the fixture's extra `liq_clusters`). Introduced `ContextDataSource` interface so a live source can be swapped without touching the builder.
 - Follow-ups: none
+
+### P11-T003 — Implement correlated asset query
+- Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/correlated.t003.test.ts
+- Checks: `bun run typecheck` (pass), `bun test` (5 pass), `bun run lint` (pass) — BTC anomaly packet.correlated_assets includes macro:spx snapshot, excludes the primary asset.
+- Assumptions: Correlated set = `CORRELATED_ASSETS` config list (default crypto:eth-usdt,macro:spx,macro:dxy,macro:gold,macro:vix) minus the primary asset; only assets with an available snapshot are included (fixtures currently provide macro:spx and crypto:sol-usdt). Relevance filtering beyond "configured + has snapshot" deferred — the feature snapshot's correlation_set already carries per-asset correlation values for the UI.
+- Follow-ups: none

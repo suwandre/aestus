@@ -13,4 +13,10 @@ import type { FeatureSnapshot } from "@aestus/contracts";
 export interface ContextDataSource {
   /** Latest feature snapshot (current market state) for an asset, if known. */
   featureSnapshot(asset: string): FeatureSnapshot | undefined;
+
+  /**
+   * Current snapshots for the configured correlated assets (T003), excluding
+   * `exclude` (the primary asset). Assets with no snapshot are omitted.
+   */
+  correlatedSnapshots(exclude: string, assets: string[]): FeatureSnapshot[];
 }

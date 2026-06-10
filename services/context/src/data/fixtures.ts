@@ -43,4 +43,14 @@ export class FixtureDataSource implements ContextDataSource {
       Date.parse(s.timestamp) > Date.parse(latest.timestamp) ? s : latest,
     );
   }
+
+  correlatedSnapshots(exclude: string, assets: string[]): FeatureSnapshot[] {
+    const out: FeatureSnapshot[] = [];
+    for (const asset of assets) {
+      if (asset === exclude) continue;
+      const snap = this.featureSnapshot(asset);
+      if (snap) out.push(snap);
+    }
+    return out;
+  }
 }

@@ -23,6 +23,8 @@ export interface BuildOptions {
   idFor?: (trigger: AnomalyEvent) => string;
   /** Source for market/news/macro/on-chain state; placeholders used if absent. */
   dataSource?: ContextDataSource;
+  /** Canonical asset ids to include as correlated-asset context (T003). */
+  correlatedAssets?: string[];
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -58,6 +60,11 @@ export function assembleContextPacket(
     opts.dataSource?.featureSnapshot(primaryAsset) ??
     placeholderSnapshot(primaryAsset, trigger.detected_at);
 
+  // Cross-asset context (T003): current snapshots for configured correlated
+  // assets (e.g. ETH, SPX, DXY, GOLD, VIX), excluding the primary asset.
+  const correlatedAssets =
+    opts.dataSource?.correlatedSnapshots(primaryAsset, opts.correlatedAssets ?? []) ?? [];
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -65,7 +72,7 @@ export function assembleContextPacket(
     primary_asset: primaryAsset,
     trigger,
     market_snapshot: marketSnapshot,
-    correlated_assets: [],
+    correlated_assets: correlatedAssets,
     news: [],
     macro: [],
     on_chain: [],

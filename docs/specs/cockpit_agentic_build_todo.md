@@ -971,7 +971,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet contains current market state for trigger asset.
 
-### [ ] P11-T003 - Implement correlated asset query
+### [x] P11-T003 - Implement correlated asset query
 
 - Agent action: Fetch current state and relevant features for configured correlated assets such as ETH, SPX, DXY, GOLD, VIX.
 
