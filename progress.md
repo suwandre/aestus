@@ -1067,3 +1067,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 3 unit tests — None for <3 bars; positive z-score > 3 for spike bar vs flat history; percentile > 95 for spike bar; FeatureSnapshot.volume_z populated
 - Assumptions: Trade sizes aggregated into 1-minute bars; z-score uses last 30 bars as history; relative std floor (mean × 0.01) prevents flat-baseline z-scores collapsing to zero.
 - Follow-ups: none
+
+### P09-T007 — Implement funding features
+
+- Files: services/features/src/funding.rs (code in T001 commit)
+- Checks: 4 unit tests — empty map returns None; single venue z-score None (needs ≥2 samples); multi-venue z-score positive for spike; cross-venue spread = max−min; FeatureSnapshot.funding_z and funding_spread populated
+- Assumptions: Per-venue funding rates stored in separate RollingWindows (keyed by venue name). Cross-venue spread computed when ≥2 venues have data.
+- Follow-ups: none

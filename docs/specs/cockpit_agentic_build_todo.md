@@ -783,7 +783,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Volume anomaly detector has deterministic inputs.
 
-### [ ] P09-T007 - Implement funding features
+### [x] P09-T007 - Implement funding features
 
 - Agent action: Track funding current, rolling mean, funding z-score, and cross-venue funding spread.
 
