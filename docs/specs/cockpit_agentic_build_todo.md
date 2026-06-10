@@ -907,7 +907,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Whale accumulation fixture emits whale_flow anomaly.
 
-### [ ] P10-T011 - Implement news clustering placeholder
+### [x] P10-T011 - Implement news clustering placeholder
 
 - Agent action: Group recent news by entities/tags and emit news_cluster when relevance/velocity exceeds threshold.
 

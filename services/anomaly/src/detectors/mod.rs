@@ -10,6 +10,7 @@ pub mod correlation;
 pub mod funding;
 pub mod liquidations;
 pub mod macro_event;
+pub mod news;
 pub mod oi;
 pub mod onchain;
 pub mod volume;

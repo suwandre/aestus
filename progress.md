@@ -1298,3 +1298,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 52 passed; contracts `bun test` → 20 pass; schema regenerated. Fixture 950 BTC ($64.8M) accumulation → whale_flow ("accumulation"); -$126.3M net → exchange_flow ("outflow"); $340k transfer below threshold skipped.
 - Assumptions: Added exchange_flow anomaly type (the action says "whale_flow or exchange_flow"; fixture has both onchain event kinds). whale_transfer → whale_flow, exchange_flow onchain event → exchange_flow anomaly; both gated on |amount_usd| ≥ whale_min_amount_usd (default $50M), falling back to raw amount when amount_usd absent. context_ref `onchain:<event_type>:<tx_hash[..8] or timestamp>` (matches fixture anom-006 "onchain:whale_transfer:f3a1c9e0"). Severity by USD/threshold ratio. stablecoin_mint_burn/token_unlock/dex_activity left for future detectors (out of scope here).
 - Follow-ups: none
+
+### P10-T011 — Implement news clustering placeholder
+
+- Files: services/anomaly/src/detectors/news.rs (new), detectors/mod.rs, detect.rs, fixtures/news/items.json (+2nd BTC ETF headline news-2026-06-07-003)
+- Checks: `cargo test -p anomaly` → 55 passed; contracts `bun test` → 20 pass (new news item validates). Two BTC ETF headlines (relevance 0.82/0.88) within window → one news_cluster on crypto:btc-usdt, context_refs to both ids, top tag "etf"; single ETH item does not cluster; headlines 12h apart (>120 min window) do not cluster.
+- Assumptions: Deterministic placeholder = entity grouping (semantic/embedding clustering deferred to P07 embeddings). Groups only canonical-asset entities (contain ':') to avoid double-counting tickers/tags. Fires when ≥ news_cluster_min_items (default 2) relevant (≥0.5) items share an entity within news_cluster_window_minutes (default 120), measured relative to newest item. Added a 2nd BTC ETF fixture headline so the done-when scenario is reproducible. Severity by count/avg-relevance. detected_at = newest item's published_at.
+- Follow-ups: none

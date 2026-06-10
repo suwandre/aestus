@@ -13,6 +13,19 @@
     "tags": ["etf", "flows", "btc"]
   },
   {
+    "id": "news-2026-06-07-003",
+    "title": "BlackRock spot BTC ETF logs record daily inflow",
+    "url": "https://www.coindesk.com/markets/2026/06/07/blackrock-btc-etf-record-inflow",
+    "source": "coindesk",
+    "source_type": "rss",
+    "published_at": "2026-06-07T11:52:00.000Z",
+    "entities": ["crypto:btc-usdt", "BTC"],
+    "summary": "BlackRock's spot Bitcoin ETF recorded its largest single-day inflow of the quarter, extending the week's positive flow trend.",
+    "relevance_score": 0.88,
+    "sentiment": "positive",
+    "tags": ["etf", "flows", "btc"]
+  },
+  {
     "id": "news-2026-06-07-002",
     "title": "Whale moves 12,000 ETH to exchange",
     "url": "https://twitter.com/whale_alert/status/1234567890",
