@@ -1347,3 +1347,10 @@ All 16 [x] tasks verified against actual repo files with zero trust in prior pro
 - Checks: `cargo test -p anomaly` → 76 passed (overlay changes thresholds incl. per-asset funding; disabled/unknown rows ignored); apps/api + contracts `tsc --noEmit` clean.
 - Assumptions: Reuses existing `alert_rules` table (migration 0009). condition = detector kind; params JSONB carries the threshold (funding_spike→sigma, oi_surge→oi_delta, volume_anomaly→sigma, basis_dislocation→bps, correlation_break→delta, liquidation_cluster→min_size, whale_flow/exchange_flow→amount_usd, news_cluster→min_items/min_relevance/window_minutes, macro_approaching→lead_minutes+importance, cooldown→minutes); canonical_asset_id scopes funding per-asset. Engine loads enabled rows at evaluator startup and overlays defaults — "changing a rule changes detector behavior after reload" (restart = reload). Unknown conditions/disabled rows are skipped so a bad row never breaks detection. Seed expanded so every threshold has a default row (changed oi_surge seed param sigma→oi_delta and macro lead 30→60 to match detector semantics). Periodic in-process reload could be added later; startup load satisfies the done-when.
 - Follow-ups: optional periodic rule reload without restart.
+
+### P10-T018 — Document anomaly logic
+
+- Files: docs/anomaly_detection.md (new)
+- Checks: prettier --check clean. Doc covers pipeline, configuration table (alert_rules condition→field→default), type registry (labels/severity basis/UI colors), all 10 detectors (input/rule/threshold/severity/edge cases), severity scoring formula + weights, dedupe/cooldown, status lifecycle, persistence, publishing subjects, health.
+- Assumptions: Documented exactly as implemented across T001–T017 so future agents can tune detectors without re-inferring behavior (done-when). Cross-references task IDs and source files.
+- Follow-ups: none

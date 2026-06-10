@@ -949,7 +949,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Changing a rule changes detector behavior after reload.
 
-### [ ] P10-T018 - Document anomaly logic
+### [x] P10-T018 - Document anomaly logic
 
 - Agent action: Create `docs/anomaly_detection.md` with each detector, thresholds, inputs, and edge cases.
 
