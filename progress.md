@@ -1039,3 +1039,10 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 - Checks: 8 unit tests in window.rs cover mean, variance (Bessel), min/max, percentile (50th/0th/100th), z-score (mean=0, 1σ above), evict_before, capacity eviction, value_near; all pass
 - Assumptions: Capacity-bounded deque (not time-bounded); callers must call evict_before to age out old samples. `count()` retained as alias for `len()` for readability.
 - Follow-ups: none
+
+### P09-T003 — Implement OHLCV aggregation consumer
+
+- Files: services/features/src/candle.rs (code in T001 commit), services/features/src/state.rs (CandleAggregator::update called on Trade events)
+- Checks: state.rs test `update_trade_populates_both_windows_and_candles` verifies `candles.current_open(60_000).is_some()` after one trade; CandleAggregator covers 4 timeframes (1m/5m/15m/1h); 3 candle-specific unit tests pass (new candle created, ohlcv accumulation, closed candle on new bucket)
+- Assumptions: ClickHouse write for candles deferred to the batch persist path in persist.rs (feature_snapshots table); a dedicated `candles` ClickHouse table will be created at P10/P11 when the schema is finalized. In-memory candles serve the feature snapshot builder in the meantime.
+- Follow-ups: none

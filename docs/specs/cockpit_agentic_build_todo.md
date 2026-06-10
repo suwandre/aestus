@@ -759,7 +759,7 @@ Goal: Compute deterministic rolling features that power anomaly detection, marke
 
 - Done when: Library tests pass on deterministic fixtures.
 
-### [ ] P09-T003 - Implement OHLCV aggregation consumer
+### [x] P09-T003 - Implement OHLCV aggregation consumer
 
 - Agent action: Consume trade/price events and maintain 1m/5m/15m/1h candles for watched assets.
 
