@@ -1127,7 +1127,7 @@ Independent re-review after P07-T007 repair. Verified all 12 [x] tasks against a
 ### P09-T015 — Add feature replay test
 
 - Files: services/features/src/main.rs (replay tests in `#[cfg(test)]` block, code in T001 commit)
-- Checks: 4 replay tests — `replay_produces_nonzero_returns_and_vol` (24h return ~5%, vol > 0); `replay_vol_regime_classified_correctly` (linear up series = trending_up); `replay_funding_z_positive_for_spike` (z > 2.0 for 10× spike); `replay_snapshot_publishes_to_nats` (all snapshots publish to feature.snapshot.* with valid Envelope)
+- Checks: 4 replay tests — `replay_produces_nonzero_returns_and_vol` (24h return ~5%, vol > 0); `replay_vol_regime_classified_correctly` (linear up series = trending_up); `replay_funding_z_positive_for_spike` (z > 2.0 for 10× spike); `replay_snapshot_publishes_to_nats` (all snapshots publish to feature.snapshot.\* with valid Envelope)
 - Assumptions: Replay fixture: 1441 trade events (50k→52.5k over 24h) + 9 normal + 1 spike funding rate. Deterministic because price/funding series are constructed inline (no file read). All 64 tests pass.
 - Follow-ups: none
 
