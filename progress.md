@@ -1156,3 +1156,15 @@ T001–T015: all "Done when" criteria satisfied by code.
 6. liquidation cluster bucket width — docs: `0.1%` (0.001); code (liquidations.rs:7): `0.5%` (0.005).
 7. liquidation cluster lookback window — docs: `1 hour`; code (liquidations.rs:8): `4 hours`.
 8. liquidation cluster min_events filter — docs: `min_events = 2 per bucket`; code: no such filter (all non-empty buckets are included).
+
+### P09-T016 — repair
+
+- Files: services/features/src/oi.rs, services/features/src/breadth.rs, services/features/src/main.rs, services/features/src/liquidations.rs
+- Checks: `cargo test -p features` → 64 passed, 0 failed (same count as before repair)
+- Fixes applied:
+  1. `oi.rs` — labels changed from `"increasing"`/`"decreasing"` to `"oi_increasing"`/`"oi_decreasing"`; threshold changed from ±0.5% (0.005) to ±2% (0.02); within-threshold now emits `None` (was `"stable"`), matching docs. Test assertions updated.
+  2. `breadth.rs` — return horizon changed from `"24h"` to `"1h"`; risk_off condition changed from `up_pct < 0.4` to `down_pct > 0.6`; test helper timestamps updated to 1h gap so return_1h is computable.
+  3. `main.rs` — breadth snapshot fields scaled ×100 so `breadth_up_pct`/`breadth_down_pct` are in 0–100 range as documented.
+  4. `liquidations.rs` — bucket width corrected from 0.5% (0.005) to 0.1% (0.001); lookback window corrected from 4 hours to 1 hour; min_events=2 filter added (buckets with fewer than 2 events are dropped).
+- Assumptions: `BreadthResult.up_pct`/`down_pct` remain 0–1 internally; the ×100 scaling is applied at the snapshot layer in `build_snapshot`. No external consumers of `BreadthResult` exist yet (P10+ will use snapshot fields).
+- Follow-ups: none

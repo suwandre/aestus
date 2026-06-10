@@ -4,13 +4,14 @@ use std::collections::VecDeque;
 use crate::snapshot::LiquidationCluster;
 use crate::state::LiqEvent;
 
-const BUCKET_WIDTH_PCT: f64 = 0.005; // 0.5% price buckets
-const WINDOW_MS: i64 = 4 * 3_600_000; // 4-hour window
+const BUCKET_WIDTH_PCT: f64 = 0.001; // 0.1% price buckets
+const WINDOW_MS: i64 = 3_600_000; // 1-hour window
 const TOP_N: usize = 5;
+const MIN_EVENTS: usize = 2;
 
 /// Compute liquidation clusters from recent liquidation events.
 ///
-/// Buckets prices into 0.5% bands and accumulates size per band + side.
+/// Buckets prices into 0.1% bands and accumulates size per band + side.
 /// Returns the top N buckets by total size, split by side.
 pub fn compute_liq_clusters(
     liq_events: &VecDeque<LiqEvent>,
@@ -23,19 +24,22 @@ pub fn compute_liq_clusters(
     let cutoff = now_ms - WINDOW_MS;
     let bucket_width = mid_price * BUCKET_WIDTH_PCT;
 
-    // Accumulate (bucket_idx, is_buy) → total_size
-    let mut buckets: HashMap<(i64, bool), f64> = HashMap::new();
+    // Accumulate (bucket_idx, is_buy) → (event_count, total_size)
+    let mut buckets: HashMap<(i64, bool), (usize, f64)> = HashMap::new();
     for ev in liq_events {
         if ev.timestamp_ms < cutoff {
             continue;
         }
         let bucket_idx = (ev.price / bucket_width).floor() as i64;
-        *buckets.entry((bucket_idx, ev.is_buy)).or_default() += ev.size;
+        let entry = buckets.entry((bucket_idx, ev.is_buy)).or_default();
+        entry.0 += 1;
+        entry.1 += ev.size;
     }
 
     let mut clusters: Vec<LiquidationCluster> = buckets
         .into_iter()
-        .map(|((idx, is_buy), total_size)| {
+        .filter(|(_, (count, _))| *count >= MIN_EVENTS)
+        .map(|((idx, is_buy), (_, total_size))| {
             let price_low = idx as f64 * bucket_width;
             LiquidationCluster {
                 price_low,

@@ -87,8 +87,8 @@ fn build_snapshot(asset: &AssetState, all_assets: &HashMap<String, AssetState>) 
     let correlation_set = correlation::compute_correlations(&asset.price_window, &other_windows);
 
     let breadth = breadth::compute_breadth(all_assets);
-    let breadth_up_pct = breadth.as_ref().map(|b| b.up_pct);
-    let breadth_down_pct = breadth.as_ref().map(|b| b.down_pct);
+    let breadth_up_pct = breadth.as_ref().map(|b| b.up_pct * 100.0);
+    let breadth_down_pct = breadth.as_ref().map(|b| b.down_pct * 100.0);
 
     FeatureSnapshot {
         schema_version: 1,

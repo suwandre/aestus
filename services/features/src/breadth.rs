@@ -7,9 +7,9 @@ use crate::volatility::compute_volatility;
 
 /// Market breadth summary across all tracked assets.
 pub struct BreadthResult {
-    /// Fraction of assets with positive 24h return (0–1).
+    /// Fraction of assets with positive 1h return (0–1).
     pub up_pct: f64,
-    /// Fraction of assets with negative 24h return (0–1).
+    /// Fraction of assets with negative 1h return (0–1).
     pub down_pct: f64,
     /// Average realized 24h volatility across all assets.
     pub avg_vol: f64,
@@ -30,11 +30,11 @@ pub fn compute_breadth(assets: &HashMap<String, AssetState>) -> Option<BreadthRe
 
     for state in assets.values() {
         let returns = compute_returns(&state.price_window);
-        if let Some(&ret_24h) = returns.get("24h") {
+        if let Some(&ret_1h) = returns.get("1h") {
             with_return += 1;
-            if ret_24h > 0.0 {
+            if ret_1h > 0.0 {
                 up += 1;
-            } else if ret_24h < 0.0 {
+            } else if ret_1h < 0.0 {
                 down += 1;
             }
         }
@@ -58,7 +58,7 @@ pub fn compute_breadth(assets: &HashMap<String, AssetState>) -> Option<BreadthRe
 
     let risk_regime = if up_pct > 0.6 {
         RiskRegime::RiskOn
-    } else if up_pct < 0.4 {
+    } else if down_pct > 0.6 {
         RiskRegime::RiskOff
     } else {
         RiskRegime::Neutral
@@ -79,10 +79,10 @@ mod tests {
 
     fn make_asset_with_returns(asset_id: &str, old_price: f64, new_price: f64) -> AssetState {
         use event_model::market::NormalizedMarketEvent;
-        let ms_24h = 86_400_000_i64;
+        let ms_1h = 3_600_000_i64;
         let mut state = AssetState::new(asset_id.to_string());
-        let ts_old = ms_24h;
-        let ts_now = 2 * ms_24h;
+        let ts_now = 86_400_000_i64;
+        let ts_old = ts_now - ms_1h;
         let make_tick = |ts: i64, price: f64| NormalizedMarketEvent::PriceTick {
             schema_version: 1,
             venue: "test".into(),

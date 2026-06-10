@@ -8,7 +8,7 @@ pub struct OiFeatures {
     pub oi_delta: Option<f64>,
     /// Z-score of recent OI delta vs historical deltas (averaged across venues).
     pub oi_z: Option<f64>,
-    /// Human-readable OI state: `"increasing"`, `"decreasing"`, or `"stable"`.
+    /// Human-readable OI state: `"oi_increasing"`, `"oi_decreasing"`, or `None` (within threshold).
     pub oi_state: Option<String>,
     /// Flag: OI direction contradicts price return direction (possible divergence).
     pub oi_price_divergence: bool,
@@ -57,13 +57,13 @@ pub fn compute_oi_features(
         Some(z_scores.iter().sum::<f64>() / z_scores.len() as f64)
     };
 
-    let oi_state = oi_delta.map(|d| {
-        if d > 0.005 {
-            "increasing".to_string()
-        } else if d < -0.005 {
-            "decreasing".to_string()
+    let oi_state = oi_delta.and_then(|d| {
+        if d > 0.02 {
+            Some("oi_increasing".to_string())
+        } else if d < -0.02 {
+            Some("oi_decreasing".to_string())
         } else {
-            "stable".to_string()
+            None
         }
     });
 
@@ -104,7 +104,7 @@ mod tests {
         let f = compute_oi_features(&oi_by_venue, &oi_latest, &oi_prev, None);
         let delta = f.oi_delta.expect("delta computed");
         assert!((delta - 0.1).abs() < 1e-10, "got {delta}");
-        assert_eq!(f.oi_state.as_deref(), Some("increasing"));
+        assert_eq!(f.oi_state.as_deref(), Some("oi_increasing"));
     }
 
     #[test]
@@ -116,7 +116,7 @@ mod tests {
         let mut oi_prev = HashMap::new();
         oi_prev.insert("binance".into(), 100.0_f64);
         let f = compute_oi_features(&oi_by_venue, &oi_latest, &oi_prev, None);
-        assert_eq!(f.oi_state.as_deref(), Some("decreasing"));
+        assert_eq!(f.oi_state.as_deref(), Some("oi_decreasing"));
     }
 
     #[test]
