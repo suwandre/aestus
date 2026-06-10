@@ -11,13 +11,19 @@ import { z } from "zod/v4";
 import {
   type FeatureSnapshot,
   FeatureSnapshot as FeatureSnapshotSchema,
+  type MacroEvent,
+  MacroEvent as MacroEventSchema,
+  type MacroImportance,
   type NewsItem,
   NewsItem as NewsItemSchema,
   type VenueQuote,
   VenueQuote as VenueQuoteSchema,
 } from "@aestus/contracts";
 import type { ContextConfig } from "../config";
-import type { ContextDataSource, NewsQuery } from "./source";
+import type { ContextDataSource, MacroQuery, NewsQuery } from "./source";
+
+/** Importance ordering for "at least this important" filtering. */
+const IMPORTANCE_RANK: Record<MacroImportance, number> = { low: 0, medium: 1, high: 2 };
 
 /** Parse a JSON fixture file as an array validated against `schema`. */
 function loadArray<T>(path: string, schema: z.ZodType<T>): T[] {
@@ -31,6 +37,7 @@ export class FixtureDataSource implements ContextDataSource {
   private featuresCache?: FeatureSnapshot[];
   private venueQuotesCache?: VenueQuote[];
   private newsCache?: NewsItem[];
+  private macroCache?: MacroEvent[];
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -100,5 +107,28 @@ export class FixtureDataSource implements ContextDataSource {
         return n.entities.some((e) => wanted.has(e));
       })
       .sort((a, b) => b.relevance_score - a.relevance_score);
+  }
+
+  private macroAll(): MacroEvent[] {
+    if (!this.macroCache) {
+      this.macroCache = loadArray(this.config.fixtures.macro, MacroEventSchema);
+    }
+    return this.macroCache;
+  }
+
+  macro(query: MacroQuery): MacroEvent[] {
+    const center = Date.parse(query.around);
+    const windowMs = query.windowHours * 3_600_000;
+    const floor = IMPORTANCE_RANK[query.minImportance];
+    return this.macroAll()
+      .filter((m) => {
+        if (IMPORTANCE_RANK[m.importance] < floor) return false;
+        return Math.abs(Date.parse(m.scheduled_at) - center) <= windowMs;
+      })
+      .sort(
+        (a, b) =>
+          Math.abs(Date.parse(a.scheduled_at) - center) -
+          Math.abs(Date.parse(b.scheduled_at) - center),
+      );
   }
 }

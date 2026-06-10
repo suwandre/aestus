@@ -11,6 +11,7 @@ import {
   type AnomalyEvent,
   type ContextPacket,
   type FeatureSnapshot,
+  type MacroImportance,
   SCHEMA_VERSION,
 } from "@aestus/contracts";
 import { placeholderLevels } from "./levels";
@@ -32,6 +33,10 @@ export interface BuildOptions {
   newsWindowMinutes?: number;
   /** Minimum news relevance to include (T005). */
   newsMinRelevance?: number;
+  /** Macro window half-width in hours (T006). */
+  macroWindowHours?: number;
+  /** Lowest macro importance to include (T006). */
+  macroMinImportance?: MacroImportance;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -89,6 +94,14 @@ export function assembleContextPacket(
       minRelevance: opts.newsMinRelevance ?? 0.5,
     }) ?? [];
 
+  // Macro events around the anomaly time (T006) — surfaces CPI/FOMC/NFP nearness.
+  const macro =
+    opts.dataSource?.macro({
+      around: trigger.detected_at,
+      windowHours: opts.macroWindowHours ?? 72,
+      minImportance: opts.macroMinImportance ?? "medium",
+    }) ?? [];
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -99,7 +112,7 @@ export function assembleContextPacket(
     correlated_assets: correlatedAssets,
     ...(venueComparison ? { venue_comparison: venueComparison } : {}),
     news,
-    macro: [],
+    macro,
     on_chain: [],
     historical_analogues: [],
     deterministic_levels: placeholderLevels(),

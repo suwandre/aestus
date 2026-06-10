@@ -50,6 +50,8 @@ export async function processAnomaly(
         },
         newsWindowMinutes: deps.config.newsWindowMinutes,
         newsMinRelevance: deps.config.newsMinRelevance,
+        macroWindowHours: deps.config.macroWindowHours,
+        macroMinImportance: deps.config.macroMinImportance,
       }));
   const packet = await assemble(trigger);
   await publishContextPacket(deps.bus, packet, {

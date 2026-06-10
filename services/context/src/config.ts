@@ -60,6 +60,8 @@ export interface ContextConfig {
   newsMinRelevance: number;
   /** Include macro events within this many hours either side of the anomaly. */
   macroWindowHours: number;
+  /** Lowest macro importance to include (`low` | `medium` | `high`). */
+  macroMinImportance: "low" | "medium" | "high";
   /** Include on-chain events within this many hours before the anomaly. */
   onChainWindowHours: number;
   /** Seconds after which a contributing feed is considered stale. */
@@ -98,6 +100,10 @@ export function loadConfig(): ContextConfig {
     newsWindowMinutes: envInt("NEWS_WINDOW_MINUTES", 240),
     newsMinRelevance: Number.parseFloat(env("NEWS_MIN_RELEVANCE", "0.5")),
     macroWindowHours: envInt("MACRO_WINDOW_HOURS", 72),
+    macroMinImportance: ((): "low" | "medium" | "high" => {
+      const v = env("MACRO_MIN_IMPORTANCE", "medium");
+      return v === "low" || v === "high" ? v : "medium";
+    })(),
     onChainWindowHours: envInt("ONCHAIN_WINDOW_HOURS", 48),
     freshnessStaleSeconds: envInt("FRESHNESS_STALE_SECONDS", 900),
     venueFundingDispersion: Number.parseFloat(env("VENUE_FUNDING_DISPERSION", "0.0003")),

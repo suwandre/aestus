@@ -989,7 +989,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet includes only relevant recent news with source metadata.
 
-### [ ] P11-T006 - Implement macro event retrieval
+### [x] P11-T006 - Implement macro event retrieval
 
 - Agent action: Retrieve upcoming and recent high-importance macro events around anomaly time.
 

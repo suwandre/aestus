@@ -8,7 +8,13 @@
  * implementation can be added later without changing the builder. Methods are
  * added as P11 tasks need them.
  */
-import type { FeatureSnapshot, NewsItem, VenueQuote } from "@aestus/contracts";
+import type {
+  FeatureSnapshot,
+  MacroEvent,
+  MacroImportance,
+  NewsItem,
+  VenueQuote,
+} from "@aestus/contracts";
 
 /** Window/relevance filter for news retrieval (T005). */
 export interface NewsQuery {
@@ -41,4 +47,21 @@ export interface ContextDataSource {
    * relevance descending.
    */
   news(query: NewsQuery): NewsItem[];
+
+  /**
+   * Macro calendar events around the anomaly time (T006): both upcoming and
+   * recent, within `windowHours` either side, at/above `minImportance`. Sorted
+   * by proximity to the anomaly time so CPI/FOMC/NFP nearness surfaces first.
+   */
+  macro(query: MacroQuery): MacroEvent[];
+}
+
+/** Window/importance filter for macro retrieval (T006). */
+export interface MacroQuery {
+  /** Anomaly time the window centers on. */
+  around: string;
+  /** Half-window in hours (applied both before and after). */
+  windowHours: number;
+  /** Lowest importance to include. */
+  minImportance: MacroImportance;
 }
