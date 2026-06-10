@@ -12,6 +12,7 @@ mod dedupe;
 mod detect;
 mod detectors;
 mod input;
+mod lifecycle;
 mod publish;
 mod registry;
 mod rules;

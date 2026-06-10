@@ -82,6 +82,7 @@ impl AnomalySeverity {
 pub enum AnomalyStatus {
     Active,
     Acknowledged,
+    Snoozed,
     Resolved,
     Expired,
     Dismissed,
@@ -93,10 +94,17 @@ impl AnomalyStatus {
         match self {
             Self::Active => "active",
             Self::Acknowledged => "acknowledged",
+            Self::Snoozed => "snoozed",
             Self::Resolved => "resolved",
             Self::Expired => "expired",
             Self::Dismissed => "dismissed",
         }
+    }
+
+    /// Terminal states cannot transition further.
+    #[must_use]
+    pub fn is_terminal(&self) -> bool {
+        matches!(self, Self::Resolved | Self::Expired | Self::Dismissed)
     }
 }
 

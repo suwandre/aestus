@@ -97,6 +97,7 @@
           "enum": [
             "active",
             "acknowledged",
+            "snoozed",
             "resolved",
             "expired",
             "dismissed"

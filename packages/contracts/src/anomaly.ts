@@ -20,7 +20,14 @@ export const AnomalySeverity = z.enum(["low", "medium", "high", "critical"]);
 export type AnomalySeverity = z.infer<typeof AnomalySeverity>;
 
 /** Lifecycle state of an anomaly in the cockpit. */
-export const AnomalyStatus = z.enum(["active", "acknowledged", "resolved", "expired", "dismissed"]);
+export const AnomalyStatus = z.enum([
+  "active",
+  "acknowledged",
+  "snoozed",
+  "resolved",
+  "expired",
+  "dismissed",
+]);
 export type AnomalyStatus = z.infer<typeof AnomalyStatus>;
 
 /**

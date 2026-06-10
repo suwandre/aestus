@@ -925,7 +925,7 @@ Goal: Detect unusual conditions through deterministic rules, statistical deviati
 
 - Done when: Anomalies have stable severity values from 0-100 or low/medium/high.
 
-### [ ] P10-T014 - Implement anomaly status lifecycle
+### [x] P10-T014 - Implement anomaly status lifecycle
 
 - Agent action: Support active, snoozed, dismissed, resolved, expired statuses.
 
