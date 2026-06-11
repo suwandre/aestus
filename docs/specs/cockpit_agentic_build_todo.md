@@ -1095,7 +1095,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Directional briefing has deterministic targets with derivation labels.
 
-### [ ] P12-T009 - Implement size suggestion policy
+### [x] P12-T009 - Implement size suggestion policy
 
 - Agent action: Suggest size relative to configured max risk, volatility, confidence, and stop distance.
 

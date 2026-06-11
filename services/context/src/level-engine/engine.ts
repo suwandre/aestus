@@ -24,6 +24,7 @@ import { computeVolumeNodes } from "./support-resistance";
 import { computeEntryZone } from "./entry";
 import { computeInvalidation } from "./invalidation";
 import { computeTargets } from "./target";
+import { computeSizeSuggestion } from "./size";
 
 /** Collapse a price-sorted candidate group into representative prices: levels
  *  within `tol` of the running cluster merge, and the highest-confidence
@@ -88,6 +89,8 @@ export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
   targetAtrMultiples: [1, 2, 3],
   maxTargets: 5,
   maxRiskPct: 0.01,
+  sizeBaselineVolPct: 0.02,
+  sizeMinVolFactor: 0.5,
   minCandles: 20,
   noiseAtrPctThreshold: 0.08,
 };
@@ -225,6 +228,21 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   candidates.push(...target.candidates);
   derivations.push(target.derivation);
 
+  // T009 — risk-relative size suggestion from max risk, confidence, volatility,
+  // and the entry→invalidation stop distance (never an order quantity).
+  const confidence = input.confidence ?? 0.5;
+  const sizing = computeSizeSuggestion(
+    direction,
+    entry.entryZone,
+    invalidation,
+    vol?.atr,
+    referencePrice,
+    confidence,
+    input.accountEquity,
+    config,
+  );
+  if (sizing) derivations.push(sizing.derivation);
+
   return {
     reference_price: referencePrice,
     direction,
@@ -236,7 +254,7 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
     liquidation_clusters: liq.clusters,
     candidates,
-    size_suggestion: null,
+    size_suggestion: sizing ? sizing.size : null,
     derivations,
     method_notes: `level engine v1 (P12) — direction ${direction}`,
   };

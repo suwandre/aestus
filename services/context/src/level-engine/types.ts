@@ -74,6 +74,10 @@ export interface LevelEngineConfig {
   maxTargets: number;
   /** Max fraction of account to risk on one idea (T009). */
   maxRiskPct: number;
+  /** Baseline ATR/price; above it, size is haircut for volatility (T009). */
+  sizeBaselineVolPct: number;
+  /** Floor on the volatility haircut factor so size never collapses to zero (T009). */
+  sizeMinVolFactor: number;
   /** Fewer candles than this → insufficient data → no-trade (T010). */
   minCandles: number;
   /** ATR/price above this fraction is "too noisy" → no-trade (T010). */
@@ -94,6 +98,10 @@ export interface LevelEngineInput {
   direction?: TradeDirection;
   /** Regime trend label (from `FeatureSnapshot.regime.trend`), used to infer direction. */
   regimeTrend?: string;
+  /** Setup conviction 0..1 (e.g. from anomaly severity); scales size (T009). Default 0.5. */
+  confidence?: number;
+  /** Account equity in quote currency; enables a notional estimate in sizing (T009). */
+  accountEquity?: number;
   /** Config overrides; defaults applied for anything omitted. */
   config?: Partial<LevelEngineConfig>;
 }
