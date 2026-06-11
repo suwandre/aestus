@@ -1385,42 +1385,49 @@ Tests run: `cargo test -p anomaly` → **77 passed, 0 failed**; `bun test` (cont
 All T001–T018 "Done when" criteria satisfied. T014 was found failing in the prior review (no externally-callable status interface); the repair commit (`fix(P10-T014)`) wired `GET`/`POST /anomalies/{id}/status` routes on the engine's HTTP server, instantiated `StatusStore` at runtime, seeded it from `load_active` on startup, and added a passing end-to-end handler test — criterion met.
 
 ### P11-T001 — Create context service skeleton
+
 - Files: services/context/{package.json,tsconfig.json}, services/context/src/{config,levels,builder,publish,health,service,main}.ts, services/context/test/smoke.t001.test.ts, package.json (workspaces), bun.lock
 - Checks: `bun run typecheck` (pass), `bun run lint` (pass), `bun test` (2 pass) — in-memory bus delivers a placeholder context.packet for a published anomaly; heartbeat emits on system.health.
 - Assumptions: Service is TS/Bun at services/context (per P01 README), added to root `workspaces`. Established the bun-types setup for TS services (`@types/bun` devDep + `tsconfig.types:["bun"]`) since apps/api only typechecks `src/**` and its bun code lives unchecked in `scripts/`. NATS_URL unset → InMemoryBus, DATABASE_URL unset → in-memory store (fixture-first, rule #5). HTTP health/metrics on :8083 (ingestion 8081, feeds 8082). Subscribe to `anomaly.detected.>` (anomaly service publishes `anomaly.detected.<type>.<asset>`). Placeholder deterministic_levels (reference_price 0, marker note) until P12 owns the real level engine (hard rule #2). Packet id defaults to `ctx:<trigger.id>`.
 - Follow-ups: T002–T008 replace placeholder packet sections with real queries; T010 adds Postgres-backed store; T012 adds quality score that flags the placeholder levels.
 
 ### P11-T002 — Implement market snapshot query
+
 - Files: services/context/src/data/{source,fixtures}.ts (new), services/context/src/{builder,service,main}.ts, services/context/test/market.t002.test.ts
 - Checks: `bun run typecheck` (pass), `bun test` (4 pass), `bun run lint` (pass) — packet.market_snapshot for crypto:btc-usdt carries funding_z 2.6, oi_delta 0.085, volume_z 1.9, returns/volatility/basis/regime from fixtures; unknown asset falls back to placeholder snapshot.
 - Assumptions: market_snapshot IS the FeatureSnapshot contract (returns, volatility, funding_z, oi_delta, volume_z, basis, correlation_set, regime) — "current market state for trigger asset". Absolute price and liquidation-cluster arrays are NOT in the FeatureSnapshot contract (they live in normalized events / fixture `liq_clusters` extra), so they're not part of market_snapshot; the deterministic level engine (P12) consumes price separately. FixtureDataSource validates each fixture item against its contract on load (zod strips the fixture's extra `liq_clusters`). Introduced `ContextDataSource` interface so a live source can be swapped without touching the builder.
 - Follow-ups: none
 
 ### P11-T003 — Implement correlated asset query
+
 - Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/correlated.t003.test.ts
 - Checks: `bun run typecheck` (pass), `bun test` (5 pass), `bun run lint` (pass) — BTC anomaly packet.correlated_assets includes macro:spx snapshot, excludes the primary asset.
 - Assumptions: Correlated set = `CORRELATED_ASSETS` config list (default crypto:eth-usdt,macro:spx,macro:dxy,macro:gold,macro:vix) minus the primary asset; only assets with an available snapshot are included (fixtures currently provide macro:spx and crypto:sol-usdt). Relevance filtering beyond "configured + has snapshot" deferred — the feature snapshot's correlation_set already carries per-asset correlation values for the UI.
 - Follow-ups: none
 
 ### P11-T004 — Implement venue comparison query
-- Files: packages/contracts/src/venue-quote.ts (new), packages/contracts/src/{context-packet,index}.ts, packages/contracts/scripts/gen-schema.ts, packages/contracts/test/fixtures.test.ts, packages/contracts/schema/*.json (regenerated; VenueQuote added), fixtures/market/venue_quotes.json (new), services/context/src/{config,venue,builder,service}.ts, services/context/src/data/{source,fixtures}.ts, services/context/test/venue.t004.test.ts
+
+- Files: packages/contracts/src/venue-quote.ts (new), packages/contracts/src/{context-packet,index}.ts, packages/contracts/scripts/gen-schema.ts, packages/contracts/test/fixtures.test.ts, packages/contracts/schema/\*.json (regenerated; VenueQuote added), fixtures/market/venue_quotes.json (new), services/context/src/{config,venue,builder,service}.ts, services/context/src/data/{source,fixtures}.ts, services/context/test/venue.t004.test.ts
 - Checks: contracts `bun test` (21 pass, incl. venue_quotes fixture + context packet), `bun run gen:schema` (19 files), context `bun run typecheck`/`bun test` (7 pass)/`bun run lint` pass, prettier applied.
 - Assumptions: CONTRACT CHANGE (rule #8) — added `VenueQuote` contract + `fixtures/market/venue_quotes.json` (mapped in fixtures.test + gen-schema), and added optional `VenueComparison` (`venue_comparison`) to ContextPacket. Optional so the existing context fixture still validates; no frontend types reference ContextPacket yet (web is P14+) so none updated. Venue-specific decision is deterministic: funding spread > VENUE_FUNDING_DISPERSION (0.0003) OR basis spread > VENUE_BASIS_DISPERSION_BPS (15); outlier = venue with max normalized deviation from median. Fixture: btc-usdt okx diverges (funding 0.00065, basis 41bps) → venue-specific; eth-usdt aligned → market-wide.
 - Follow-ups: T009 freshness can extend VenueQuote/comparison with per-venue staleness; T013 fixture test asserts venue_comparison.
 
 ### P11-T005 — Implement recent news retrieval
+
 - Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/news.t005.test.ts
 - Checks: `bun run typecheck` (pass), `bun test` (9 pass), `bun run lint` (pass), prettier applied — BTC anomaly packet includes news-001/003 (relevance 0.82/0.88), excludes ETH whale item; relevance floor and window correctly drop items.
 - Assumptions: News matched when any `trigger.assets` id appears in `NewsItem.entities`; recency window is [detected_at − NEWS_WINDOW_MINUTES (240), detected_at]; floor NEWS_MIN_RELEVANCE (0.5); sorted by relevance desc. Semantic/embedding retrieval (spec §101) deferred — fixture-first keyword/entity + relevance is the deterministic stand-in; NewsItem already carries source/source_type metadata.
 - Follow-ups: none
 
 ### P11-T006 — Implement macro event retrieval
+
 - Files: services/context/src/config.ts, services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/macro.t006.test.ts
 - Checks: `bun run typecheck` (pass), `bun test` (11 pass), `bun run lint` (pass), prettier applied — macro_approaching anomaly's nearest macro is CPI (30m ahead); ±96h window around a 06-07 anomaly captures both recent NFP and upcoming CPI.
 - Assumptions: Macro window is ±MACRO_WINDOW_HOURS (default 72) around detected_at (both upcoming and recent), filtered to MACRO_MIN_IMPORTANCE (default medium → includes medium+high), sorted by |scheduled − anomaly| so proximity surfaces first. The default 72h window keeps CPI at 06-10 12:30 just outside for the 06-07 funding-spike anomaly — that's correct (it's ~2.5 days out); the macro_approaching anomaly at 06-10 picks it up immediately.
 - Follow-ups: none
 
 ### P11-T007 — Implement on-chain retrieval
+
 - Files: services/context/src/data/{source,fixtures}.ts, services/context/src/{builder,service}.ts, services/context/test/onchain.t007.test.ts
 - Checks: `bun run typecheck` (pass), `bun test` (13 pass), `bun run lint` (pass), prettier applied — BTC anomaly packet.on_chain includes exchange_flow + whale_transfer (asset-matched) and stablecoin_mint_burn (market-wide), sorted most-recent-first; tight window correctly drops older events.
 - Assumptions: Included when event.asset ∈ trigger.assets OR event_type == stablecoin_mint_burn (market-wide context, regardless of asset), within [detected_at − ONCHAIN_WINDOW_HOURS (48), detected_at]. `asset`/`timestamp` read from the OnChainEvent discriminated-union base.
