@@ -1135,7 +1135,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Providers can be swapped without changing briefing logic.
 
-### [ ] P13-T003 - Add fake/local LLM provider
+### [x] P13-T003 - Add fake/local LLM provider
 
 - Agent action: Implement deterministic fake provider for tests and frontend development.
 

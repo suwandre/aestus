@@ -20,6 +20,11 @@ function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
+/** Clamp to the 0..1 confidence range. */
+function clamp01(n: number): number {
+  return Math.min(1, Math.max(0, n));
+}
+
 /** Derive a deterministic stance from the engine's facts. */
 function deriveStance(facts: PromptFacts): "long" | "short" | "no_trade" {
   if (facts.is_no_trade) return "no_trade";
@@ -37,10 +42,11 @@ function draftFromFacts(facts: PromptFacts): Record<string, unknown> {
   const stance = deriveStance(facts);
   // Confidence tracks data quality, hedged for counter/uncertain setups. The
   // model owns this number (it is not a price level); kept deterministic here.
-  const confidence =
+  const confidence = clamp01(
     stance === "no_trade"
       ? round2(0.5 + facts.quality_score * 0.2)
-      : round2(facts.quality_score * 0.75);
+      : round2(facts.quality_score * 0.75),
+  );
   const dir = stance === "no_trade" ? "stand aside" : stance;
   return {
     stance,
