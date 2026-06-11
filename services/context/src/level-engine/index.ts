@@ -22,4 +22,5 @@ export { computeEntryZone } from "./entry";
 export { computeInvalidation } from "./invalidation";
 export { computeTargets } from "./target";
 export { computeSizeSuggestion } from "./size";
+export { evaluateNoTrade } from "./no-trade";
 export { projectStructure } from "./engine";

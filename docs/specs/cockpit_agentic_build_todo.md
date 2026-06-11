@@ -1101,7 +1101,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Size is expressed as risk-relative guidance, not order quantity.
 
-### [ ] P12-T010 - Implement no-trade condition output
+### [x] P12-T010 - Implement no-trade condition output
 
 - Agent action: When levels are too noisy/invalid, output no_trade candidate with re-check conditions.
 

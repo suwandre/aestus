@@ -25,6 +25,7 @@ import { computeEntryZone } from "./entry";
 import { computeInvalidation } from "./invalidation";
 import { computeTargets } from "./target";
 import { computeSizeSuggestion } from "./size";
+import { evaluateNoTrade, noTradeDerivation } from "./no-trade";
 
 /** Collapse a price-sorted candidate group into representative prices: levels
  *  within `tol` of the running cluster merge, and the highest-confidence
@@ -243,6 +244,21 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   );
   if (sizing) derivations.push(sizing.derivation);
 
+  // T010 — no-trade evaluation. When the setup is too thin/noisy/non-directional,
+  // flag no-trade with re-check conditions and withhold the size suggestion.
+  const noTrade = evaluateNoTrade(
+    direction,
+    referencePrice,
+    candles.length,
+    vol?.atr,
+    entry.entryZone,
+    invalidation,
+    config,
+  );
+  const atrPct = referencePrice > 0 ? (vol?.atr ?? 0) / referencePrice : 0;
+  derivations.push(noTradeDerivation(noTrade, candles.length, atrPct, config));
+  const sizeSuggestion = noTrade.is_no_trade ? null : sizing ? sizing.size : null;
+
   return {
     reference_price: referencePrice,
     direction,
@@ -254,8 +270,9 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
     liquidation_clusters: liq.clusters,
     candidates,
-    size_suggestion: sizing ? sizing.size : null,
+    size_suggestion: sizeSuggestion,
+    no_trade: noTrade,
     derivations,
-    method_notes: `level engine v1 (P12) — direction ${direction}`,
+    method_notes: `level engine v1 (P12) — direction ${direction}${noTrade.is_no_trade ? " — no-trade" : ""}`,
   };
 }
