@@ -79,5 +79,7 @@ export async function generateBriefing(
       total_tokens: completion.usage.total_tokens,
       cost_usd: completion.cost_usd,
     },
+    // A freshly generated briefing is never a cache hit (T010/T012).
+    cache_hit: false,
   };
 }

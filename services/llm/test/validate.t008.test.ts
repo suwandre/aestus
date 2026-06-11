@@ -56,6 +56,7 @@ function baseBriefing(over: Partial<Briefing> = {}): Briefing {
       total_tokens: 15,
       cost_usd: 0,
     },
+    cache_hit: false,
     ...over,
   };
 }

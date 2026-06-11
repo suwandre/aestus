@@ -15,6 +15,7 @@ import { createProvider } from "./provider";
 import { loadRouting } from "./routing";
 import { startLlmService } from "./service";
 import { InMemoryBriefingStore, type BriefingStore } from "./store";
+import { PostgresBriefingStore } from "./store-postgres";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -65,7 +66,10 @@ async function main(): Promise<void> {
     dependencies,
   });
 
-  const store: BriefingStore = new InMemoryBriefingStore();
+  // Postgres when DATABASE_URL is set; in-memory otherwise (fixture-first).
+  const store: BriefingStore = config.databaseUrl
+    ? new PostgresBriefingStore(config.databaseUrl)
+    : new InMemoryBriefingStore();
   const routing = await loadRouting(config);
   const sub = await startLlmService({ bus, config, metrics, provider, store, routing });
   const briefingModel = routing.resolve("briefing").model;

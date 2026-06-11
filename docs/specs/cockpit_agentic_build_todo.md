@@ -1177,7 +1177,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: No-trade output is stored and displayed as first-class briefing.
 
-### [ ] P13-T010 - Persist briefing and metadata
+### [x] P13-T010 - Persist briefing and metadata
 
 - Agent action: Store briefing text, structured fields, model, token usage, cost, cache hit, context packet ID.
 

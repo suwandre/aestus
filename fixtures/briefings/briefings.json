@@ -29,7 +29,8 @@
       "completion_tokens": 380,
       "total_tokens": 4580,
       "cost_usd": 0.0
-    }
+    },
+    "cache_hit": false
   },
   {
     "id": "brief-002",
@@ -61,7 +62,8 @@
       "completion_tokens": 360,
       "total_tokens": 4460,
       "cost_usd": 0.0
-    }
+    },
+    "cache_hit": false
   },
   {
     "id": "brief-003",
@@ -92,6 +94,7 @@
       "completion_tokens": 220,
       "total_tokens": 4120,
       "cost_usd": 0.0
-    }
+    },
+    "cache_hit": false
   }
 ]

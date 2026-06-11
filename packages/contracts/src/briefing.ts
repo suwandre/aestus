@@ -55,5 +55,10 @@ export const Briefing = z.object({
   /** Refs to the evidence (context packet ids, news ids, anomaly ids) cited. */
   supporting_context: z.array(z.string()).default([]),
   cost_metadata: CostMetadata,
+  /**
+   * Observability: whether this briefing was served from the cache rather than a
+   * fresh LLM call (P13-T010/T012). Freshly generated briefings are `false`.
+   */
+  cache_hit: z.boolean().default(false),
 });
 export type Briefing = z.infer<typeof Briefing>;

@@ -175,6 +175,10 @@
         "cost_usd"
       ],
       "additionalProperties": false
+    },
+    "cache_hit": {
+      "default": false,
+      "type": "boolean"
     }
   },
   "required": [
@@ -193,7 +197,8 @@
     "confidence",
     "model",
     "supporting_context",
-    "cost_metadata"
+    "cost_metadata",
+    "cache_hit"
   ],
   "additionalProperties": false
 }
