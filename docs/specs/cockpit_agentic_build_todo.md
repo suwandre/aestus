@@ -1195,7 +1195,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Duplicate anomaly does not create unnecessary LLM spend.
 
-### [ ] P13-T013 - Add prompt regression fixtures
+### [x] P13-T013 - Add prompt regression fixtures
 
 - Agent action: Store representative context packets and expected high-level output assertions.
 
