@@ -17,6 +17,7 @@ import {
   type SourceFreshness,
 } from "@aestus/contracts";
 import { placeholderLevels } from "./levels";
+import { computePacketQuality } from "./quality";
 import type { ContextDataSource } from "./data/source";
 import { buildVenueComparison, type VenueThresholds } from "./venue";
 
@@ -223,6 +224,8 @@ export function assembleContextPacket(
     on_chain: onChain,
     historical_analogues: historicalAnalogues,
     source_freshness: sourceFreshness,
+    // Completeness/quality from feed presence + freshness (T012).
+    quality: computePacketQuality(sourceFreshness),
     deterministic_levels: placeholderLevels(),
   };
 }

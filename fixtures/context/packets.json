@@ -142,6 +142,12 @@
         "stale": true
       }
     ],
+    "quality": {
+      "score": 0.8,
+      "label": "strong",
+      "degraded_feeds": ["venue_quotes", "news", "on_chain"],
+      "notes": "Quality 0.80 (strong); degraded feeds: venue_quotes, news, on_chain."
+    },
     "deterministic_levels": {
       "reference_price": 68250.4,
       "entry_zone": { "low": 67800, "high": 68100 },

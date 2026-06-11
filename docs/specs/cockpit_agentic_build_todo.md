@@ -1025,7 +1025,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: LLM orchestration receives context packet asynchronously.
 
-### [ ] P11-T012 - Add packet quality score
+### [x] P11-T012 - Add packet quality score
 
 - Agent action: Compute a basic completeness/quality score based on required data presence and source freshness.
 

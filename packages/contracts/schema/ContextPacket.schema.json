@@ -1187,6 +1187,49 @@
         "additionalProperties": false
       }
     },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "label": {
+          "type": "string",
+          "enum": [
+            "strong",
+            "adequate",
+            "weak"
+          ]
+        },
+        "degraded_feeds": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "market_snapshot",
+              "correlated_assets",
+              "venue_quotes",
+              "news",
+              "macro",
+              "on_chain"
+            ]
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "score",
+        "label",
+        "degraded_feeds",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
     "deterministic_levels": {
       "type": "object",
       "properties": {
@@ -1273,6 +1316,7 @@
     "on_chain",
     "historical_analogues",
     "source_freshness",
+    "quality",
     "deterministic_levels"
   ],
   "additionalProperties": false

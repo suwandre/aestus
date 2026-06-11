@@ -98,6 +98,7 @@ describe("P11-T010 context packet persistence", () => {
       on_chain: [],
       historical_analogues: [],
       source_freshness: [],
+      quality: { score: 0, label: "weak", degraded_feeds: [], notes: "test packet" },
       deterministic_levels: placeholderLevels(),
     };
     await store.save(packet);

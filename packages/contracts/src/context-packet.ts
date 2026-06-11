@@ -63,6 +63,27 @@ export const SourceFreshness = z.object({
 });
 export type SourceFreshness = z.infer<typeof SourceFreshness>;
 
+/** Coarse quality band derived from the numeric score (for prompt/UI). */
+export const PacketQualityLabel = z.enum(["strong", "adequate", "weak"]);
+export type PacketQualityLabel = z.infer<typeof PacketQualityLabel>;
+
+/**
+ * Completeness/quality of a packet (P11-T012), derived from required-data
+ * presence and source freshness (T009). The LLM prompt includes this so the
+ * model can hedge on weak context, and the UI warns when `label` is `weak`.
+ * Deterministic — no LLM input.
+ */
+export const PacketQuality = z.object({
+  /** Weighted completeness/freshness score, 0..1. */
+  score: z.number().min(0).max(1),
+  label: PacketQualityLabel,
+  /** Feeds that are missing or stale (the reasons a packet is degraded). */
+  degraded_feeds: z.array(FeedKind).default([]),
+  /** Human-readable summary for the LLM prompt and UI tooltip. */
+  notes: z.string(),
+});
+export type PacketQuality = z.infer<typeof PacketQuality>;
+
 /** A prior situation resembling the current one, for analogue reasoning. */
 export const HistoricalAnalogue = z.object({
   /** When the analogue occurred (timestamp or period label). */
@@ -102,6 +123,8 @@ export const ContextPacket = z.object({
   historical_analogues: z.array(HistoricalAnalogue).default([]),
   /** Per-feed freshness/staleness so the UI can flag a degraded packet (T009). */
   source_freshness: z.array(SourceFreshness).default([]),
+  /** Deterministic completeness/quality score for the prompt and UI (T012). */
+  quality: PacketQuality,
   /** Code-computed price levels (hard rule #2). */
   deterministic_levels: DeterministicLevels,
 });
