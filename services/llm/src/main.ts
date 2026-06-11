@@ -11,7 +11,7 @@ import { type DependencyHealth } from "@aestus/contracts";
 import { type EventBus, InMemoryBus, NatsBus, startHeartbeat } from "@aestus/event-bus";
 import { loadConfig } from "./config";
 import { newMetrics, startHealthServer } from "./health";
-import { FakeLlmProvider } from "./provider/fake";
+import { createProvider } from "./provider";
 import { startLlmService } from "./service";
 import { InMemoryBriefingStore, type BriefingStore } from "./store";
 
@@ -24,9 +24,8 @@ async function main(): Promise<void> {
   const busMode = config.natsUrl ? "nats" : "memory";
   console.log(`[llm] starting (bus=${busMode}) v${config.version}`);
 
-  // T001 uses the deterministic fake provider unconditionally; T002 adds the
-  // real Ollama Cloud provider and a config-driven factory.
-  const provider = new FakeLlmProvider();
+  // Ollama Cloud when OLLAMA_API_KEY is set; deterministic fake otherwise.
+  const provider = createProvider(config);
 
   const dependencies = (): DependencyHealth[] => [
     {
@@ -41,8 +40,10 @@ async function main(): Promise<void> {
     },
     {
       name: "llm-provider",
-      status: "degraded",
-      detail: "fake (deterministic; real provider in T002)",
+      status: config.ollamaApiKey ? "ok" : "degraded",
+      detail: config.ollamaApiKey
+        ? `ollama (${provider.name})`
+        : "fake (deterministic; no OLLAMA_API_KEY)",
     },
   ];
 
@@ -65,7 +66,9 @@ async function main(): Promise<void> {
 
   const store: BriefingStore = new InMemoryBriefingStore();
   const sub = await startLlmService({ bus, config, metrics, provider, store, model: "kimi-k2.6" });
-  console.log(`[llm] consuming context packets (provider=fake); health on :${config.httpPort}`);
+  console.log(
+    `[llm] consuming context packets (provider=${provider.name}); health on :${config.httpPort}`,
+  );
 
   const shutdown = async () => {
     console.log("[llm] shutting down");

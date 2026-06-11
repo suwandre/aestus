@@ -12,12 +12,8 @@
  * are copied from the deterministic engine downstream (hard rule #2).
  */
 import { extractPromptFacts, type PromptFacts } from "../prompt";
+import { estimateTokens } from "./tokens";
 import type { LlmCompletion, LlmCompletionRequest, LlmProvider } from "./types";
-
-/** Cheap, deterministic token estimate (~4 chars/token). */
-export function estimateTokens(text: string): number {
-  return Math.max(1, Math.ceil(text.length / 4));
-}
 
 /** Round to 2 decimals deterministically. */
 function round2(n: number): number {

@@ -1129,7 +1129,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Service can process a fake context packet job and store a fake briefing.
 
-### [ ] P13-T002 - Define model provider interface
+### [x] P13-T002 - Define model provider interface
 
 - Agent action: Create interface for chat/completion calls with model name, token estimates, timeout, retry, cost, and structured output support.
 
