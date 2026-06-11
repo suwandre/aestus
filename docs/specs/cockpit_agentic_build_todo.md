@@ -1013,7 +1013,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Briefing UI can show if a packet is degraded by stale feeds.
 
-### [ ] P11-T010 - Implement context packet persistence
+### [x] P11-T010 - Implement context packet persistence
 
 - Agent action: Store full packet snapshot in Postgres before sending to LLM.
 

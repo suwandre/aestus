@@ -18,6 +18,7 @@ import { assembleContextPacket } from "./builder";
 import { publishContextPacket } from "./publish";
 import type { ContextMetrics } from "./health";
 import type { ContextDataSource } from "./data/source";
+import type { PacketStore } from "./store";
 
 export interface ContextServiceDeps {
   bus: EventBus;
@@ -29,6 +30,8 @@ export interface ContextServiceDeps {
   now?: () => Date;
   /** Data source the default assembler reads from. */
   dataSource?: ContextDataSource;
+  /** Durable packet store; when set, packets are persisted before publish (T010). */
+  store?: PacketStore;
 }
 
 /** Assemble and publish a packet for one anomaly; returns the packet. */
@@ -57,6 +60,10 @@ export async function processAnomaly(
         freshnessStaleSeconds: deps.config.freshnessStaleSeconds,
       }));
   const packet = await assemble(trigger);
+  // Persist the full snapshot BEFORE publishing to the LLM layer (T010), so a
+  // briefing is always reproducible from a stored packet even if publish — or
+  // anything downstream — then fails.
+  if (deps.store) await deps.store.save(packet);
   await publishContextPacket(deps.bus, packet, {
     source: deps.config.service,
     ...(traceId !== undefined ? { traceId } : {}),

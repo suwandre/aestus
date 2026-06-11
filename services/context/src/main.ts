@@ -11,6 +11,8 @@ import { loadConfig } from "./config";
 import { newMetrics, startHealthServer } from "./health";
 import { startContextService } from "./service";
 import { FixtureDataSource } from "./data/fixtures";
+import { InMemoryPacketStore, type PacketStore } from "./store";
+import { PostgresPacketStore } from "./store-postgres";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -52,7 +54,11 @@ async function main(): Promise<void> {
   });
 
   const dataSource = new FixtureDataSource(config);
-  const sub = await startContextService({ bus, config, metrics, dataSource });
+  // Postgres when DATABASE_URL is set; in-memory otherwise (fixture-first).
+  const store: PacketStore = config.databaseUrl
+    ? new PostgresPacketStore(config.databaseUrl)
+    : new InMemoryPacketStore();
+  const sub = await startContextService({ bus, config, metrics, dataSource, store });
   console.log(`[context] consuming anomalies; health on :${config.httpPort}`);
 
   const shutdown = async () => {
@@ -60,6 +66,7 @@ async function main(): Promise<void> {
     await sub.unsubscribe();
     await heartbeat.unsubscribe();
     health.stop();
+    await store.close();
     await bus.close();
     process.exit(0);
   };
