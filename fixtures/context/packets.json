@@ -98,6 +98,50 @@
         "outcome": "Pullback of 6.2% over two days, then continuation."
       }
     ],
+    "source_freshness": [
+      {
+        "feed": "market_snapshot",
+        "present": true,
+        "latest_at": "2026-06-07T12:00:00.000Z",
+        "age_seconds": 5,
+        "stale": false
+      },
+      {
+        "feed": "correlated_assets",
+        "present": true,
+        "latest_at": "2026-06-07T12:00:00.000Z",
+        "age_seconds": 5,
+        "stale": false
+      },
+      {
+        "feed": "venue_quotes",
+        "present": false,
+        "latest_at": null,
+        "age_seconds": null,
+        "stale": true
+      },
+      {
+        "feed": "news",
+        "present": true,
+        "latest_at": "2026-06-07T11:45:00.000Z",
+        "age_seconds": 905,
+        "stale": true
+      },
+      {
+        "feed": "macro",
+        "present": true,
+        "latest_at": "2026-06-10T12:30:00.000Z",
+        "age_seconds": 0,
+        "stale": false
+      },
+      {
+        "feed": "on_chain",
+        "present": true,
+        "latest_at": "2026-06-07T00:00:00.000Z",
+        "age_seconds": 43205,
+        "stale": true
+      }
+    ],
     "deterministic_levels": {
       "reference_price": 68250.4,
       "entry_zone": { "low": 67800, "high": 68100 },

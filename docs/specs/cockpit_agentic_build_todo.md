@@ -1007,7 +1007,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet can include analogues or explicitly say insufficient history.
 
-### [ ] P11-T009 - Implement source freshness summary
+### [x] P11-T009 - Implement source freshness summary
 
 - Agent action: Add freshness/staleness info for every feed contributing to a packet.
 

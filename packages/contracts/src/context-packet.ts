@@ -32,6 +32,37 @@ export const VenueComparison = z.object({
 });
 export type VenueComparison = z.infer<typeof VenueComparison>;
 
+/** The feeds that can contribute to a packet; one freshness entry per feed. */
+export const FeedKind = z.enum([
+  "market_snapshot",
+  "correlated_assets",
+  "venue_quotes",
+  "news",
+  "macro",
+  "on_chain",
+]);
+export type FeedKind = z.infer<typeof FeedKind>;
+
+/**
+ * Freshness/staleness of one feed contributing to a packet (P11-T009). Lets the
+ * briefing UI surface a stale badge or degraded-source callout instead of
+ * hiding a dead feed behind plausible-looking numbers (UI spec §states). A feed
+ * with `present: false` contributed no data (missing); a `present` feed with
+ * `stale: true` is older than the staleness threshold.
+ */
+export const SourceFreshness = z.object({
+  feed: FeedKind,
+  /** True when the feed contributed at least one item to the packet. */
+  present: z.boolean(),
+  /** Newest contributing item's timestamp; null when the feed is absent. */
+  latest_at: Timestamp.nullable(),
+  /** Age of `latest_at` at packet generation, in seconds (≥0); null if absent. */
+  age_seconds: z.number().min(0).nullable(),
+  /** True when the feed is missing or its latest item is older than the threshold. */
+  stale: z.boolean(),
+});
+export type SourceFreshness = z.infer<typeof SourceFreshness>;
+
 /** A prior situation resembling the current one, for analogue reasoning. */
 export const HistoricalAnalogue = z.object({
   /** When the analogue occurred (timestamp or period label). */
@@ -69,6 +100,8 @@ export const ContextPacket = z.object({
   macro: z.array(MacroEvent).default([]),
   on_chain: z.array(OnChainEvent).default([]),
   historical_analogues: z.array(HistoricalAnalogue).default([]),
+  /** Per-feed freshness/staleness so the UI can flag a degraded packet (T009). */
+  source_freshness: z.array(SourceFreshness).default([]),
   /** Code-computed price levels (hard rule #2). */
   deterministic_levels: DeterministicLevels,
 });
