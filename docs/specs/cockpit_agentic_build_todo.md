@@ -1037,7 +1037,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context builder test verifies packet shape and retrieval logic.
 
-### [ ] P11-T014 - Document packet assembly policy
+### [x] P11-T014 - Document packet assembly policy
 
 - Agent action: Write `docs/context_packets.md` explaining what goes into packets and how missing data is represented.
 

@@ -1474,3 +1474,12 @@ All T001–T018 "Done when" criteria satisfied. T014 was found failing in the pr
 - Checks: `bun run typecheck` (pass), `bun test` (40 pass; T013 file = 10 tests/25 asserts), `bun run lint` (pass), prettier applied.
 - Assumptions: The BTC funding-spike "fixture" is the existing `anom-001` (funding_spike, crypto:btc-usdt) in fixtures/anomalies/events.json — no new fixture needed; the test loads & validates it from disk rather than hardcoding, so it exercises real retrieval. Assembles via FixtureDataSource with the same config-driven options the service uses, parses the result against ContextPacketSchema (shape), and asserts each section against what the fixtures imply: market=real BTC snapshot (funding_z 2.6, trend up); correlated=macro:spx (only configured proxy with a snapshot; primary excluded); venue_comparison spans binance/bybit/okx; news=[003,001] BTC-only by relevance desc; macro includes us-nfp-2026-06 but NOT us-cpi-2026-06 (06-10 12:30 is >72h from the 06-07 12:00 anomaly — matches T006's note); on_chain has exchange_flow+whale_transfer+stablecoin_mint_burn; analogues same-type regime-ranked (0.86 first); freshness covers all 6 feeds and quality.degraded_feeds == the stale feeds. No source changes — pure test.
 - Follow-ups: none
+
+### P11-T014 — Document packet assembly policy
+
+- Files: docs/context_packets.md (new)
+- Checks: `prettier --check docs/context_packets.md` (pass). Doc-only — no code/tests.
+- Assumptions: Documents the assembled `ContextPacket` end to end — the contract/builder/data-source locations, a per-field table (source task, window/config knob, and how "missing" is represented), the freshness and quality-score computations (with weights), persistence+emission, and a checklist for adding a new section. Leads with the core policy satisfying the done-when ("agents do not silently omit missing data"): the packet shape is fixed, list sections are always present (empty = explicitly "queried, nothing found"; empty historical_analogues = insufficient history), and every feed has a `source_freshness` row marking present/stale; `venue_comparison` is the only optional field and its absence is still surfaced via freshness. Config defaults cited match config.ts.
+- Follow-ups: none
+
+### P11 COMPLETE — all tasks T001–T014 done.
