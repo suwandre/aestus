@@ -1159,7 +1159,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Invalid model output is rejected or repaired safely.
 
-### [ ] P13-T007 - Inject deterministic levels into prompts
+### [x] P13-T007 - Inject deterministic levels into prompts
 
 - Agent action: Ensure numeric entry/invalidation/targets are provided by level engine and model may only explain/select among them.
 

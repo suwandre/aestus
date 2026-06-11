@@ -72,6 +72,27 @@ export function buildPromptFacts(packet: ContextPacket): PromptFacts {
   };
 }
 
+/**
+ * The complete set of prices the model is allowed to reference (P13-T007): every
+ * value the deterministic level engine produced, deduplicated and sorted. The
+ * prompt states this is the ONLY price set the model may cite — it may not
+ * invent, round, average, or interpolate any other number (hard rule #2).
+ */
+export function allowedPrices(packet: ContextPacket): number[] {
+  const l = packet.deterministic_levels;
+  const prices = [
+    l.reference_price,
+    l.entry_zone.low,
+    l.entry_zone.high,
+    l.invalidation,
+    ...l.targets,
+    ...l.supports,
+    ...l.resistances,
+    ...l.liquidation_clusters,
+  ];
+  return [...new Set(prices)].sort((a, b) => a - b);
+}
+
 /** Render the facts as a fenced block the model and fake provider both read. */
 function renderFacts(facts: PromptFacts): string {
   return `${FACTS_OPEN}\n${JSON.stringify(facts, null, 2)}\n${FACTS_CLOSE}`;
@@ -161,9 +182,26 @@ function formatLevels(facts: PromptFacts): string {
 }
 
 /**
+ * The hard price guardrail (P13-T007): enumerates the only prices the model may
+ * reference and forbids inventing unprovided levels. The model does not output
+ * price fields at all — entry/invalidation/targets are attached deterministically
+ * downstream — so this constrains what it may cite in its narrative.
+ */
+function formatPriceGuardrail(packet: ContextPacket): string {
+  const allowed = allowedPrices(packet);
+  return [
+    "## Price guardrail (hard constraint — hard rule #2)",
+    "- You do NOT output any price. Entry, invalidation, targets, and size are attached automatically from the deterministic levels above.",
+    `- In your reasoning you may reference ONLY these exact prices: ${allowed.join(", ")}.`,
+    "- Never invent, round, average, or interpolate a price outside that list. If a level you want does not exist, treat it as unavailable and consider no_trade.",
+  ].join("\n");
+}
+
+/**
  * Build the chat messages for a briefing: the system contract plus a structured,
  * section-by-section user message that states the deterministic levels and the
- * packet quality explicitly and embeds the machine-readable facts block.
+ * packet quality explicitly, enumerates the allowed price set with a hard
+ * no-invention guardrail, and embeds the machine-readable facts block.
  */
 export function buildBriefingMessages(packet: ContextPacket): LlmMessage[] {
   const facts = buildPromptFacts(packet);
@@ -176,10 +214,12 @@ export function buildBriefingMessages(packet: ContextPacket): LlmMessage[] {
     "",
     formatLevels(facts),
     "",
+    formatPriceGuardrail(packet),
+    "",
     renderFacts(facts),
     "",
     "## Task",
-    'Return a briefing draft for this asset. Choose a stance (long, short, or no_trade). If the edge is weak or the context is degraded, prefer "no_trade" with reasons and re-check conditions. Cite the context sections you used. Do not introduce any price not listed above.',
+    'Return a briefing draft for this asset. Choose a stance (long, short, or no_trade). If the edge is weak or the context is degraded, prefer "no_trade" with reasons and re-check conditions. Cite the context sections you used. Do not introduce any price not in the allowed list above.',
   ].join("\n");
   return [
     { role: "system", content: BRIEFING_SYSTEM_PROMPT },
