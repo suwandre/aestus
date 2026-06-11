@@ -18,4 +18,5 @@ export { trueRanges, averageTrueRange, computeVolatilityBands } from "./atr";
 export { detectSwings, computeSwingStructure } from "./swing";
 export { computeLiquidationLevels } from "./liquidation";
 export { computeVolumeNodes } from "./support-resistance";
+export { computeEntryZone } from "./entry";
 export { projectStructure } from "./engine";

@@ -1077,7 +1077,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Level output includes confidence/source for S/R levels.
 
-### [ ] P12-T006 - Implement entry zone policy
+### [x] P12-T006 - Implement entry zone policy
 
 - Agent action: Convert direction + nearby structure/volatility into entry zone ranges.
 

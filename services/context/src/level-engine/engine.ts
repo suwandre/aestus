@@ -21,6 +21,7 @@ import { computeVolatilityBands } from "./atr";
 import { computeSwingStructure } from "./swing";
 import { computeLiquidationLevels } from "./liquidation";
 import { computeVolumeNodes } from "./support-resistance";
+import { computeEntryZone } from "./entry";
 
 /** Collapse a price-sorted candidate group into representative prices: levels
  *  within `tol` of the running cluster merge, and the highest-confidence
@@ -176,10 +177,21 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     config.srTolerancePct,
   );
 
+  // T006 — entry zone from direction + nearby structure + ATR.
+  const entry = computeEntryZone(
+    direction,
+    referencePrice,
+    vol?.atr,
+    supports,
+    resistances,
+    config,
+  );
+  derivations.push(entry.derivation);
+
   return {
     reference_price: referencePrice,
     direction,
-    entry_zone: { low: referencePrice, high: referencePrice },
+    entry_zone: entry.entryZone,
     invalidation: referencePrice,
     targets: [],
     supports,
