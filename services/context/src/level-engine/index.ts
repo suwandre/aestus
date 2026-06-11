@@ -15,3 +15,5 @@ export {
   DEFAULT_LEVEL_CONFIG,
 } from "./engine";
 export { trueRanges, averageTrueRange, computeVolatilityBands } from "./atr";
+export { detectSwings, computeSwingStructure } from "./swing";
+export { projectStructure } from "./engine";

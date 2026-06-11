@@ -1059,7 +1059,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Level output includes volatility-derived bands with formula metadata.
 
-### [ ] P12-T003 - Implement swing structure detection
+### [x] P12-T003 - Implement swing structure detection
 
 - Agent action: Detect recent swing highs/lows over configurable windows.
 

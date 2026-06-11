@@ -10,9 +10,35 @@
  * and the entry/invalidation/target/size/no-trade policies, each recording its
  * formula in `derivations` (T011).
  */
-import type { DeterministicLevels, LevelDerivation, LevelDirection } from "@aestus/contracts";
+import type {
+  DeterministicLevels,
+  LevelCandidate,
+  LevelDerivation,
+  LevelDirection,
+} from "@aestus/contracts";
 import type { LevelEngineConfig, LevelEngineInput, TradeDirection } from "./types";
 import { computeVolatilityBands } from "./atr";
+import { computeSwingStructure } from "./swing";
+
+/**
+ * Project the flat support/resistance arrays from the accumulated candidates:
+ * supports are `support`-role prices, nearest-below-first (descending);
+ * resistances are `resistance`-role prices, nearest-above-first (ascending).
+ * Exact-duplicate prices are merged. Target/context/invalidation candidates are
+ * ignored here — they project into their own fields.
+ */
+export function projectStructure(candidates: LevelCandidate[]): {
+  supports: number[];
+  resistances: number[];
+} {
+  const supports = [
+    ...new Set(candidates.filter((c) => c.role === "support").map((c) => c.price)),
+  ].sort((a, b) => b - a);
+  const resistances = [
+    ...new Set(candidates.filter((c) => c.role === "resistance").map((c) => c.price)),
+  ].sort((a, b) => a - b);
+  return { supports, resistances };
+}
 
 /** Default engine tuning. Changing a value changes a formula, not the data. */
 export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
@@ -92,17 +118,29 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   const vol = computeVolatilityBands(candles, referencePrice, config);
   if (vol) derivations.push(vol.derivation);
 
+  // Accumulated price-level candidates (with source/role/confidence). Each
+  // structural step appends to this; the flat support/resistance arrays are
+  // projected from it at the end.
+  const candidates: LevelCandidate[] = [];
+
+  // T003 — swing structure → support/resistance candidates.
+  const swing = computeSwingStructure(candles, referencePrice, config);
+  candidates.push(...swing.candidates);
+  derivations.push(swing.derivation);
+
+  const { supports, resistances } = projectStructure(candidates);
+
   return {
     reference_price: referencePrice,
     direction,
     entry_zone: { low: referencePrice, high: referencePrice },
     invalidation: referencePrice,
     targets: [],
-    supports: [],
-    resistances: [],
+    supports,
+    resistances,
     ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
     liquidation_clusters: [],
-    candidates: [],
+    candidates,
     size_suggestion: null,
     derivations,
     method_notes: `level engine v1 (P12) — direction ${direction}`,
