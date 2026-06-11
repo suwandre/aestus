@@ -1113,7 +1113,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: User can inspect why each numeric level exists.
 
-### [ ] P12-T012 - Add deterministic level tests
+### [x] P12-T012 - Add deterministic level tests
 
 - Agent action: Use fixed candles/liquidation fixtures to assert stable entry/invalidation/target outputs.
 
