@@ -95,6 +95,19 @@
         "typescript": "^5.5.0",
       },
     },
+    "services/llm": {
+      "name": "@aestus/llm",
+      "version": "0.1.0",
+      "dependencies": {
+        "@aestus/contracts": "workspace:*",
+        "@aestus/event-bus": "workspace:*",
+        "zod": "^3.23.0",
+      },
+      "devDependencies": {
+        "@types/bun": "^1.1.0",
+        "typescript": "^5.5.0",
+      },
+    },
   },
   "packages": {
     "@aestus/api": ["@aestus/api@workspace:apps/api"],
@@ -106,6 +119,8 @@
     "@aestus/contracts": ["@aestus/contracts@workspace:packages/contracts"],
 
     "@aestus/event-bus": ["@aestus/event-bus@workspace:packages/event-bus"],
+
+    "@aestus/llm": ["@aestus/llm@workspace:services/llm"],
 
     "@aestus/ui": ["@aestus/ui@workspace:packages/ui"],
 

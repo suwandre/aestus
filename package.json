@@ -9,7 +9,8 @@
     "packages/ui",
     "packages/config",
     "packages/event-bus",
-    "services/context"
+    "services/context",
+    "services/llm"
   ],
   "scripts": {
     "dev": "bun run --filter '*' dev",

@@ -1123,7 +1123,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 Goal: Generate concise, grounded briefings from stored context packets while tracking cost, model, and data quality.
 
-### [ ] P13-T001 - Create LLM orchestration service skeleton
+### [x] P13-T001 - Create LLM orchestration service skeleton
 
 - Agent action: Build TS/Bun service with job queue consumer, provider abstraction, prompt templates, cost tracking, and health heartbeat.
 

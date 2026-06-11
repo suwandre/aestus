@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    // The service runs on Bun: @types/bun supplies Bun.serve, the Node builtins
+    // (node:url/node:path/process), and the Web globals (fetch/Response/URL).
+    "types": ["bun"]
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
