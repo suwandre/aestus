@@ -11,6 +11,8 @@ import { z } from "zod/v4";
 import {
   type FeatureSnapshot,
   FeatureSnapshot as FeatureSnapshotSchema,
+  HistoricalAnalogue as HistoricalAnalogueSchema,
+  type HistoricalAnalogue,
   type MacroEvent,
   MacroEvent as MacroEventSchema,
   type MacroImportance,
@@ -18,14 +20,43 @@ import {
   NewsItem as NewsItemSchema,
   type OnChainEvent,
   OnChainEvent as OnChainEventSchema,
+  RegimeLabels as RegimeLabelsSchema,
+  type RegimeLabels,
   type VenueQuote,
   VenueQuote as VenueQuoteSchema,
 } from "@aestus/contracts";
 import type { ContextConfig } from "../config";
-import type { ContextDataSource, MacroQuery, NewsQuery, OnChainQuery } from "./source";
+import type {
+  AnalogueQuery,
+  ContextDataSource,
+  MacroQuery,
+  NewsQuery,
+  OnChainQuery,
+} from "./source";
 
 /** Importance ordering for "at least this important" filtering. */
 const IMPORTANCE_RANK: Record<MacroImportance, number> = { low: 0, medium: 1, high: 2 };
+
+/**
+ * Fixture shape for a stored historical analogue: a {@link HistoricalAnalogue}
+ * payload plus the keys it is retrieved by (anomaly type and the regime it
+ * occurred in). The query keys live only in the fixture, not in the emitted
+ * packet — the packet carries plain `HistoricalAnalogue`s.
+ */
+const AnalogueRecordSchema = HistoricalAnalogueSchema.extend({
+  anomaly_type: z.string().min(1),
+  regime: RegimeLabelsSchema,
+});
+type AnalogueRecord = z.infer<typeof AnalogueRecordSchema>;
+
+/** Count of regime dimensions (trend/volatility/risk) shared by two regimes. */
+function regimeMatchCount(a: RegimeLabels, b: RegimeLabels): number {
+  let n = 0;
+  if (a.trend === b.trend) n += 1;
+  if (a.volatility === b.volatility) n += 1;
+  if (a.risk === b.risk) n += 1;
+  return n;
+}
 
 /** Parse a JSON fixture file as an array validated against `schema`. */
 function loadArray<T>(path: string, schema: z.ZodType<T>): T[] {
@@ -41,6 +72,7 @@ export class FixtureDataSource implements ContextDataSource {
   private newsCache?: NewsItem[];
   private macroCache?: MacroEvent[];
   private onChainCache?: OnChainEvent[];
+  private analoguesCache?: AnalogueRecord[];
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -154,5 +186,28 @@ export class FixtureDataSource implements ContextDataSource {
         return wanted.has(e.asset) || e.event_type === "stablecoin_mint_burn";
       })
       .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
+  }
+
+  private analoguesAll(): AnalogueRecord[] {
+    if (!this.analoguesCache) {
+      this.analoguesCache = loadArray(this.config.fixtures.analogues, AnalogueRecordSchema);
+    }
+    return this.analoguesCache;
+  }
+
+  historicalAnalogues(query: AnalogueQuery): HistoricalAnalogue[] {
+    return (
+      this.analoguesAll()
+        .filter((r) => r.anomaly_type === query.anomalyType)
+        .sort((a, b) => {
+          // Regime-aligned analogues first, then higher similarity.
+          const byRegime =
+            regimeMatchCount(b.regime, query.regime) - regimeMatchCount(a.regime, query.regime);
+          return byRegime !== 0 ? byRegime : b.similarity - a.similarity;
+        })
+        .slice(0, query.limit)
+        // Strip the fixture-only query keys; emit plain HistoricalAnalogues.
+        .map(({ anomaly_type: _type, regime: _regime, ...analogue }) => analogue)
+    );
   }
 }

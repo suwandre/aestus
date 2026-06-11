@@ -1001,7 +1001,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Context packet includes exchange flows/whale events when available.
 
-### [ ] P11-T008 - Implement historical analogue placeholder
+### [x] P11-T008 - Implement historical analogue placeholder
 
 - Agent action: Query prior similar anomaly types and market regimes from ClickHouse/Postgres; use fixtures first if history is sparse.
 

@@ -64,6 +64,8 @@ export interface ContextConfig {
   macroMinImportance: "low" | "medium" | "high";
   /** Include on-chain events within this many hours before the anomaly. */
   onChainWindowHours: number;
+  /** Maximum number of historical analogues to include in a packet. */
+  analogueLimit: number;
   /** Seconds after which a contributing feed is considered stale. */
   freshnessStaleSeconds: number;
   /** Funding-rate spread across venues above which a dislocation is venue-specific. */
@@ -78,6 +80,7 @@ export interface ContextConfig {
     macro: string;
     onChain: string;
     venueQuotes: string;
+    analogues: string;
   };
 }
 
@@ -105,6 +108,7 @@ export function loadConfig(): ContextConfig {
       return v === "low" || v === "high" ? v : "medium";
     })(),
     onChainWindowHours: envInt("ONCHAIN_WINDOW_HOURS", 48),
+    analogueLimit: envInt("ANALOGUE_LIMIT", 3),
     freshnessStaleSeconds: envInt("FRESHNESS_STALE_SECONDS", 900),
     venueFundingDispersion: Number.parseFloat(env("VENUE_FUNDING_DISPERSION", "0.0003")),
     venueBasisDispersionBps: Number.parseFloat(env("VENUE_BASIS_DISPERSION_BPS", "15")),
@@ -117,6 +121,7 @@ export function loadConfig(): ContextConfig {
       venueQuotes: resolveFixture(
         env("VENUE_QUOTES_FIXTURE_PATH", "fixtures/market/venue_quotes.json"),
       ),
+      analogues: resolveFixture(env("ANALOGUES_FIXTURE_PATH", "fixtures/analogues/analogues.json")),
     },
   };
 }

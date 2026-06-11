@@ -10,10 +10,12 @@
  */
 import type {
   FeatureSnapshot,
+  HistoricalAnalogue,
   MacroEvent,
   MacroImportance,
   NewsItem,
   OnChainEvent,
+  RegimeLabels,
   VenueQuote,
 } from "@aestus/contracts";
 
@@ -62,6 +64,26 @@ export interface ContextDataSource {
    * look-back window. Sorted most-recent first.
    */
   onChain(query: OnChainQuery): OnChainEvent[];
+
+  /**
+   * Prior situations resembling the current anomaly (T008): matched by anomaly
+   * type, ranked so those whose market regime aligns with the current regime
+   * surface first, then by similarity. Capped at `query.limit`. An empty array
+   * is the explicit "insufficient history" signal — no sufficiently-similar
+   * prior situation exists for this anomaly type. History is fixture-backed
+   * until a live ClickHouse/Postgres source is wired in.
+   */
+  historicalAnalogues(query: AnalogueQuery): HistoricalAnalogue[];
+}
+
+/** Anomaly-type / regime filter for historical-analogue retrieval (T008). */
+export interface AnalogueQuery {
+  /** The trigger anomaly's type to match prior situations against. */
+  anomalyType: string;
+  /** Current market regime; used to rank type-matched analogues by closeness. */
+  regime: RegimeLabels;
+  /** Maximum number of analogues to return. */
+  limit: number;
 }
 
 /** Window/importance filter for macro retrieval (T006). */

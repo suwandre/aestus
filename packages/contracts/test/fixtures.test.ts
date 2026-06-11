@@ -20,6 +20,7 @@ import {
   Briefing,
   Decision,
   JournalTrade,
+  HistoricalAnalogue,
 } from "../src/index";
 
 const fixturesDir = fileURLToPath(new URL("../../../fixtures", import.meta.url));
@@ -43,6 +44,9 @@ const FIXTURE_CONTRACTS: Record<string, z.ZodType> = {
   "features/snapshots.json": FeatureSnapshot,
   "anomalies/events.json": AnomalyEvent,
   "context/packets.json": ContextPacket,
+  // Analogue records carry the HistoricalAnalogue payload plus service-internal
+  // query keys (anomaly_type, regime), which the contract strips on parse.
+  "analogues/analogues.json": HistoricalAnalogue,
   "briefings/briefings.json": Briefing,
   "decisions/decisions.json": Decision,
   "journal/trades.json": JournalTrade,

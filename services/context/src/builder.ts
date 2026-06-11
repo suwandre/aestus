@@ -39,6 +39,8 @@ export interface BuildOptions {
   macroMinImportance?: MacroImportance;
   /** On-chain look-back window in hours (T007). */
   onChainWindowHours?: number;
+  /** Maximum number of historical analogues to include (T008). */
+  analogueLimit?: number;
 }
 
 /** A neutral, schema-valid placeholder snapshot for an asset at a timestamp. */
@@ -112,6 +114,16 @@ export function assembleContextPacket(
       windowHours: opts.onChainWindowHours ?? 48,
     }) ?? [];
 
+  // Historical analogues (T008): prior situations of the same anomaly type,
+  // ranked by how closely their regime matches the current one. An empty array
+  // is the explicit "insufficient history" signal — no silent omission.
+  const historicalAnalogues =
+    opts.dataSource?.historicalAnalogues({
+      anomalyType: trigger.type,
+      regime: marketSnapshot.regime,
+      limit: opts.analogueLimit ?? 3,
+    }) ?? [];
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -124,7 +136,7 @@ export function assembleContextPacket(
     news,
     macro,
     on_chain: onChain,
-    historical_analogues: [],
+    historical_analogues: historicalAnalogues,
     deterministic_levels: placeholderLevels(),
   };
 }

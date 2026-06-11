@@ -1,0 +1,33 @@
+[
+  {
+    "anomaly_type": "funding_spike",
+    "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" },
+    "when": "2024-03-05",
+    "description": "BTC perp funding spiked to multi-month highs during a strong uptrend as longs crowded in near a local high.",
+    "similarity": 0.86,
+    "outcome": "Funding normalized within ~18h; price pushed +4% then mean-reverted -7% over two days as leverage flushed."
+  },
+  {
+    "anomaly_type": "funding_spike",
+    "regime": { "trend": "trending_up", "volatility": "spike", "risk": "risk_on" },
+    "when": "2021-04-13",
+    "description": "Perpetual funding blow-off across venues at the tail of a parabolic leg.",
+    "similarity": 0.78,
+    "outcome": "Marked a local top; -10% over the following three days."
+  },
+  {
+    "anomaly_type": "funding_spike",
+    "regime": { "trend": "ranging", "volatility": "normal", "risk": "neutral" },
+    "when": "2023-10",
+    "description": "Minor funding tick inside a low-volatility range with no directional conviction.",
+    "similarity": 0.55
+  },
+  {
+    "anomaly_type": "oi_surge",
+    "regime": { "trend": "trending_up", "volatility": "high", "risk": "risk_on" },
+    "when": "2024-02-28",
+    "description": "Open interest surged into a breakout as new leverage entered.",
+    "similarity": 0.7,
+    "outcome": "Trend continued for a week before a sharp deleveraging wick."
+  }
+]
