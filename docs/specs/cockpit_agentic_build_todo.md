@@ -1189,7 +1189,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Realtime UI receives generated briefing event.
 
-### [ ] P13-T012 - Implement briefing cache policy
+### [x] P13-T012 - Implement briefing cache policy
 
 - Agent action: Avoid regenerating identical briefings for duplicate anomalies within cooldown unless context materially changes.
 

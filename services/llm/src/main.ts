@@ -9,6 +9,7 @@
  */
 import { type DependencyHealth } from "@aestus/contracts";
 import { type EventBus, InMemoryBus, NatsBus, startHeartbeat } from "@aestus/event-bus";
+import { BriefingCache } from "./cache";
 import { loadConfig } from "./config";
 import { newMetrics, startHealthServer } from "./health";
 import { createProvider } from "./provider";
@@ -71,7 +72,8 @@ async function main(): Promise<void> {
     ? new PostgresBriefingStore(config.databaseUrl)
     : new InMemoryBriefingStore();
   const routing = await loadRouting(config);
-  const sub = await startLlmService({ bus, config, metrics, provider, store, routing });
+  const cache = new BriefingCache(config.cacheCooldownMinutes * 60_000);
+  const sub = await startLlmService({ bus, config, metrics, provider, store, routing, cache });
   const briefingModel = routing.resolve("briefing").model;
   console.log(
     `[llm] consuming context packets (provider=${provider.name}, briefing model=${briefingModel}); health on :${config.httpPort}`,

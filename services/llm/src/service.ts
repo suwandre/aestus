@@ -22,6 +22,7 @@ import type { Briefing } from "@aestus/contracts";
 import type { LlmConfig } from "./config";
 import type { LlmMetrics } from "./health";
 import type { LlmProvider } from "./provider/types";
+import { type BriefingCache, briefingSignature } from "./cache";
 import { generateBriefing } from "./generate";
 import { publishBriefing } from "./publish";
 import type { ModelRouting } from "./routing";
@@ -36,35 +37,55 @@ export interface LlmServiceDeps {
   store: BriefingStore;
   /** Per-task model routing; the briefing task is resolved per packet (T004). */
   routing: ModelRouting;
+  /** Cooldown cache; when set, duplicate anomalies are skipped (T012). */
+  cache?: BriefingCache;
   /** Clock injected into generation. */
   now?: () => Date;
 }
 
 export interface ProcessResult {
-  briefing: Briefing;
-  validation: BriefingValidation;
+  /** The briefing generated this run; null when generation was skipped (cache). */
+  briefing: Briefing | null;
+  validation: BriefingValidation | null;
   /** True when the briefing passed validation and was persisted. */
   saved: boolean;
+  /** True when an equivalent fresh briefing existed and generation was skipped. */
+  cached: boolean;
 }
 
 /**
  * Generate, meter, validate, and (only if valid) persist + publish one briefing
- * for a packet. A briefing that fails validation is dropped — not stored, not
- * published — so a bad output never reaches the user (T008 Done-when). A valid
- * briefing is persisted BEFORE it is published (T011) so it is always
- * retrievable even if publish fails. The packet's trace id is propagated.
+ * for a packet. A duplicate anomaly whose material signature is still fresh in
+ * the cache is skipped entirely — no LLM call, no spend (T012). A briefing that
+ * fails validation is dropped — not stored, not published — so a bad output
+ * never reaches the user (T008). A valid briefing is persisted BEFORE it is
+ * published (T011) so it is always retrievable even if publish fails. The
+ * packet's trace id is propagated.
  */
 export async function processPacket(
   packet: ContextPacket,
   deps: LlmServiceDeps,
   traceId?: string,
 ): Promise<ProcessResult> {
+  const clock = deps.now ?? (() => new Date());
+  const nowMs = clock().getTime();
+  const signature = briefingSignature(packet);
+
+  // Skip duplicate anomalies whose material context is unchanged and still fresh.
+  if (deps.cache && !deps.cache.shouldGenerate(signature, nowMs)) {
+    deps.metrics.cacheHits += 1;
+    return { briefing: null, validation: null, saved: false, cached: true };
+  }
+
   const route = deps.routing.resolve("briefing");
   const briefing = await generateBriefing(packet, {
     provider: deps.provider,
     model: route.model,
     ...(deps.now !== undefined ? { now: deps.now } : {}),
   });
+  // Record the attempt so duplicates within the cooldown don't re-spend, whether
+  // or not this one passes validation.
+  deps.cache?.record(signature, nowMs);
   deps.metrics.llmCalls += 1;
   deps.metrics.promptTokens += briefing.cost_metadata.prompt_tokens;
   deps.metrics.completionTokens += briefing.cost_metadata.completion_tokens;
@@ -76,7 +97,7 @@ export async function processPacket(
     console.warn(
       `[llm] dropping invalid briefing for ${packet.id}: ${validation.violations.join("; ")}`,
     );
-    return { briefing, validation, saved: false };
+    return { briefing, validation, saved: false, cached: false };
   }
 
   await deps.store.save(briefing);
@@ -88,7 +109,7 @@ export async function processPacket(
     ...(traceId !== undefined ? { traceId } : {}),
   });
   deps.metrics.briefingsPublished += 1;
-  return { briefing, validation, saved: true };
+  return { briefing, validation, saved: true, cached: false };
 }
 
 /**
