@@ -14,6 +14,7 @@ import {
 import { loadConfig } from "../src/config";
 import { newMetrics } from "../src/health";
 import { FakeLlmProvider } from "../src/provider/fake";
+import { ModelRouting } from "../src/routing";
 import { startLlmService } from "../src/service";
 import { InMemoryBriefingStore } from "../src/store";
 
@@ -42,7 +43,7 @@ describe("P13-T001 skeleton", () => {
       metrics,
       provider,
       store,
-      model: "kimi-k2.6",
+      routing: ModelRouting.fromDefaults(),
       now: () => new Date("2026-06-07T12:00:08Z"),
     });
 

@@ -12,6 +12,7 @@ import { type EventBus, InMemoryBus, NatsBus, startHeartbeat } from "@aestus/eve
 import { loadConfig } from "./config";
 import { newMetrics, startHealthServer } from "./health";
 import { createProvider } from "./provider";
+import { loadRouting } from "./routing";
 import { startLlmService } from "./service";
 import { InMemoryBriefingStore, type BriefingStore } from "./store";
 
@@ -65,9 +66,11 @@ async function main(): Promise<void> {
   });
 
   const store: BriefingStore = new InMemoryBriefingStore();
-  const sub = await startLlmService({ bus, config, metrics, provider, store, model: "kimi-k2.6" });
+  const routing = await loadRouting(config);
+  const sub = await startLlmService({ bus, config, metrics, provider, store, routing });
+  const briefingModel = routing.resolve("briefing").model;
   console.log(
-    `[llm] consuming context packets (provider=${provider.name}); health on :${config.httpPort}`,
+    `[llm] consuming context packets (provider=${provider.name}, briefing model=${briefingModel}); health on :${config.httpPort}`,
   );
 
   const shutdown = async () => {

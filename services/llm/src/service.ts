@@ -23,6 +23,7 @@ import type { LlmConfig } from "./config";
 import type { LlmMetrics } from "./health";
 import type { LlmProvider } from "./provider/types";
 import { generateBriefing } from "./generate";
+import type { ModelRouting } from "./routing";
 import type { BriefingStore } from "./store";
 
 export interface LlmServiceDeps {
@@ -31,8 +32,8 @@ export interface LlmServiceDeps {
   metrics: LlmMetrics;
   provider: LlmProvider;
   store: BriefingStore;
-  /** Resolved model id for the briefing task (routing added in T004). */
-  model: string;
+  /** Per-task model routing; the briefing task is resolved per packet (T004). */
+  routing: ModelRouting;
   /** Clock injected into generation. */
   now?: () => Date;
 }
@@ -42,9 +43,10 @@ export async function processPacket(
   packet: ContextPacket,
   deps: LlmServiceDeps,
 ): Promise<Briefing> {
+  const route = deps.routing.resolve("briefing");
   const briefing = await generateBriefing(packet, {
     provider: deps.provider,
-    model: deps.model,
+    model: route.model,
     ...(deps.now !== undefined ? { now: deps.now } : {}),
   });
   deps.metrics.llmCalls += 1;

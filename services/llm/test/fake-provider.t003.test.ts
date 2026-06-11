@@ -15,6 +15,7 @@ import { generateBriefing } from "../src/generate";
 import { newMetrics } from "../src/health";
 import { buildBriefingMessages } from "../src/prompt";
 import { createProvider, FakeLlmProvider } from "../src/provider";
+import { ModelRouting } from "../src/routing";
 import { startLlmService } from "../src/service";
 import { InMemoryBriefingStore } from "../src/store";
 
@@ -118,7 +119,7 @@ describe("P13-T003 pipeline runs with no secrets", () => {
       metrics: newMetrics(),
       provider,
       store,
-      model: "kimi-k2.6",
+      routing: ModelRouting.fromDefaults(),
       now: fixedNow,
     });
 

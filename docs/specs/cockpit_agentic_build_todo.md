@@ -1141,7 +1141,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Briefing pipeline works without external network/model secrets.
 
-### [ ] P13-T004 - Implement model routing config
+### [x] P13-T004 - Implement model routing config
 
 - Agent action: Read routing rules from settings: cheap model for extraction/scoring, strong model for briefings/research.
 
