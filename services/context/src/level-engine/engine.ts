@@ -19,6 +19,7 @@ import type {
 import type { LevelEngineConfig, LevelEngineInput, TradeDirection } from "./types";
 import { computeVolatilityBands } from "./atr";
 import { computeSwingStructure } from "./swing";
+import { computeLiquidationLevels } from "./liquidation";
 
 /**
  * Project the flat support/resistance arrays from the accumulated candidates:
@@ -128,6 +129,11 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   candidates.push(...swing.candidates);
   derivations.push(swing.derivation);
 
+  // T004 — liquidation clusters → target/context candidates + flat cluster list.
+  const liq = computeLiquidationLevels(input.liquidationClusters, referencePrice, direction);
+  candidates.push(...liq.candidates);
+  derivations.push(liq.derivation);
+
   const { supports, resistances } = projectStructure(candidates);
 
   return {
@@ -139,7 +145,7 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     supports,
     resistances,
     ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
-    liquidation_clusters: [],
+    liquidation_clusters: liq.clusters,
     candidates,
     size_suggestion: null,
     derivations,

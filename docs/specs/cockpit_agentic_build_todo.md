@@ -1065,7 +1065,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Level output includes structural support/resistance candidates.
 
-### [ ] P12-T004 - Implement liquidation cluster levels
+### [x] P12-T004 - Implement liquidation cluster levels
 
 - Agent action: Convert liquidation buckets into candidate target/invalidation/context levels.
 
