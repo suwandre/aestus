@@ -75,7 +75,7 @@ Hard rule #7 — cost stays visible and bounded.
   per-token cost field so a metered provider needs no code change
   (`services/llm/src/provider/`).
 - **Model routing by task tier.** Strong model (Kimi K2.6) for briefings/
-  research; cheap model (MiniMax M2.7) for extraction/scoring/classification.
+  research; cheap model (MiniMax M3) for extraction/scoring/classification.
   Configurable per task kind via the `model_routing` table / `LLM_MODEL_ROUTING`
   env (`services/llm/src/routing.ts`).
 - **Cooldown cache.** Duplicate anomalies whose material signature is unchanged

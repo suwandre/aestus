@@ -4,7 +4,7 @@
  * Routes each LLM task kind to a provider/model so model choices are
  * configurable per task type (Done-when), per the runtime-LLM-provider DECISION
  * (progress.md): a strong reasoning model (Kimi K2.6) for briefings/research and
- * a cheap high-volume model (MiniMax M2.7) for extraction/scoring/classification
+ * a cheap high-volume model (MiniMax M3) for extraction/scoring/classification
  * — keeping cost inside the €10–30/month envelope (hard rule #7).
  *
  * Settings layering (lowest → highest precedence):
@@ -28,7 +28,7 @@ export interface ModelRoute {
 export const STRONG_TASKS = new Set(["briefing", "research", "thesis", "chat"]);
 
 const STRONG_ROUTE: ModelRoute = { provider: "ollama", model: "kimi-k2.6", params: {} };
-const CHEAP_ROUTE: ModelRoute = { provider: "ollama", model: "minimax-m2.7", params: {} };
+const CHEAP_ROUTE: ModelRoute = { provider: "ollama", model: "minimax-m3", params: {} };
 
 /** Default per-task routes (the DECISION + the 0009_config seed). */
 export const DEFAULT_ROUTES: Record<string, ModelRoute> = {

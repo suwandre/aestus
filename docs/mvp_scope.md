@@ -66,7 +66,7 @@ All ten tabs ship in MVP:
 Runtime LLMs via Ollama Cloud subscription (provider-agnostic abstraction):
 
 - Briefings and synthesis: Kimi K2.6 (or current top-tier Ollama Cloud model)
-- Entity extraction, relevance, sentiment: MiniMax M2.7 (or current efficient model)
+- Entity extraction, relevance, sentiment: MiniMax M3 (or current efficient model)
 - No execution logic, no order placement, no invented price levels
 
 ---

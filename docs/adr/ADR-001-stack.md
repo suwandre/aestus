@@ -46,7 +46,7 @@ ClickHouse stores raw and normalized market events, OHLCV aggregates, feature sn
 Per-token Anthropic API billing is incompatible with the €10–30/month flat-cost target. Ollama Cloud provides subscription-billed access to open-weight models via an OpenAI/Anthropic-compatible API:
 
 - **Briefings, thesis synthesis, NL research**: Kimi K2.6 (top-tier reasoning, confirmed against Ollama Cloud catalog at P13)
-- **Entity extraction, relevance scoring, sentiment, classification**: MiniMax M2.7 (high-volume narrow tasks, lower cost per call)
+- **Entity extraction, relevance scoring, sentiment, classification**: MiniMax M3 (high-volume narrow tasks, lower cost per call)
 
 Both models are behind the provider-agnostic abstraction defined in P13-T002 and swappable. Env: `OLLAMA_API_KEY`, `OLLAMA_BASE_URL`. The build loop (scripts/loop.ps1) is NOT affected — it continues to use Claude Code (Opus 4.8 / Sonnet 4.6) for agentic task execution.
 

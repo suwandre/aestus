@@ -20,10 +20,10 @@ when P13 is implemented (the names below are the intended choices, not verified 
 | Tier                 | Spec | Use                                                                  | Model (intended)                        |
 | -------------------- | ---- | -------------------------------------------------------------------- | --------------------------------------- |
 | Top-tier reasoning   | §183 | Briefing synthesis, trade-thesis generation, NL chat                 | **Kimi K2.6** (`kimi-k2.6:cloud`)       |
-| High-volume / narrow | §184 | News entity extraction, relevance scoring, sentiment, classification | **MiniMax M2.7** (`minimax-m2.7:cloud`) |
+| High-volume / narrow | §184 | News entity extraction, relevance scoring, sentiment, classification | **MiniMax M3** (`minimax-m3:cloud`) |
 
 Rationale: K2.6 leads the candidates (Kimi K2.6 / MiniMax M3 / GLM 5.1) on long-context
-synthesis and instruction-following, which is what briefing assembly demands. M2.7 is the
+synthesis and instruction-following, which is what briefing assembly demands. M3 is the
 cheap/fast tier for the constant background grind, preserving K2.6 quota for briefings.
 
 ### Required env (runtime)

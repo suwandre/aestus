@@ -12,5 +12,5 @@ but never invents a number. See `docs/llm_boundaries.md`.
 Owned by: LLM agents (P13).
 Consumes: `context.packet` NATS stream.
 Publishes: `briefing.generated` NATS stream.
-Providers: Ollama Cloud (Kimi K2.6 for briefings, MiniMax M2.7 for extraction);
+Providers: Ollama Cloud (Kimi K2.6 for briefings, MiniMax M3 for extraction);
 a deterministic fake provider backs fixture-first dev/tests with no secrets.

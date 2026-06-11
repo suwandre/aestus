@@ -22,8 +22,9 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 
 - Provider: **Ollama Cloud** (subscription-billed API key, OpenAI/Anthropic-compatible). Chosen over per-token Anthropic API to fit the €10–30/mo flat-cost target. Claude subscriptions do not issue API keys for app embedding — not an option for runtime.
 - Top-tier reasoning (spec §183 — briefings, thesis synthesis, NL chat): **Kimi K2.6**.
-- High-volume narrow (spec §184 — entity extraction, relevance, sentiment, classification): **MiniMax M2.7**.
+- High-volume narrow (spec §184 — entity extraction, relevance, sentiment, classification): **MiniMax M3**.
 - Both behind the §182 provider-agnostic abstraction (swappable). Confirm exact `:cloud` tags against Ollama Cloud catalog at P13.
+- CORRECTION (2026-06-11): cheap-tier model renamed **MiniMax M2.7 → MiniMax M3** (`minimax-m3` / `minimax-m3:cloud`). "M2.7" was a naming error; M3 is the current MiniMax line. All code/tests/seed/docs and the historical entries below were updated in place for consistency so future agents see one name.
 - Env: `OLLAMA_API_KEY`, `OLLAMA_BASE_URL`. Fixture-first: app runs with no LLM key present.
 - NOTE: This concerns the **runtime app only**. The build loop (`scripts/loop.ps1`) stays on Claude Code (Opus 4.8 / Sonnet 4.6) per the todo routing table — do not remap it.
 - Full detail: `docs/credentials.md`.
@@ -52,7 +53,7 @@ Phase reviews append `### PXX REVIEW — PASS/FAIL` entries with findings.
 ### P00-T006 — Write ADR for chosen stack
 
 - Files: docs/adr/ADR-001-stack.md (new)
-- Checks: ADR covers all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); includes runtime LLM provider decision from progress.md DECISION entry (Ollama Cloud, Kimi K2.6, MiniMax M2.7); explicitly defers FFI kernels to D11; alternatives table present
+- Checks: ADR covers all required stack components (Rust ingestion/features, TS/Bun API/LLM, NATS JetStream, Redis/BullMQ, Postgres+pgvector, ClickHouse, single VPS Docker Compose); includes runtime LLM provider decision from progress.md DECISION entry (Ollama Cloud, Kimi K2.6, MiniMax M3); explicitly defers FFI kernels to D11; alternatives table present
 - Assumptions: Ollama Cloud model tag naming (e.g. kimi-k2.6:cloud) must be confirmed at P13 — noted in Consequences; pgvector image variant must be confirmed at P04 — noted in Consequences
 - Follow-ups: P13 — confirm Ollama Cloud model tags against live catalog before hardcoding
 
@@ -529,7 +530,7 @@ No [!] tasks in P03. No failures.
 ### P04-T017 — Seed development data
 
 - Files: apps/api/scripts/seed.ts (new), apps/api/package.json (+db:seed), package.json (+root db:seed proxy)
-- Checks: `bun run db:seed` ran live → seeded 6 assets, 5 venues, 6 instruments, default watchlist (6 members), 3 alert rules, 2 model routes, 5 feed settings; ran twice to confirm idempotency (assets stayed at 6). Verified via psql: tags `{major,perp}`, market_types `{perp,spot}`, model_routing kimi-k2.6/minimax-m2.7. typecheck/eslint/prettier clean.
+- Checks: `bun run db:seed` ran live → seeded 6 assets, 5 venues, 6 instruments, default watchlist (6 members), 3 alert rules, 2 model routes, 5 feed settings; ran twice to confirm idempotency (assets stayed at 6). Verified via psql: tags `{major,perp}`, market_types `{perp,spot}`, model_routing kimi-k2.6/minimax-m3. typecheck/eslint/prettier clean.
 - Assumptions: Seed loads the reference fixtures (assets/venues/instruments) from `fixtures/` into Postgres + single-user defaults (watchlist 'default' over BTC/ETH/SPX/DXY/GOLD/VIX; 3 alert rules; model_routing from the runtime-LLM DECISION; feed_settings with binance+macro enabled, others disabled). Transactional UI data (anomalies/briefings/decisions) is NOT DB-seeded — fixture-first means the frontend reads those from `fixtures/` directly (rule #5); noted in the script header. Idempotent via ON CONFLICT DO NOTHING. NOTE for future workers: Bun 1.3 SQL does NOT encode JS arrays as Postgres array literals (sends "a,b" → "malformed array literal"); seed builds the `{...}` literal via a `pgArray()` helper and casts (`::text[]`, `::market_type[]`).
 - Follow-ups: none
 
@@ -1638,7 +1639,7 @@ Independent zero-trust re-verification. Checked all 12 tasks against actual file
 ### P13-T004 — Implement model routing config
 
 - Files: services/llm/src/routing.ts (new), services/llm/src/service.ts (deps `model` → `routing: ModelRouting`, resolves "briefing" per packet), services/llm/src/main.ts (loadRouting + log resolved briefing model), services/llm/test/{smoke.t001,fake-provider.t003}.test.ts (pass `routing` instead of `model`), services/llm/test/routing.t004.test.ts (new)
-- Checks: `bun run typecheck` clean; `bun test` 17 pass / 0 fail; eslint + prettier clean. Tests cover tier split (briefing/research→kimi-k2.6 strong; extraction/scoring/classification→minimax-m2.7 cheap), unknown-kind tier fallback, per-kind override precedence (partial override keeps prior fields), `routesFromRows` (DB), `routesFromEnv` (JSON + garbage tolerance), and that a configured route changes the resolved briefing model (Done-when: configurable per task type).
+- Checks: `bun run typecheck` clean; `bun test` 17 pass / 0 fail; eslint + prettier clean. Tests cover tier split (briefing/research→kimi-k2.6 strong; extraction/scoring/classification→minimax-m3 cheap), unknown-kind tier fallback, per-kind override precedence (partial override keeps prior fields), `routesFromRows` (DB), `routesFromEnv` (JSON + garbage tolerance), and that a configured route changes the resolved briefing model (Done-when: configurable per task type).
 - Assumptions: Settings layer lowest→highest: `DEFAULT_ROUTES` (the DECISION) ← Postgres `model_routing` table (P04-T010, read via Bun SQL only when `DATABASE_URL` set — mirrors store-postgres; not exercised in fixture-first unit tests, but the pure `routesFromRows`/`applyRoutes` it composes are) ← `LLM_MODEL_ROUTING` env JSON. `STRONG_TASKS = {briefing,research,thesis,chat}`; all other kinds default cheap. This service only issues the `briefing` task today; the broader task-kind map exists because routing is the shared per-task config mechanism (the Rust extraction/scoring services have their own clients but the same DB settings table). Route `provider` field is informational in-process — the actual provider is chosen by `createProvider(config)` (fake vs ollama); `route.model` flows into the briefing's recorded model id.
 - Follow-ups: none.
 
@@ -1719,7 +1720,7 @@ Independent zero-trust review. Verified all 14 [x] tasks against actual repo fil
 - P13-T001: `services/llm` workspace member; `service.ts` `startLlmService`/`processPacket` consumes `context.packet.>` and stores briefings; `health.ts` + `main.ts` wire health server + heartbeat; `test/smoke.t001.test.ts` confirms fake packet processed and stored. PASS.
 - P13-T002: `provider/types.ts` defines `LlmProvider` interface; `generate.ts` depends only on the interface; swappability test in `test/provider.t002.test.ts` runs generation through fake AND a stub provider with identical assembly path. PASS.
 - P13-T003: `provider/fake.ts` deterministic pure function; `provider/index.ts` `createProvider` returns fake when `OLLAMA_API_KEY` absent; no-secrets e2e test in `test/fake-provider.t003.test.ts` confirms full pipeline without any credentials. PASS.
-- P13-T004: `routing.ts` `ModelRouting` reads `DEFAULT_ROUTES` ← Postgres `model_routing` ← `LLM_MODEL_ROUTING` env; `STRONG_TASKS` set routes briefing/research to kimi-k2.6, others to minimax-m2.7; `test/routing.t004.test.ts` covers tier split and per-kind overrides. PASS.
+- P13-T004: `routing.ts` `ModelRouting` reads `DEFAULT_ROUTES` ← Postgres `model_routing` ← `LLM_MODEL_ROUTING` env; `STRONG_TASKS` set routes briefing/research to kimi-k2.6, others to minimax-m3; `test/routing.t004.test.ts` covers tier split and per-kind overrides. PASS.
 - P13-T005: `prompt.ts` `buildBriefingMessages` emits `BRIEFING_SYSTEM_PROMPT` (no commands, never invent prices, cite sections, no-trade when weak) plus user message with `formatLevels` and `formatQuality` explicitly stating deterministic levels and packet quality score/label; `test/prompt.t005.test.ts` asserts both. PASS.
 - P13-T006: `draft.ts` `BriefingDraft` schema has no price fields; `parseBriefingDraft` coerces recoverable fields (confidence clamp, default timeframe) and throws `InvalidBriefingDraftError` on missing/invalid stance or thesis; `test/draft.t006.test.ts` confirms rejection and repair paths. PASS.
 - P13-T007: `prompt.ts` `allowedPrices` enumerates engine-supplied prices; `formatPriceGuardrail` injects "ONLY these exact prices … never invent, round, average, or interpolate"; `BriefingDraft` has no price fields; `test/level-injection.t007.test.ts` confirms guardrail text and that assembled briefing levels ⊆ allowedPrices. PASS.

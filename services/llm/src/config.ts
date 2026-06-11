@@ -8,7 +8,7 @@
  *
  * The runtime LLM provider decision (progress.md, binding) routes top-tier
  * reasoning (briefings) to Kimi K2.6 and high-volume narrow tasks (extraction /
- * classification) to MiniMax M2.7, both on Ollama Cloud behind a swappable
+ * classification) to MiniMax M3, both on Ollama Cloud behind a swappable
  * provider abstraction. Exact `:cloud` model tags are config-driven so they can
  * be confirmed against the live catalog without a code change.
  */

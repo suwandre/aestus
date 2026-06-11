@@ -144,7 +144,7 @@ const ALERT_RULES = [
 // Defaults reflect the runtime-LLM-provider DECISION in progress.md.
 const MODEL_ROUTING = [
   { task_kind: "briefing", provider: "ollama", model: "kimi-k2.6", params: {} },
-  { task_kind: "classification", provider: "ollama", model: "minimax-m2.7", params: {} },
+  { task_kind: "classification", provider: "ollama", model: "minimax-m3", params: {} },
 ];
 
 const FEED_SETTINGS = [

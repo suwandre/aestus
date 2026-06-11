@@ -12,16 +12,16 @@ describe("P13-T004 model routing", () => {
     const routing = ModelRouting.fromDefaults();
     expect(routing.resolve("briefing").model).toBe("kimi-k2.6");
     expect(routing.resolve("research").model).toBe("kimi-k2.6");
-    expect(routing.resolve("classification").model).toBe("minimax-m2.7");
-    expect(routing.resolve("extraction").model).toBe("minimax-m2.7");
-    expect(routing.resolve("scoring").model).toBe("minimax-m2.7");
+    expect(routing.resolve("classification").model).toBe("minimax-m3");
+    expect(routing.resolve("extraction").model).toBe("minimax-m3");
+    expect(routing.resolve("scoring").model).toBe("minimax-m3");
   });
 
   test("unknown task kinds fall back to a tier default", () => {
     const routing = ModelRouting.fromDefaults();
     // "thesis" is a strong task; an arbitrary kind is treated as cheap.
     expect(routing.resolve("thesis").model).toBe("kimi-k2.6");
-    expect(routing.resolve("some-new-narrow-task").model).toBe("minimax-m2.7");
+    expect(routing.resolve("some-new-narrow-task").model).toBe("minimax-m3");
   });
 
   test("overrides win per task kind; partial override keeps prior fields", () => {
@@ -32,7 +32,7 @@ describe("P13-T004 model routing", () => {
     expect(merged.briefing!.model).toBe("kimi-k2.6:cloud");
     expect(merged.briefing!.provider).toBe("ollama"); // unchanged
     expect(merged.classification!.provider).toBe("openai");
-    expect(merged.extraction!.model).toBe("minimax-m2.7"); // untouched
+    expect(merged.extraction!.model).toBe("minimax-m3"); // untouched
   });
 
   test("routesFromRows maps DB settings rows", () => {
@@ -43,7 +43,7 @@ describe("P13-T004 model routing", () => {
         model: "kimi-k2.6",
         params: { temperature: 0.2 },
       },
-      { task_kind: "classification", provider: "ollama", model: "minimax-m2.7", params: null },
+      { task_kind: "classification", provider: "ollama", model: "minimax-m3", params: null },
     ]);
     expect(routes.briefing).toEqual({
       provider: "ollama",

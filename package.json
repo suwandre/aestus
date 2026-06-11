@@ -22,8 +22,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
     "docker:up": "docker compose -f infra/docker-compose.yml up -d",
     "docker:down": "docker compose -f infra/docker-compose.yml down",
-    "db:migrate": "bun run --filter 'apps/api' db:migrate",
-    "db:seed": "bun run --filter 'apps/api' db:seed",
+    "db:migrate": "bun run --filter '@aestus/api' db:migrate",
+    "db:seed": "bun run --filter '@aestus/api' db:seed",
     "nats:init": "bun run --filter '@aestus/event-bus' nats:init",
     "nats:replay": "bun run --filter '@aestus/event-bus' nats:replay"
   },
