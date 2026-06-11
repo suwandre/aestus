@@ -1019,7 +1019,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: Briefings can be reproduced even if live state changes.
 
-### [ ] P11-T011 - Publish context packet event
+### [x] P11-T011 - Publish context packet event
 
 - Agent action: Emit context.packet event after successful packet assembly.
 

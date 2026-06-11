@@ -9,14 +9,17 @@ import type { DependencyHealth } from "@aestus/contracts";
 
 /** Mutable counters the service updates and the metrics endpoint renders. */
 export interface ContextMetrics {
+  /** Packets successfully assembled (incremented before persist/publish). */
   packetsBuilt: number;
+  /** Packets successfully published on `context.packet.<asset>` (T011). */
+  packetsPublished: number;
   errors: number;
   /** Epoch ms of the last anomaly consumed (0 if none yet). */
   lastAnomalyEpochMs: number;
 }
 
 export function newMetrics(): ContextMetrics {
-  return { packetsBuilt: 0, errors: 0, lastAnomalyEpochMs: 0 };
+  return { packetsBuilt: 0, packetsPublished: 0, errors: 0, lastAnomalyEpochMs: 0 };
 }
 
 export interface HealthServerOptions {
@@ -34,9 +37,12 @@ interface HealthServer {
 
 function renderMetrics(m: ContextMetrics, service: string): string {
   const lines = [
-    "# HELP context_packets_total Context packets assembled and published.",
+    "# HELP context_packets_total Context packets successfully assembled.",
     "# TYPE context_packets_total counter",
     `context_packets_total{service="${service}"} ${m.packetsBuilt}`,
+    "# HELP context_packets_published_total Context packets published on context.packet.<asset>.",
+    "# TYPE context_packets_published_total counter",
+    `context_packets_published_total{service="${service}"} ${m.packetsPublished}`,
     "# HELP context_errors_total Errors while assembling context packets.",
     "# TYPE context_errors_total counter",
     `context_errors_total{service="${service}"} ${m.errors}`,

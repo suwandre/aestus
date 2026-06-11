@@ -60,15 +60,19 @@ export async function processAnomaly(
         freshnessStaleSeconds: deps.config.freshnessStaleSeconds,
       }));
   const packet = await assemble(trigger);
+  deps.metrics.packetsBuilt += 1;
   // Persist the full snapshot BEFORE publishing to the LLM layer (T010), so a
   // briefing is always reproducible from a stored packet even if publish — or
   // anything downstream — then fails.
   if (deps.store) await deps.store.save(packet);
+  // Emit the assembled packet so LLM orchestration receives it asynchronously
+  // (T011). Published only after a successful assembly; counted separately so a
+  // publish failure shows as built > published.
   await publishContextPacket(deps.bus, packet, {
     source: deps.config.service,
     ...(traceId !== undefined ? { traceId } : {}),
   });
-  deps.metrics.packetsBuilt += 1;
+  deps.metrics.packetsPublished += 1;
   return packet;
 }
 
