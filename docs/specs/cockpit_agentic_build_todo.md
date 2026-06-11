@@ -1201,7 +1201,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Prompt changes can be tested for schema and safety regressions.
 
-### [ ] P13-T014 - Document LLM safety boundaries
+### [x] P13-T014 - Document LLM safety boundaries
 
 - Agent action: Create `docs/llm_boundaries.md` covering narrative-only reasoning, deterministic numbers, no execution, cost controls, and data freshness warnings.
 
