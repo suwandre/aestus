@@ -1147,7 +1147,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Model choices are configurable per task type.
 
-### [ ] P13-T005 - Create briefing prompt template
+### [x] P13-T005 - Create briefing prompt template
 
 - Agent action: Write prompt that emphasizes decision support, no commands, no invented numbers, cite context sections, include no-trade when edge is weak.
 
