@@ -1053,7 +1053,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Module has typed input/output independent of LLM code.
 
-### [ ] P12-T002 - Implement ATR/volatility band calculation
+### [x] P12-T002 - Implement ATR/volatility band calculation
 
 - Agent action: Compute ATR-like or volatility-band levels from OHLCV data for watched assets.
 

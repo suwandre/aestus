@@ -14,3 +14,4 @@ export {
   tradeDirection,
   DEFAULT_LEVEL_CONFIG,
 } from "./engine";
+export { trueRanges, averageTrueRange, computeVolatilityBands } from "./atr";

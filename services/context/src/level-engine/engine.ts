@@ -10,8 +10,9 @@
  * and the entry/invalidation/target/size/no-trade policies, each recording its
  * formula in `derivations` (T011).
  */
-import type { DeterministicLevels, LevelDirection } from "@aestus/contracts";
+import type { DeterministicLevels, LevelDerivation, LevelDirection } from "@aestus/contracts";
 import type { LevelEngineConfig, LevelEngineInput, TradeDirection } from "./types";
+import { computeVolatilityBands } from "./atr";
 
 /** Default engine tuning. Changing a value changes a formula, not the data. */
 export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
@@ -73,9 +74,23 @@ export function tradeDirection(direction: LevelDirection): TradeDirection | null
  * progressively populate the bands, structure, policies, and audit trail.
  */
 export function computeLevels(input: LevelEngineInput): DeterministicLevels {
-  resolveConfig(input.config); // config resolution wired now; consumed from T002.
+  const config = resolveConfig(input.config);
   const referencePrice = resolveReferencePrice(input);
   const direction = resolveDirection(input);
+  const { candles } = input;
+
+  const derivations: LevelDerivation[] = [
+    {
+      component: "reference_price",
+      method: input.referencePrice !== undefined ? "explicit reference price" : "last candle close",
+      inputs: { reference_price: referencePrice },
+      outputs: [referencePrice],
+    },
+  ];
+
+  // T002 — ATR and the reference ± multiplier·ATR volatility band.
+  const vol = computeVolatilityBands(candles, referencePrice, config);
+  if (vol) derivations.push(vol.derivation);
 
   return {
     reference_price: referencePrice,
@@ -85,18 +100,11 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     targets: [],
     supports: [],
     resistances: [],
+    ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
     liquidation_clusters: [],
     candidates: [],
     size_suggestion: null,
-    derivations: [
-      {
-        component: "reference_price",
-        method:
-          input.referencePrice !== undefined ? "explicit reference price" : "last candle close",
-        inputs: { reference_price: referencePrice },
-        outputs: [referencePrice],
-      },
-    ],
+    derivations,
     method_notes: `level engine v1 (P12) — direction ${direction}`,
   };
 }
