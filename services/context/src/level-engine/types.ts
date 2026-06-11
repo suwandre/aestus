@@ -60,6 +60,8 @@ export interface LevelEngineConfig {
   swingLookback: number;
   /** Two levels within this fraction of price are merged into one S/R node (T005). */
   srTolerancePct: number;
+  /** A candle whose volume is ≥ this × mean volume is a high-volume S/R node (T005). */
+  volumeNodeFactor: number;
   /** ATR fraction defining the entry-zone half-width around the trigger price (T006). */
   entryAtrFraction: number;
   /** ATR multiples used to project targets when structure is absent (T008). */

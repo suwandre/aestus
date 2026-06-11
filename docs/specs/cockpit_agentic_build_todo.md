@@ -1071,7 +1071,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Chart and briefing can show cluster-derived levels.
 
-### [ ] P12-T005 - Implement support/resistance placeholder
+### [x] P12-T005 - Implement support/resistance placeholder
 
 - Agent action: Create simple deterministic S/R from recent pivots and high-volume nodes if available.
 

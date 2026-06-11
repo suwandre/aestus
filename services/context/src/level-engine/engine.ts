@@ -20,24 +20,54 @@ import type { LevelEngineConfig, LevelEngineInput, TradeDirection } from "./type
 import { computeVolatilityBands } from "./atr";
 import { computeSwingStructure } from "./swing";
 import { computeLiquidationLevels } from "./liquidation";
+import { computeVolumeNodes } from "./support-resistance";
+
+/** Collapse a price-sorted candidate group into representative prices: levels
+ *  within `tol` of the running cluster merge, and the highest-confidence
+ *  candidate's price represents the cluster (T005). */
+function mergeByTolerance(group: LevelCandidate[], tol: number): number[] {
+  if (group.length === 0) return [];
+  const sorted = [...group].sort((a, b) => a.price - b.price);
+  const out: number[] = [];
+  let cluster: LevelCandidate[] = [sorted[0]!];
+  const flush = () => {
+    const best = cluster.reduce((m, c) => (c.confidence > m.confidence ? c : m));
+    out.push(best.price);
+  };
+  for (let i = 1; i < sorted.length; i++) {
+    const c = sorted[i]!;
+    if (tol > 0 && c.price - cluster[cluster.length - 1]!.price <= tol) {
+      cluster.push(c);
+    } else {
+      flush();
+      cluster = [c];
+    }
+  }
+  flush();
+  return out;
+}
 
 /**
- * Project the flat support/resistance arrays from the accumulated candidates:
- * supports are `support`-role prices, nearest-below-first (descending);
- * resistances are `resistance`-role prices, nearest-above-first (ascending).
- * Exact-duplicate prices are merged. Target/context/invalidation candidates are
- * ignored here — they project into their own fields.
+ * Project the flat support/resistance arrays from the accumulated candidates.
+ * Levels of the same role within `tolerancePct × reference` are merged into one
+ * node (represented by the highest-confidence member). Supports are returned
+ * nearest-below-first (descending), resistances nearest-above-first (ascending).
+ * Target/context/invalidation candidates are ignored — they project elsewhere.
  */
-export function projectStructure(candidates: LevelCandidate[]): {
-  supports: number[];
-  resistances: number[];
-} {
-  const supports = [
-    ...new Set(candidates.filter((c) => c.role === "support").map((c) => c.price)),
-  ].sort((a, b) => b - a);
-  const resistances = [
-    ...new Set(candidates.filter((c) => c.role === "resistance").map((c) => c.price)),
-  ].sort((a, b) => a - b);
+export function projectStructure(
+  candidates: LevelCandidate[],
+  referencePrice: number,
+  tolerancePct: number,
+): { supports: number[]; resistances: number[] } {
+  const tol = referencePrice * tolerancePct;
+  const supports = mergeByTolerance(
+    candidates.filter((c) => c.role === "support"),
+    tol,
+  ).sort((a, b) => b - a);
+  const resistances = mergeByTolerance(
+    candidates.filter((c) => c.role === "resistance"),
+    tol,
+  ).sort((a, b) => a - b);
   return { supports, resistances };
 }
 
@@ -48,6 +78,7 @@ export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
   swingStrength: 2,
   swingLookback: 60,
   srTolerancePct: 0.004,
+  volumeNodeFactor: 1.8,
   entryAtrFraction: 0.5,
   targetAtrMultiples: [1, 2, 3],
   maxRiskPct: 0.01,
@@ -134,7 +165,16 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   candidates.push(...liq.candidates);
   derivations.push(liq.derivation);
 
-  const { supports, resistances } = projectStructure(candidates);
+  // T005 — high-volume nodes → additional support/resistance candidates.
+  const volumeNodes = computeVolumeNodes(candles, referencePrice, config);
+  candidates.push(...volumeNodes.candidates);
+  derivations.push(volumeNodes.derivation);
+
+  const { supports, resistances } = projectStructure(
+    candidates,
+    referencePrice,
+    config.srTolerancePct,
+  );
 
   return {
     reference_price: referencePrice,
