@@ -20,4 +20,5 @@ export { computeLiquidationLevels } from "./liquidation";
 export { computeVolumeNodes } from "./support-resistance";
 export { computeEntryZone } from "./entry";
 export { computeInvalidation } from "./invalidation";
+export { computeTargets } from "./target";
 export { projectStructure } from "./engine";

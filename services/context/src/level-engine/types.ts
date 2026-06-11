@@ -68,8 +68,10 @@ export interface LevelEngineConfig {
   invalidationAtrBuffer: number;
   /** ATR multiple for a volatility stop when no structure backs the invalidation (T007). */
   invalidationAtrMultiple: number;
-  /** ATR multiples used to project targets when structure is absent (T008). */
+  /** ATR multiples projected as targets from the reference (T008). */
   targetAtrMultiples: number[];
+  /** Maximum number of targets to emit after merging near-equal levels (T008). */
+  maxTargets: number;
   /** Max fraction of account to risk on one idea (T009). */
   maxRiskPct: number;
   /** Fewer candles than this → insufficient data → no-trade (T010). */

@@ -1089,7 +1089,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Every directional briefing gets explicit invalidation source metadata.
 
-### [ ] P12-T008 - Implement target policy
+### [x] P12-T008 - Implement target policy
 
 - Agent action: Generate one or more target levels from structure, ATR multiples, and liquidity clusters.
 

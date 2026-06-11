@@ -23,6 +23,7 @@ import { computeLiquidationLevels } from "./liquidation";
 import { computeVolumeNodes } from "./support-resistance";
 import { computeEntryZone } from "./entry";
 import { computeInvalidation } from "./invalidation";
+import { computeTargets } from "./target";
 
 /** Collapse a price-sorted candidate group into representative prices: levels
  *  within `tol` of the running cluster merge, and the highest-confidence
@@ -85,6 +86,7 @@ export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
   invalidationAtrBuffer: 0.25,
   invalidationAtrMultiple: 1.0,
   targetAtrMultiples: [1, 2, 3],
+  maxTargets: 5,
   maxRiskPct: 0.01,
   minCandles: 20,
   noiseAtrPctThreshold: 0.08,
@@ -209,12 +211,26 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
     derivations.push(inval.derivation);
   }
 
+  // T008 — profit targets from structure, ATR multiples, and liquidity clusters.
+  const target = computeTargets(
+    direction,
+    referencePrice,
+    entry.entryZone,
+    vol?.atr,
+    supports,
+    resistances,
+    candidates,
+    config,
+  );
+  candidates.push(...target.candidates);
+  derivations.push(target.derivation);
+
   return {
     reference_price: referencePrice,
     direction,
     entry_zone: entry.entryZone,
     invalidation,
-    targets: [],
+    targets: target.targets,
     supports,
     resistances,
     ...(vol ? { atr: vol.atr, volatility_bands: vol.bands } : {}),
