@@ -25,6 +25,7 @@ import type { LlmProvider } from "./provider/types";
 import { generateBriefing } from "./generate";
 import type { ModelRouting } from "./routing";
 import type { BriefingStore } from "./store";
+import { type BriefingValidation, validateBriefing } from "./validate";
 
 export interface LlmServiceDeps {
   bus: EventBus;
@@ -38,11 +39,22 @@ export interface LlmServiceDeps {
   now?: () => Date;
 }
 
-/** Generate, meter, and persist one briefing for a packet; returns it. */
+export interface ProcessResult {
+  briefing: Briefing;
+  validation: BriefingValidation;
+  /** True when the briefing passed validation and was persisted. */
+  saved: boolean;
+}
+
+/**
+ * Generate, meter, validate, and (only if valid) persist one briefing for a
+ * packet. A briefing that fails validation is dropped — not stored, not
+ * published — so a bad output never reaches the user (T008 Done-when).
+ */
 export async function processPacket(
   packet: ContextPacket,
   deps: LlmServiceDeps,
-): Promise<Briefing> {
+): Promise<ProcessResult> {
   const route = deps.routing.resolve("briefing");
   const briefing = await generateBriefing(packet, {
     provider: deps.provider,
@@ -53,9 +65,19 @@ export async function processPacket(
   deps.metrics.promptTokens += briefing.cost_metadata.prompt_tokens;
   deps.metrics.completionTokens += briefing.cost_metadata.completion_tokens;
   deps.metrics.costUsd += briefing.cost_metadata.cost_usd;
+
+  const validation = validateBriefing(briefing);
+  if (!validation.ok) {
+    deps.metrics.rejected += 1;
+    console.warn(
+      `[llm] dropping invalid briefing for ${packet.id}: ${validation.violations.join("; ")}`,
+    );
+    return { briefing, validation, saved: false };
+  }
+
   await deps.store.save(briefing);
   deps.metrics.briefingsGenerated += 1;
-  return briefing;
+  return { briefing, validation, saved: true };
 }
 
 /**

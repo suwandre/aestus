@@ -10,8 +10,10 @@ import type { DependencyHealth } from "@aestus/contracts";
 
 /** Mutable counters the service updates and the metrics endpoint renders. */
 export interface LlmMetrics {
-  /** Briefings successfully generated (incremented before persist/publish). */
+  /** Briefings that passed validation and were stored. */
   briefingsGenerated: number;
+  /** Briefings that failed validation and were dropped (not stored/notified, T008). */
+  rejected: number;
   /** Briefings successfully published on briefing.generated.<asset> (T011). */
   briefingsPublished: number;
   /** Packets served from cache without an LLM call (T012). */
@@ -32,6 +34,7 @@ export interface LlmMetrics {
 export function newMetrics(): LlmMetrics {
   return {
     briefingsGenerated: 0,
+    rejected: 0,
     briefingsPublished: 0,
     cacheHits: 0,
     llmCalls: 0,
@@ -59,9 +62,12 @@ interface HealthServer {
 function renderMetrics(m: LlmMetrics, service: string): string {
   const l = `{service="${service}"}`;
   const lines = [
-    "# HELP llm_briefings_total Briefings successfully generated.",
+    "# HELP llm_briefings_total Briefings that passed validation and were stored.",
     "# TYPE llm_briefings_total counter",
     `llm_briefings_total${l} ${m.briefingsGenerated}`,
+    "# HELP llm_briefings_rejected_total Briefings dropped by validation (not stored/notified).",
+    "# TYPE llm_briefings_rejected_total counter",
+    `llm_briefings_rejected_total${l} ${m.rejected}`,
     "# HELP llm_briefings_published_total Briefings published on briefing.generated.<asset>.",
     "# TYPE llm_briefings_published_total counter",
     `llm_briefings_published_total${l} ${m.briefingsPublished}`,

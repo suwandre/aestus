@@ -1165,7 +1165,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Prompt forbids inventing unprovided price levels.
 
-### [ ] P13-T008 - Implement briefing validation
+### [x] P13-T008 - Implement briefing validation
 
 - Agent action: Validate stance, confidence range, required fields, no forbidden execution language, and no missing invalidation for directional ideas.
 
