@@ -31,6 +31,14 @@ export const Briefing = z.object({
   generated_at: Timestamp,
   stance: Stance,
   thesis: z.string().min(1),
+  /** Key drivers behind the stance (LLM narrative; P13-T006). */
+  factors: z.array(z.string()).default([]),
+  /** Why the invalidation level matters (LLM narrative); empty for `no_trade`. */
+  invalidation_reasoning: z.string().optional(),
+  /** Why this confidence level, tied to data quality (LLM narrative). */
+  confidence_reasoning: z.string().optional(),
+  /** What would change the assessment — especially for `no_trade` (LLM narrative). */
+  recheck_condition: z.string().optional(),
   /** Deterministic entry zone; null for `no_trade`. */
   entry_zone: EntryZone.nullable(),
   /** Deterministic invalidation level; null for `no_trade`. */

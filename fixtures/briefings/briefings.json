@@ -6,6 +6,14 @@
     "generated_at": "2026-06-07T12:00:08.000Z",
     "stance": "long",
     "thesis": "Funding is hot but trend and ETF flows remain constructive; a pullback into the 67.8-68.1k zone offers a favorable entry against the prior swing low.",
+    "factors": [
+      "Funding spike (anom-001) against a constructive trend and ETF flows",
+      "Pullback into the 67.8-68.1k entry zone above the prior swing low",
+      "Strong context quality (ctx-001)"
+    ],
+    "invalidation_reasoning": "A close below 66.9k breaks the prior swing low and negates the long structure.",
+    "confidence_reasoning": "Constructive trend with strong context supports moderate confidence; hot funding tempers it.",
+    "recheck_condition": "Re-evaluate if funding cools further or price loses the 66.9k invalidation.",
     "entry_zone": { "low": 67800, "high": 68100 },
     "invalidation": 66900,
     "targets": [69500, 71000],
@@ -30,6 +38,14 @@
     "generated_at": "2026-06-07T12:05:00.000Z",
     "stance": "short",
     "thesis": "Elevated funding plus a correlation break with SPX suggests crowded longs; a rejection at resistance favors a tactical short.",
+    "factors": [
+      "Elevated funding implying crowded longs (anom-004)",
+      "Correlation break with SPX",
+      "Rejection at the 69.4-69.6k resistance"
+    ],
+    "invalidation_reasoning": "A close above 70.2k invalidates the rejection and the tactical short.",
+    "confidence_reasoning": "Counter-trend setup capped to lower confidence despite the correlation break.",
+    "recheck_condition": "Re-evaluate if price reclaims 70.2k or the SPX correlation normalizes.",
     "entry_zone": { "low": 69400, "high": 69600 },
     "invalidation": 70200,
     "targets": [68200, 67800],
@@ -54,6 +70,13 @@
     "generated_at": "2026-06-07T12:10:00.000Z",
     "stance": "no_trade",
     "thesis": "With high-importance CPI three days out and volatility already elevated, risk/reward does not justify a position; stand aside until the print clears.",
+    "factors": [
+      "High-importance CPI in three days (us-cpi-2026-06)",
+      "Volatility already elevated (anom-007)"
+    ],
+    "invalidation_reasoning": "No directional position is proposed, so no invalidation applies.",
+    "confidence_reasoning": "High confidence in standing aside given imminent macro and elevated volatility.",
+    "recheck_condition": "Re-assess after the CPI print clears.",
     "entry_zone": null,
     "invalidation": null,
     "targets": [],

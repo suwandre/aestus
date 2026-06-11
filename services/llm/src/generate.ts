@@ -12,7 +12,7 @@
  */
 import { z } from "zod/v4";
 import type { Briefing, ContextPacket } from "@aestus/contracts";
-import { BriefingDraft } from "./draft";
+import { BriefingDraft, parseBriefingDraft } from "./draft";
 import { buildBriefingMessages } from "./prompt";
 import type { LlmCompletion, LlmProvider } from "./provider/types";
 
@@ -43,7 +43,7 @@ export async function generateBriefing(
     responseSchema: DRAFT_JSON_SCHEMA,
     temperature: 0,
   });
-  const draft = BriefingDraft.parse(JSON.parse(completion.content));
+  const draft = parseBriefingDraft(completion.content);
 
   const levels = packet.deterministic_levels;
   const directional = draft.stance === "long" || draft.stance === "short";
@@ -57,6 +57,11 @@ export async function generateBriefing(
     generated_at: now.toISOString(),
     stance: draft.stance,
     thesis: draft.thesis,
+    // Model-authored narrative reasoning (T006 structured output).
+    factors: draft.factors,
+    invalidation_reasoning: draft.invalidation_reasoning,
+    confidence_reasoning: draft.confidence_reasoning,
+    recheck_condition: draft.recheck_condition,
     // Deterministic levels copied from the engine; null for no-trade (rule #2).
     entry_zone: directional ? levels.entry_zone : null,
     invalidation: directional ? levels.invalidation : null,

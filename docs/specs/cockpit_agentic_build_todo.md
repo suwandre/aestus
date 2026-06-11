@@ -1153,7 +1153,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Prompt references deterministic levels and packet quality explicitly.
 
-### [ ] P13-T006 - Create structured briefing output schema
+### [x] P13-T006 - Create structured briefing output schema
 
 - Agent action: Require model output to match briefing schema: stance, thesis, factors, invalidation_reasoning, confidence_reasoning, recheck_condition.
 

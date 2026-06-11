@@ -34,6 +34,22 @@
       "type": "string",
       "minLength": 1
     },
+    "factors": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "invalidation_reasoning": {
+      "type": "string"
+    },
+    "confidence_reasoning": {
+      "type": "string"
+    },
+    "recheck_condition": {
+      "type": "string"
+    },
     "entry_zone": {
       "anyOf": [
         {
@@ -168,6 +184,7 @@
     "generated_at",
     "stance",
     "thesis",
+    "factors",
     "entry_zone",
     "invalidation",
     "targets",

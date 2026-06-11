@@ -48,12 +48,32 @@ function draftFromFacts(facts: PromptFacts): Record<string, unknown> {
       : round2(facts.quality_score * 0.75),
   );
   const dir = stance === "no_trade" ? "stand aside" : stance;
+  const factors = [
+    `trigger: ${facts.anomaly.type} (${facts.anomaly.id})`,
+    `context quality: ${facts.quality_label} (${facts.quality_score.toFixed(2)})`,
+    ...(facts.degraded_feeds.length > 0
+      ? [`degraded feeds: ${facts.degraded_feeds.join(", ")}`]
+      : []),
+  ];
+  const recheck =
+    facts.no_trade_recheck.length > 0
+      ? facts.no_trade_recheck.join("; ")
+      : stance === "no_trade"
+        ? "re-evaluate once context quality improves or the anomaly resolves"
+        : `re-evaluate if price closes beyond invalidation ${facts.invalidation ?? "n/a"}`;
   return {
     stance,
     thesis:
       stance === "no_trade"
         ? `${facts.primary_asset}: ${facts.anomaly.title} does not present a favorable edge given ${facts.quality_label} context; ${dir} until conditions re-check.`
         : `${facts.primary_asset}: ${facts.anomaly.title} supports a ${dir} bias into the deterministic entry zone, with ${facts.quality_label} supporting context.`,
+    factors,
+    invalidation_reasoning:
+      stance === "no_trade"
+        ? "No directional position is proposed, so no invalidation applies."
+        : `Thesis is invalidated at the engine level ${facts.invalidation ?? "n/a"}; a close beyond it negates the ${dir} structure.`,
+    confidence_reasoning: `Confidence tracks ${facts.quality_label} packet quality (score ${facts.quality_score.toFixed(2)}).`,
+    recheck_condition: recheck,
     confidence,
     timeframe: stance === "no_trade" ? "until re-check" : "swing",
   };
