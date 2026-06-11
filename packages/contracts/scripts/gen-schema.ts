@@ -19,6 +19,7 @@ import { MacroEvent } from "../src/macro";
 import { NewsItem } from "../src/news";
 import { OnChainEvent } from "../src/onchain";
 import { FeatureSnapshot } from "../src/feature-snapshot";
+import { Ohlcv } from "../src/ohlcv";
 import { AnomalyEvent } from "../src/anomaly";
 import { DeterministicLevels } from "../src/levels";
 import { ContextPacket } from "../src/context-packet";
@@ -44,6 +45,7 @@ const contracts: Record<string, z.ZodType> = {
   NewsItem,
   OnChainEvent,
   FeatureSnapshot,
+  Ohlcv,
   AnomalyEvent,
   DeterministicLevels,
   ContextPacket,

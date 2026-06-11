@@ -12,6 +12,7 @@ export * from "./macro";
 export * from "./news";
 export * from "./onchain";
 export * from "./feature-snapshot";
+export * from "./ohlcv";
 export * from "./anomaly";
 export * from "./levels";
 export * from "./context-packet";

@@ -1107,7 +1107,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: No-trade briefing can show why and what would change the assessment.
 
-### [ ] P12-T011 - Add level audit trail
+### [x] P12-T011 - Add level audit trail
 
 - Agent action: Store formulas, inputs, and selected level derivations in context packet/briefing metadata.
 

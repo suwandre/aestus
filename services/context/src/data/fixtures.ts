@@ -20,12 +20,15 @@ import {
   NewsItem as NewsItemSchema,
   type OnChainEvent,
   OnChainEvent as OnChainEventSchema,
+  type Ohlcv,
+  Ohlcv as OhlcvSchema,
   RegimeLabels as RegimeLabelsSchema,
   type RegimeLabels,
   type VenueQuote,
   VenueQuote as VenueQuoteSchema,
 } from "@aestus/contracts";
 import type { ContextConfig } from "../config";
+import type { Candle, LiquidationCluster } from "../level-engine/types";
 import type {
   AnalogueQuery,
   ContextDataSource,
@@ -33,6 +36,14 @@ import type {
   NewsQuery,
   OnChainQuery,
 } from "./source";
+
+/** Schema for the `liq_clusters` extra carried on the features fixture (P11-T002). */
+const LiquidationClusterSchema = z.object({
+  price_low: z.number(),
+  price_high: z.number(),
+  total_size: z.number(),
+  side: z.enum(["buy", "sell"]),
+});
 
 /** Importance ordering for "at least this important" filtering. */
 const IMPORTANCE_RANK: Record<MacroImportance, number> = { low: 0, medium: 1, high: 2 };
@@ -73,6 +84,8 @@ export class FixtureDataSource implements ContextDataSource {
   private macroCache?: MacroEvent[];
   private onChainCache?: OnChainEvent[];
   private analoguesCache?: AnalogueRecord[];
+  private candlesCache?: Ohlcv[];
+  private liqClustersCache?: Map<string, LiquidationCluster[]>;
 
   constructor(config: ContextConfig) {
     this.config = config;
@@ -209,5 +222,55 @@ export class FixtureDataSource implements ContextDataSource {
         // Strip the fixture-only query keys; emit plain HistoricalAnalogues.
         .map(({ anomaly_type: _type, regime: _regime, ...analogue }) => analogue)
     );
+  }
+
+  private candlesAll(): Ohlcv[] {
+    if (!this.candlesCache) {
+      this.candlesCache = loadArray(this.config.fixtures.candles, OhlcvSchema);
+    }
+    return this.candlesCache;
+  }
+
+  candles(asset: string): Candle[] {
+    return this.candlesAll()
+      .filter((c) => c.canonical_asset_id === asset)
+      .sort((a, b) => Date.parse(a.time) - Date.parse(b.time))
+      .map(({ time, open, high, low, close, volume }) => ({
+        time,
+        open,
+        high,
+        low,
+        close,
+        volume,
+      }));
+  }
+
+  /**
+   * Liquidation clusters live as a `liq_clusters` extra on the features fixture
+   * (stripped by the FeatureSnapshot contract on parse, see progress P11-T002).
+   * Read once from the raw file and keyed by asset.
+   */
+  private liqClusters(): Map<string, LiquidationCluster[]> {
+    if (!this.liqClustersCache) {
+      const map = new Map<string, LiquidationCluster[]>();
+      const raw = JSON.parse(readFileSync(this.config.fixtures.features, "utf8")) as unknown;
+      const rows = Array.isArray(raw) ? raw : [raw];
+      for (const row of rows) {
+        if (!row || typeof row !== "object") continue;
+        const asset = (row as { canonical_asset_id?: unknown }).canonical_asset_id;
+        const clusters = (row as { liq_clusters?: unknown }).liq_clusters;
+        if (typeof asset !== "string" || !Array.isArray(clusters)) continue;
+        map.set(
+          asset,
+          clusters.map((c) => LiquidationClusterSchema.parse(c)),
+        );
+      }
+      this.liqClustersCache = map;
+    }
+    return this.liqClustersCache;
+  }
+
+  liquidationClusters(asset: string): LiquidationCluster[] {
+    return this.liqClusters().get(asset) ?? [];
   }
 }

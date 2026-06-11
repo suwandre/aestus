@@ -81,6 +81,7 @@ export interface ContextConfig {
     onChain: string;
     venueQuotes: string;
     analogues: string;
+    candles: string;
   };
 }
 
@@ -122,6 +123,7 @@ export function loadConfig(): ContextConfig {
         env("VENUE_QUOTES_FIXTURE_PATH", "fixtures/market/venue_quotes.json"),
       ),
       analogues: resolveFixture(env("ANALOGUES_FIXTURE_PATH", "fixtures/analogues/analogues.json")),
+      candles: resolveFixture(env("CANDLES_FIXTURE_PATH", "fixtures/market/candles.json")),
     },
   };
 }

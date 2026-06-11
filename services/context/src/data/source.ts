@@ -18,6 +18,7 @@ import type {
   RegimeLabels,
   VenueQuote,
 } from "@aestus/contracts";
+import type { Candle, LiquidationCluster } from "../level-engine/types";
 
 /** Window/relevance filter for news retrieval (T005). */
 export interface NewsQuery {
@@ -74,6 +75,16 @@ export interface ContextDataSource {
    * until a live ClickHouse/Postgres source is wired in.
    */
   historicalAnalogues(query: AnalogueQuery): HistoricalAnalogue[];
+
+  /**
+   * Recent OHLCV candles for an asset (single timeframe, oldest→newest) — the
+   * level engine's structural input (P12-T011). Empty when none are known, in
+   * which case the builder falls back to placeholder levels (fixture-first).
+   */
+  candles(asset: string): Candle[];
+
+  /** Known liquidation clusters for an asset (P12-T011); empty if none. */
+  liquidationClusters(asset: string): LiquidationCluster[];
 }
 
 /** Anomaly-type / regime filter for historical-analogue retrieval (T008). */

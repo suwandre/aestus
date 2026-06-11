@@ -20,6 +20,15 @@ import { placeholderLevels } from "./levels";
 import { computePacketQuality } from "./quality";
 import type { ContextDataSource } from "./data/source";
 import { buildVenueComparison, type VenueThresholds } from "./venue";
+import { computeLevels } from "./level-engine";
+
+/** Map anomaly severity to a deterministic setup-confidence for sizing (T011). */
+const SEVERITY_CONFIDENCE: Record<string, number> = {
+  low: 0.3,
+  medium: 0.5,
+  high: 0.7,
+  critical: 0.85,
+};
 
 export interface BuildOptions {
   /** Clock for `generated_at`. Defaults to the current time. */
@@ -210,6 +219,23 @@ export function assembleContextPacket(
     ),
   ];
 
+  // Deterministic levels (P12): compute real levels from OHLCV candles +
+  // liquidation clusters when available, else an explicit placeholder. The
+  // packet carries the full `derivations` audit trail so a user can inspect why
+  // each numeric level exists (T011); the LLM may only cite these, never invent
+  // levels (hard rule #2).
+  const candles = opts.dataSource?.candles(primaryAsset) ?? [];
+  const deterministicLevels =
+    candles.length > 0
+      ? computeLevels({
+          asset: primaryAsset,
+          candles,
+          liquidationClusters: opts.dataSource?.liquidationClusters(primaryAsset) ?? [],
+          regimeTrend: marketSnapshot.regime.trend,
+          confidence: SEVERITY_CONFIDENCE[trigger.severity] ?? 0.5,
+        })
+      : placeholderLevels();
+
   return {
     id: idFor(trigger),
     schema_version: SCHEMA_VERSION,
@@ -226,6 +252,6 @@ export function assembleContextPacket(
     source_freshness: sourceFreshness,
     // Completeness/quality from feed presence + freshness (T012).
     quality: computePacketQuality(sourceFreshness),
-    deterministic_levels: placeholderLevels(),
+    deterministic_levels: deterministicLevels,
   };
 }
