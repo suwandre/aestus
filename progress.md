@@ -1588,3 +1588,24 @@ Test run at review time: context service 40/0 pass, contracts 22/0 pass, typeche
 - Checks: `bun test services/context` (92 pass), full workspace typecheck (all 7 packages clean), contracts test (23 pass), `eslint .` (clean), prettier --check (clean). T012 uses a fixed, hand-computable fixture (constant true range 40 → ATR 40; swing low 980; swing highs 1035/1045; two liquidation clusters) and asserts EXACT outputs: entry_zone {980,1000}, invalidation 940, targets [1035,1045,1050,1060,1090], liquidation_clusters [1060,950], is_no_trade false. Plus an idempotence test (identical input → byte-identical output) and a short-direction mirror.
 - Assumptions: The regression lock asserts exact numbers I derived by hand from the documented formulas (entry = anchor on support 980, high = min(ref, support+0.5·ATR); invalidation = entry low − 1.0·ATR since no support strictly below the entry low; targets = structure+ATR-multiples+liquidity merged @ tol 4.04 capped at 5). Lowered `minCandles` to 5 via config so the 8-candle hand-fixture is tradeable; all other knobs default. The done-when ("LLM changes cannot alter deterministic numeric level tests") holds structurally — the engine imports no LLM/clock/RNG, proven by the idempotence assertion — so these numbers can only change if the deterministic formulas change, which this test catches.
 - Follow-ups: none. P12 complete.
+
+### P12 REVIEW — PASS
+
+Reviewer: independent zero-trust pass against actual repo state. Phase = deterministic level/risk engine (Opus-max routing; core safety rail). All 12 tasks `[x]`; working tree clean; full TS suite 135 pass / 1 skip / 0 fail; all 7 workspace typechecks clean; `eslint .` clean; prettier clean.
+
+Safety invariants (hard rules #1/#2) verified structurally: `grep ^import services/context/src/level-engine/` shows imports are ONLY `@aestus/contracts` (types) + relative engine modules — no model/prompt/LLM/network/clock/RNG. Size output has no units/quantity field (risk_pct/notional/note only). The idempotence test (T012) proves repeated runs are byte-identical, so no LLM change can move a level.
+
+- T001: `level-engine/{types,engine,index}.ts` — typed `LevelEngineInput`/`computeLevels`; enriched `DeterministicLevels` contract (direction, candidates, volatility_bands, size_suggestion, no_trade, derivations) once for the phase; `SizeSuggestion` relocated to levels.ts. `level-engine.t001` ✓.
+- T002: `atr.ts` — Wilder ATR + reference±mult·ATR band with formula metadata; constant-TR test pins ATR exactly. `t002` ✓.
+- T003: `swing.ts` — 2-bar pivots → S/R candidates w/ recency confidence; `projectStructure` flat arrays. `t003` ✓.
+- T004: `liquidation.ts` — clusters → direction-aware target/context candidates, size-weighted confidence. `t004` ✓.
+- T005: `support-resistance.ts` — high-volume nodes + tolerance-merge keeping highest-confidence rep; every S/R candidate carries source+confidence. `t005` ✓.
+- T006: `entry.ts` — pullback-to-support (long) / bounce-to-resistance (short), ATR half-width; none→collapse. `t006` ✓.
+- T007: `invalidation.ts` — structural stop (support/resistance ± buffer) else ATR volatility stop; explicit source candidate + derivation. `t007` ✓.
+- T008: `target.ts` — structure + ATR multiples + liquidity, merged/capped, derivation labels per target. `t008` ✓.
+- T009: `size.ts` — risk_pct = maxRisk·confidence·volFactor; optional notional from stop distance; never a quantity. `t009` ✓.
+- T010: `no-trade.ts` — data/noise/direction/degenerate-stop checks with re-check conditions; withholds size. `t010` ✓.
+- T011: wired into builder via `Ohlcv` contract + `fixtures/market/candles.json` + data-source `candles()`/`liquidationClusters()`; packet carries full derivation audit; 89 prior packet tests still green. `t011` ✓.
+- T012: fixed hand-computable fixture pins exact entry {980,1000} / invalidation 940 / targets [1035,1045,1050,1060,1090] + idempotence + short mirror. `t012` ✓.
+
+Carried follow-up (not P12 scope): account-equity wiring for notional sizing is a settings/API concern (P14); the engine accepts it, the builder does not yet pass one.
