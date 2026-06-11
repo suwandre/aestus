@@ -1031,7 +1031,7 @@ Goal: Assemble the context around an anomaly so the LLM and user see more than a
 
 - Done when: LLM prompt can include data quality and UI can warn on weak context.
 
-### [ ] P11-T013 - Add context packet fixture test
+### [x] P11-T013 - Add context packet fixture test
 
 - Agent action: Build a BTC funding spike fixture and assert expected market/news/macro/on-chain sections.
 
