@@ -22,6 +22,7 @@ import { computeSwingStructure } from "./swing";
 import { computeLiquidationLevels } from "./liquidation";
 import { computeVolumeNodes } from "./support-resistance";
 import { computeEntryZone } from "./entry";
+import { computeInvalidation } from "./invalidation";
 
 /** Collapse a price-sorted candidate group into representative prices: levels
  *  within `tol` of the running cluster merge, and the highest-confidence
@@ -81,6 +82,8 @@ export const DEFAULT_LEVEL_CONFIG: LevelEngineConfig = {
   srTolerancePct: 0.004,
   volumeNodeFactor: 1.8,
   entryAtrFraction: 0.5,
+  invalidationAtrBuffer: 0.25,
+  invalidationAtrMultiple: 1.0,
   targetAtrMultiples: [1, 2, 3],
   maxRiskPct: 0.01,
   minCandles: 20,
@@ -188,11 +191,29 @@ export function computeLevels(input: LevelEngineInput): DeterministicLevels {
   );
   derivations.push(entry.derivation);
 
+  // T007 — invalidation (stop basis) from structure/ATR, with source metadata.
+  const inval = computeInvalidation(
+    direction,
+    referencePrice,
+    entry.entryZone,
+    vol?.atr,
+    supports,
+    resistances,
+    candidates,
+    config,
+  );
+  let invalidation = referencePrice;
+  if (inval) {
+    invalidation = inval.invalidation;
+    candidates.push(inval.candidate);
+    derivations.push(inval.derivation);
+  }
+
   return {
     reference_price: referencePrice,
     direction,
     entry_zone: entry.entryZone,
-    invalidation: referencePrice,
+    invalidation,
     targets: [],
     supports,
     resistances,

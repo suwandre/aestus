@@ -64,6 +64,10 @@ export interface LevelEngineConfig {
   volumeNodeFactor: number;
   /** ATR fraction defining the entry-zone half-width around the trigger price (T006). */
   entryAtrFraction: number;
+  /** ATR fraction placed beyond structure as the stop buffer (T007). */
+  invalidationAtrBuffer: number;
+  /** ATR multiple for a volatility stop when no structure backs the invalidation (T007). */
+  invalidationAtrMultiple: number;
   /** ATR multiples used to project targets when structure is absent (T008). */
   targetAtrMultiples: number[];
   /** Max fraction of account to risk on one idea (T009). */

@@ -1083,7 +1083,7 @@ Goal: Produce entry, invalidation, target, size, and no-trade conditions determi
 
 - Done when: Directional briefing receives numeric entry zone from level engine.
 
-### [ ] P12-T007 - Implement invalidation policy
+### [x] P12-T007 - Implement invalidation policy
 
 - Agent action: Choose invalidation level based on thesis direction, swing/ATR, and trigger context.
 

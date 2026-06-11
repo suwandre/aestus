@@ -19,4 +19,5 @@ export { detectSwings, computeSwingStructure } from "./swing";
 export { computeLiquidationLevels } from "./liquidation";
 export { computeVolumeNodes } from "./support-resistance";
 export { computeEntryZone } from "./entry";
+export { computeInvalidation } from "./invalidation";
 export { projectStructure } from "./engine";
