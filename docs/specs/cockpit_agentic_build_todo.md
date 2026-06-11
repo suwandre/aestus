@@ -1171,7 +1171,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Bad briefing outputs fail validation and do not notify user.
 
-### [ ] P13-T009 - Implement no-trade briefing path
+### [x] P13-T009 - Implement no-trade briefing path
 
 - Agent action: Allow model to return no_trade with reasons and re-check conditions, without requiring entry/targets.
 

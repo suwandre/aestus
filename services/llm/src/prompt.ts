@@ -182,6 +182,29 @@ function formatLevels(facts: PromptFacts): string {
 }
 
 /**
+ * The no-trade contract (P13-T009): no_trade is a first-class outcome that needs
+ * reasons + re-check conditions but no entry/targets. When the engine already
+ * flags no-trade, its reasons / re-check conditions are surfaced for the model.
+ */
+function formatNoTradeGuidance(facts: PromptFacts): string {
+  const lines = [
+    "## No-trade path (first-class outcome)",
+    'If the edge is weak, context is degraded, or signals conflict, return stance "no_trade". It is valuable, not a failure.',
+    "For no_trade: put the reasons in `factors` and what would make you re-check in `recheck_condition`. Entry, invalidation, and targets are NOT required and will be omitted.",
+  ];
+  if (facts.is_no_trade) {
+    lines.push("The level engine already flags NO-TRADE for this packet.");
+    if (facts.no_trade_reasons.length > 0) {
+      lines.push(`- Engine reasons: ${facts.no_trade_reasons.join("; ")}`);
+    }
+    if (facts.no_trade_recheck.length > 0) {
+      lines.push(`- Engine re-check conditions: ${facts.no_trade_recheck.join("; ")}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+/**
  * The hard price guardrail (P13-T007): enumerates the only prices the model may
  * reference and forbids inventing unprovided levels. The model does not output
  * price fields at all — entry/invalidation/targets are attached deterministically
@@ -215,6 +238,8 @@ export function buildBriefingMessages(packet: ContextPacket): LlmMessage[] {
     formatLevels(facts),
     "",
     formatPriceGuardrail(packet),
+    "",
+    formatNoTradeGuidance(facts),
     "",
     renderFacts(facts),
     "",

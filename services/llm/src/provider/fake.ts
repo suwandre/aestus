@@ -48,13 +48,18 @@ function draftFromFacts(facts: PromptFacts): Record<string, unknown> {
       : round2(facts.quality_score * 0.75),
   );
   const dir = stance === "no_trade" ? "stand aside" : stance;
-  const factors = [
+  const baseFactors = [
     `trigger: ${facts.anomaly.type} (${facts.anomaly.id})`,
     `context quality: ${facts.quality_label} (${facts.quality_score.toFixed(2)})`,
     ...(facts.degraded_feeds.length > 0
       ? [`degraded feeds: ${facts.degraded_feeds.join(", ")}`]
       : []),
   ];
+  // For no_trade, lead with the engine's reasons so the briefing carries them.
+  const factors =
+    stance === "no_trade" && facts.no_trade_reasons.length > 0
+      ? [...facts.no_trade_reasons, ...baseFactors]
+      : baseFactors;
   const recheck =
     facts.no_trade_recheck.length > 0
       ? facts.no_trade_recheck.join("; ")
