@@ -1483,3 +1483,24 @@ All T001–T018 "Done when" criteria satisfied. T014 was found failing in the pr
 - Follow-ups: none
 
 ### P11 COMPLETE — all tasks T001–T014 done.
+
+### P11 REVIEW — PASS
+
+Reviewer: independent pass, zero-trust against actual repo state.
+
+- T001: `smoke.t001.test.ts` asserts heartbeat on `system.health` and placeholder `context.packet` emission. ✓
+- T002: `market.t002.test.ts` verifies `market_snapshot` carries `funding_z`, `oi_delta`, `volume_z`, returns, volatility, basis, regime for primary asset. ✓
+- T003: `correlated.t003.test.ts` confirms `correlated_assets` populated for BTC anomaly (macro:spx present, primary excluded). ✓
+- T004: `venue.t004.test.ts` + `VenueQuote` contract verify `venue_comparison` identifies venue-specific dislocation. ✓
+- T005: `news.t005.test.ts` confirms only BTC-entity news above relevance floor included, source metadata present. ✓
+- T006: `macro.t006.test.ts` verifies NFP/CPI proximity within ±72h window; anomaly near macro surfaces it. ✓
+- T007: `onchain.t007.test.ts` asserts exchange_flow, whale_transfer, stablecoin_mint_burn in `on_chain`. ✓
+- T008: `analogues.t008.test.ts` verifies regime-ranked analogues returned for known type; empty array for unknown type (explicit "insufficient history"). ✓
+- T009: `SourceFreshness` + `FeedKind` in `packages/contracts/src/context-packet.ts`; `source_freshness` on ContextPacket contract; `freshness.t009.test.ts` verifies stale/present/missing per feed. ✓
+- T010: `store.ts` + `store-postgres.ts` + migration `0012_context_packet_snapshot.sql`; `persistence.t010.test.ts` proves persist-before-publish, exact reproduction, and immutability. ✓
+- T011: `publish.t011.test.ts` verifies `context.packet.<asset>` carries `payload_type=ContextPacket`, propagated `trace_id`, and assembly failure → 0 published. ✓
+- T012: `PacketQuality`/`PacketQualityLabel` in contracts; `quality.ts` service; `quality.t012.test.ts` covers strong/adequate/weak labels and degraded_feeds. ✓
+- T013: `packet.t013.test.ts` (10 tests) asserts shape (ContextPacketSchema parse) and all retrieval sections for BTC funding-spike fixture. ✓
+- T014: `docs/context_packets.md` exists; leads with missing-data policy; per-field table documents "when missing" representation for every section. ✓
+
+Test run at review time: context service 40/0 pass, contracts 22/0 pass, typecheck clean.
