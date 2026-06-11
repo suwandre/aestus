@@ -1609,3 +1609,7 @@ Safety invariants (hard rules #1/#2) verified structurally: `grep ^import servic
 - T012: fixed hand-computable fixture pins exact entry {980,1000} / invalidation 940 / targets [1035,1045,1050,1060,1090] + idempotence + short mirror. `t012` ✓.
 
 Carried follow-up (not P12 scope): account-equity wiring for notional sizing is a settings/API concern (P14); the engine accepts it, the builder does not yet pass one.
+
+### P12 REVIEW — PASS (independent)
+
+Independent zero-trust re-verification. Checked all 12 tasks against actual files; ran `bun test services/context` (92 pass, 0 fail) and `tsc` (no errors) independently. Safety invariants confirmed: no LLM/clock/RNG imports in any `level-engine/` file; `SizeSuggestion` has no quantity field; T012 idempotence test structurally proves LLM changes cannot alter level output. All "Done when" criteria satisfied; verdict matches self-review above.
