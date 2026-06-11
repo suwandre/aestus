@@ -23,6 +23,7 @@ import type { LlmConfig } from "./config";
 import type { LlmMetrics } from "./health";
 import type { LlmProvider } from "./provider/types";
 import { generateBriefing } from "./generate";
+import { publishBriefing } from "./publish";
 import type { ModelRouting } from "./routing";
 import type { BriefingStore } from "./store";
 import { type BriefingValidation, validateBriefing } from "./validate";
@@ -47,13 +48,16 @@ export interface ProcessResult {
 }
 
 /**
- * Generate, meter, validate, and (only if valid) persist one briefing for a
- * packet. A briefing that fails validation is dropped — not stored, not
- * published — so a bad output never reaches the user (T008 Done-when).
+ * Generate, meter, validate, and (only if valid) persist + publish one briefing
+ * for a packet. A briefing that fails validation is dropped — not stored, not
+ * published — so a bad output never reaches the user (T008 Done-when). A valid
+ * briefing is persisted BEFORE it is published (T011) so it is always
+ * retrievable even if publish fails. The packet's trace id is propagated.
  */
 export async function processPacket(
   packet: ContextPacket,
   deps: LlmServiceDeps,
+  traceId?: string,
 ): Promise<ProcessResult> {
   const route = deps.routing.resolve("briefing");
   const briefing = await generateBriefing(packet, {
@@ -77,6 +81,13 @@ export async function processPacket(
 
   await deps.store.save(briefing);
   deps.metrics.briefingsGenerated += 1;
+  // Publish for API/UI/notifications after successful storage (T011).
+  await publishBriefing(deps.bus, briefing, {
+    asset: packet.primary_asset,
+    source: deps.config.service,
+    ...(traceId !== undefined ? { traceId } : {}),
+  });
+  deps.metrics.briefingsPublished += 1;
   return { briefing, validation, saved: true };
 }
 
@@ -92,7 +103,7 @@ export async function startLlmService(deps: LlmServiceDeps): Promise<Subscriptio
       deps.metrics.lastPacketEpochMs =
         Date.parse(envelope.emitted_at) || deps.metrics.lastPacketEpochMs;
       try {
-        await processPacket(packet, deps);
+        await processPacket(packet, deps, envelope.trace_id);
       } catch (err) {
         deps.metrics.errors += 1;
         console.error(`[llm] failed to generate briefing for ${packet.id}:`, err);

@@ -1183,7 +1183,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 - Done when: Briefing detail can show model/cost/observability metadata.
 
-### [ ] P13-T011 - Publish briefing generated event
+### [x] P13-T011 - Publish briefing generated event
 
 - Agent action: Emit briefing.generated event for API/UI/notifications after successful storage.
 
