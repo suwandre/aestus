@@ -1,23 +1,10 @@
 import { z } from "zod/v4";
 import { Id, SchemaVersion, Timestamp } from "./common";
-import { EntryZone } from "./levels";
+import { EntryZone, SizeSuggestion } from "./levels";
 
 /** Directional stance of a briefing. `no_trade` is a first-class outcome. */
 export const Stance = z.enum(["long", "short", "no_trade"]);
 export type Stance = z.infer<typeof Stance>;
-
-/**
- * Risk-relative position sizing. Numbers are deterministic (hard rule #2) —
- * derived from code using current volatility, never invented by the LLM.
- */
-export const SizeSuggestion = z.object({
-  /** Fraction of account to risk on the idea, e.g. 0.01 = 1%. */
-  risk_pct: z.number().min(0).max(1).optional(),
-  /** Suggested notional in quote currency. */
-  notional: z.number().nonnegative().optional(),
-  note: z.string().optional(),
-});
-export type SizeSuggestion = z.infer<typeof SizeSuggestion>;
 
 /** Per-briefing LLM cost accounting (hard rule #7 — keep cost visible). */
 export const CostMetadata = z.object({

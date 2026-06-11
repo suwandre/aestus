@@ -20,12 +20,16 @@ export const PLACEHOLDER_LEVELS_NOTE =
 export function placeholderLevels(referencePrice = 0): DeterministicLevels {
   return {
     reference_price: referencePrice,
+    direction: "none",
     entry_zone: { low: referencePrice, high: referencePrice },
     invalidation: referencePrice,
     targets: [],
     supports: [],
     resistances: [],
     liquidation_clusters: [],
+    candidates: [],
+    size_suggestion: null,
+    derivations: [],
     method_notes: PLACEHOLDER_LEVELS_NOTE,
   };
 }
