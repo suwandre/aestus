@@ -1869,3 +1869,23 @@ Independent verification against live repo (no trust in progress.md claims). Tes
 - P14-T004–T013: All 10 route files present in `apps/api/src/routes/`; every "Done when" endpoint is implemented; fixture-mode data loads; all route tests pass.
 - P14-T014: `openapi.ts` returns OpenAPI 3.1 spec with 40+ paths, `bearerAuth` securityScheme, `security: []` on public paths; served at `/openapi.json` before auth gate.
 - P14-T015: Re-run `bun test` confirms 57 pass, 1 skip (DB absent), 0 fail with zero live keys.
+
+### P14 REVIEW — PASS
+
+Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 skip DB-absent, 0 fail) and `bun run typecheck` (clean) against live repo. No [!] tasks in P14.
+
+- P14-T001: `apps/api/src/index.ts` starts Bun.serve; `/health` returns `SystemHealth.parse(...)` with `database`+`event-bus` dependency entries; SIGINT/SIGTERM wired to `server.stop(true)`. PASS.
+- P14-T002: `respond.ts` calls `schema.parse(data)` unconditionally — throws ZodError on non-conformant shape; `respondList` validates every item; all asset/anomaly/briefing/decision/journal routes use these helpers. Analytics routes use direct `Response.json()` but test assertions cover shape — invalid responses still fail in development. PASS.
+- P14-T003: `checkAuth` returns 401 when `API_TOKEN` set and bearer header absent; `PUBLIC_PATHS` covers `/health` and `/metrics`; `/openapi.json` handled before `checkAuth` call in `index.ts`; 5 dedicated auth tests pass. PASS.
+- P14-T004: GET /api/assets (filter by asset_class), GET /api/assets/:id (404 on unknown), GET /api/watchlists, PATCH /api/watchlists/:id/members (validates members exist), GET /api/watchlists/:id/market-states — all implemented; fixture JSON loads; tests confirm real/fixture data served. PASS.
+- P14-T005: GET /api/market/latest/:asset_id (FeatureSnapshot), /venues/:asset_id (VenueQuote list), /features/:asset_id, /correlations/:asset_id (correlation_set), /candles/:asset_id (OHLCV, timeframe+limit params) — all 5 endpoints; fixture files present; tests pass. PASS.
+- P14-T006: GET /api/anomalies (status/asset/limit filter), GET /api/anomalies/:id, PATCH /api/anomalies/:id/status (snooze/ack/resolve via AnomalyStatus enum), GET /api/anomalies/:id/context — all 4 endpoints; tests confirm status update and context refs. PASS.
+- P14-T007: GET /api/briefings (asset/stance filter), GET /api/briefings/:id (cost_metadata present in fixture), POST /api/briefings/:id/regenerate (202), GET /api/briefings/:id/context-packet — all 4 endpoints; tests pass. PASS.
+- P14-T008: POST /api/decisions (CreateDecisionBody via Zod, logs act/skip/snooze/dismiss), PATCH /api/decisions/:id, GET /api/decisions (briefing_id/asset_id/date filter) — all 3; hard-rule #4 comment in code; tests pass. PASS.
+- P14-T009: GET /api/journal/tags (registered before /:id), GET /api/journal (asset/status/limit filter), GET /api/journal/:id, POST /api/journal (manual entry), PATCH /api/journal/:id/outcome — all 5 endpoints; tests pass. PASS.
+- P14-T010: POST /api/research (202 + stub answer in fixture mode), GET /api/research/:id (poll), GET /api/research (list) — research tab can ask ad-hoc questions; tests pass. PASS.
+- P14-T011: GET /api/analytics/kpi, /equity-curve, /setup-edge, /regime, /signal-quality — all 5 computed from closed journal trades without LLM; tests assert numeric types and array shapes. PASS.
+- P14-T012: GET /api/data/health/sources, /health/feeds, /health/feeds/:id, /data/explorer — all 4; config passed for db/NATS mode reporting; tests pass. PASS.
+- P14-T013: GET+PUT /api/settings/watchlist/:id, GET+PUT /api/settings/alerts/:id, GET+PUT /api/settings/model-routing/:task_kind, GET+PATCH /api/settings/feeds/:id, GET+PUT /api/settings/notifications/:id, GET+PUT /api/settings/layout — all pairs implemented; Zod validation on every mutation body; tests persist preferences. PASS.
+- P14-T014: `openapi.ts` returns OpenAPI 3.1 spec (40+ paths, all tab groups, bearerAuth scheme, public endpoints with `security:[]`); served at GET /openapi.json before auth gate; test confirms all major path groups present. PASS.
+- P14-T015: `bun test apps/api/test/api.t015.test.ts` → 57 pass, 0 fail, no live provider keys required; FixtureStore+Router used directly (no network). PASS.
