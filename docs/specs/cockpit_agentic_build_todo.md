@@ -1235,7 +1235,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Cockpit watchlist can load real/fixture data.
 
-### [ ] P14-T005 - Create market state endpoints
+### [x] P14-T005 - Create market state endpoints
 
 - Agent action: Implement latest state, venue comparison, feature stack, correlation matrix, and chart candle endpoints.
 

@@ -1741,6 +1741,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Single Bun.serve() handles all routes (health/metrics/openapi public; all /api/* gated behind bearer-token auth). import.meta.dir used to derive repoRoot so fixture paths resolve on any OS without URL-encoding issues. @types/bun added (mirrors llm service pattern). test: "bun test" (not --pass-with-no-tests) because P14 adds real tests.
 - Follow-ups: T002–T015 build on this skeleton.
 
+### P14-T005 — Create market state endpoints
+
+- Files: apps/api/src/routes/market.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/market/latest/:asset_id (FeatureSnapshot), GET /api/market/venues/:asset_id (VenueQuotes), GET /api/market/features/:asset_id (same as latest, named for UI), GET /api/market/correlations/:asset_id (correlation_set from snapshot), GET /api/market/candles/:asset_id (OHLCV, filterable by timeframe + limit).
+- Assumptions: Market candles served from fixtures/market/candles.json; venue quotes from fixtures/market/venue_quotes.json. Timeframe default "1h", limit capped at 1000.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)
