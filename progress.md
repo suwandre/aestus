@@ -1858,3 +1858,14 @@ Verified independently against the repo. All 15 tasks marked [x] satisfy their "
 - P14-T013: Watchlist/alerts/model-routing/feeds/notifications/layout — all GET+PUT/PATCH pairs; Zod validation on all mutation bodies; tests pass.
 - P14-T014: GET /openapi.json serves OpenAPI 3.1 spec; 40+ paths; bearerAuth in securitySchemes; public endpoints have `security: []`; served before auth gate.
 - P14-T015: `bun test` → 57 pass, 1 skip (migrate.smoke, DB absent — expected), 0 fail; no live provider keys required; FixtureStore+Router used directly.
+
+### P14 INDEPENDENT REVIEW — PASS
+
+Independent verification against live repo (no trust in progress.md claims). Tests re-run (`bun test` → 57 pass, 1 skip, 0 fail). All 15 tasks confirmed.
+
+- P14-T001: `apps/api` exists; `makeHealthResponse` calls `SystemHealth.parse()` with database+event-bus deps; server starts with graceful SIGINT/SIGTERM handling.
+- P14-T002: `respond.ts` uses `schema.parse(data)` — throws ZodError on bad shape; `respondList` validates every item; all list/detail routes use these helpers; analytics routes use inline `Response.json()` but are type-checked and covered by test assertions.
+- P14-T003: `checkAuth` returns 401 when `API_TOKEN` set and header absent; `/health` and `/metrics` in `PUBLIC_PATHS`; `/openapi.json` handled before auth gate; 5 dedicated auth tests pass.
+- P14-T004–T013: All 10 route files present in `apps/api/src/routes/`; every "Done when" endpoint is implemented; fixture-mode data loads; all route tests pass.
+- P14-T014: `openapi.ts` returns OpenAPI 3.1 spec with 40+ paths, `bearerAuth` securityScheme, `security: []` on public paths; served at `/openapi.json` before auth gate.
+- P14-T015: Re-run `bun test` confirms 57 pass, 1 skip (DB absent), 0 fail with zero live keys.
