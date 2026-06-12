@@ -1783,6 +1783,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Fixture mode immediately resolves job to done status with a stub answer string so the Research tab can render without a live LLM. Research job id is `research-${Date.now()}`. No streaming in P14 scope.
 - Follow-ups: none.
 
+### P14-T011 — Create analytics endpoints
+
+- Files: apps/api/src/routes/analytics.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/analytics/kpi (win/loss/pnl/avgR), GET /api/analytics/equity-curve (cumulative PnL over time), GET /api/analytics/setup-edge (win-rate per setup_tag), GET /api/analytics/regime (win-rate per trend/volatility regime), GET /api/analytics/signal-quality (win-rate per signal).
+- Assumptions: All computations are deterministic from closed journal trades (outcome_status != "open" && realized_pnl != null). No price data fetched from LLM. Regime key is "trend/volatility" string; "unknown" for entries without regime_at_entry.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

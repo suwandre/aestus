@@ -1271,7 +1271,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Research tab can ask ad-hoc questions against system data.
 
-### [ ] P14-T011 - Create analytics endpoints
+### [x] P14-T011 - Create analytics endpoints
 
 - Agent action: Implement KPI, equity/R curve, setup edge, regime breakdown, signal quality endpoints.
 
