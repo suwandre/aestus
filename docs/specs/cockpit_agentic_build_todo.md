@@ -1265,7 +1265,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Journal tab can record and update trades/outcomes.
 
-### [ ] P14-T010 - Create research endpoint
+### [x] P14-T010 - Create research endpoint
 
 - Agent action: Implement submit question endpoint that creates research job and returns/streams answer status.
 

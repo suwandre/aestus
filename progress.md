@@ -1776,6 +1776,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Tags route registered before /:id to avoid param capture. Trade id is `trade-${Date.now()}` in fixture mode. Outcome patch uses Record<string,unknown> for exactOptionalPropertyTypes compliance.
 - Follow-ups: none.
 
+### P14-T010 — Create research endpoint
+
+- Files: apps/api/src/routes/research.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: POST /api/research (submit question → 202), GET /api/research/:id (poll), GET /api/research (list recent, limit 100).
+- Assumptions: Fixture mode immediately resolves job to done status with a stub answer string so the Research tab can render without a live LLM. Research job id is `research-${Date.now()}`. No streaming in P14 scope.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)
