@@ -1804,6 +1804,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Watchlist/alert/model-routing/notification PUTs are upsert semantics. Feed toggle is PATCH. Layout PUT is a single key-value upsert that returns the full layout array.
 - Follow-ups: none.
 
+### P14-T014 — Add OpenAPI generation
+
+- Files: apps/api/src/openapi.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. GET /openapi.json serves a hardcoded OpenAPI 3.1 spec covering all 40+ paths across all route groups. Bearer auth defined in components.securitySchemes; public endpoints (health, metrics, openapi.json) have `security: []` override.
+- Assumptions: Spec is handcrafted (not auto-generated from Zod schemas) because P14 has no codegen tooling. The spec is a contract snapshot — it will drift unless kept updated manually. Auto-generation can be added in a later phase if needed.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

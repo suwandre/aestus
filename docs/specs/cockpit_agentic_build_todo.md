@@ -1289,7 +1289,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Settings tab can persist single-user preferences.
 
-### [ ] P14-T014 - Add OpenAPI generation
+### [x] P14-T014 - Add OpenAPI generation
 
 - Agent action: Generate OpenAPI or equivalent typed client docs from route definitions.
 
