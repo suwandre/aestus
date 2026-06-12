@@ -1733,3 +1733,10 @@ Independent zero-trust review. Verified all 14 [x] tasks against actual repo fil
 - P13-T014: `docs/llm_boundaries.md` exists; covers all five required topics (§1 narrative-only, §2 deterministic numbers, §3 no execution, §4 cost controls, §5 data freshness warnings) plus code-pointer table and "what future agents MUST NOT do" list. PASS.
 
 No [!] tasks in P13. No failures.
+
+### P14-T001 — Create API app skeleton
+
+- Files: apps/api/src/config.ts (new), apps/api/src/health.ts (new), apps/api/src/router.ts (new), apps/api/src/index.ts (replaced placeholder), apps/api/package.json (+@types/bun +zod), apps/api/tsconfig.json (+types:bun, include test/scripts)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass / 1 skip (migrate.smoke skipped — no DB); prettier clean. Health response validates against SystemHealth contract. Server wires FixtureStore + all route groups; SIGINT/SIGTERM trigger graceful stop.
+- Assumptions: Single Bun.serve() handles all routes (health/metrics/openapi public; all /api/* gated behind bearer-token auth). import.meta.dir used to derive repoRoot so fixture paths resolve on any OS without URL-encoding issues. @types/bun added (mirrors llm service pattern). test: "bun test" (not --pass-with-no-tests) because P14 adds real tests.
+- Follow-ups: T002–T015 build on this skeleton.

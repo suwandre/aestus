@@ -1211,7 +1211,7 @@ Goal: Generate concise, grounded briefings from stored context packets while tra
 
 Goal: Expose typed HTTP endpoints for the frontend while keeping the system simple, private, and self-hosted.
 
-### [ ] P14-T001 - Create API app skeleton
+### [x] P14-T001 - Create API app skeleton
 
 - Agent action: Build Bun/TypeScript API server with config, logging, health endpoint, typed routes, graceful shutdown.
 

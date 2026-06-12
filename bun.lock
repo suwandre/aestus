@@ -16,8 +16,10 @@
       "dependencies": {
         "@aestus/config": "workspace:*",
         "@aestus/contracts": "workspace:*",
+        "zod": "^3.23.0",
       },
       "devDependencies": {
+        "@types/bun": "^1.1.0",
         "typescript": "^5.5.0",
       },
     },
