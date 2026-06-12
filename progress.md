@@ -1748,6 +1748,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Market candles served from fixtures/market/candles.json; venue quotes from fixtures/market/venue_quotes.json. Timeframe default "1h", limit capped at 1000.
 - Follow-ups: none.
 
+### P14-T006 — Create anomaly endpoints
+
+- Files: apps/api/src/routes/anomalies.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/anomalies (filterable by status/asset/limit), GET /api/anomalies/:id, PATCH /api/anomalies/:id/status (updates in-memory state), GET /api/anomalies/:id/context (resolves context_refs to context packets).
+- Assumptions: Status update is immediate in-memory; no NATS event published (P14 scope only). Context refs that don't match a known context packet id are included as raw strings alongside resolved packets.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

@@ -1241,7 +1241,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Markets and Cockpit tabs can query required market data.
 
-### [ ] P14-T006 - Create anomaly endpoints
+### [x] P14-T006 - Create anomaly endpoints
 
 - Agent action: Implement list anomalies, get anomaly detail, update status, get context refs.
 

@@ -17,9 +17,9 @@ Both tiers go behind the §182 provider-agnostic abstraction — model strings a
 swappable in one line. Confirm exact `:cloud` model tags against the Ollama Cloud catalog
 when P13 is implemented (the names below are the intended choices, not verified tags).
 
-| Tier                 | Spec | Use                                                                  | Model (intended)                        |
-| -------------------- | ---- | -------------------------------------------------------------------- | --------------------------------------- |
-| Top-tier reasoning   | §183 | Briefing synthesis, trade-thesis generation, NL chat                 | **Kimi K2.6** (`kimi-k2.6:cloud`)       |
+| Tier                 | Spec | Use                                                                  | Model (intended)                    |
+| -------------------- | ---- | -------------------------------------------------------------------- | ----------------------------------- |
+| Top-tier reasoning   | §183 | Briefing synthesis, trade-thesis generation, NL chat                 | **Kimi K2.6** (`kimi-k2.6:cloud`)   |
 | High-volume / narrow | §184 | News entity extraction, relevance scoring, sentiment, classification | **MiniMax M3** (`minimax-m3:cloud`) |
 
 Rationale: K2.6 leads the candidates (Kimi K2.6 / MiniMax M3 / GLM 5.1) on long-context
