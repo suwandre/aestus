@@ -1755,6 +1755,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Status update is immediate in-memory; no NATS event published (P14 scope only). Context refs that don't match a known context packet id are included as raw strings alongside resolved packets.
 - Follow-ups: none.
 
+### P14-T007 — Create briefing endpoints
+
+- Files: apps/api/src/routes/briefings.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/briefings (filterable by asset/stance/limit), GET /api/briefings/:id, POST /api/briefings/:id/regenerate (202 fixture stub), GET /api/briefings/:id/context-packet.
+- Assumptions: Asset filter resolves through context packets (primary_asset field). Regenerate in fixture mode returns existing briefing + regenerating:true flag at 202; no NATS publish in P14 scope.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

@@ -1247,7 +1247,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Alerts tab can list, open, snooze, dismiss, and resolve anomalies.
 
-### [ ] P14-T007 - Create briefing endpoints
+### [x] P14-T007 - Create briefing endpoints
 
 - Agent action: Implement list briefings, get briefing detail, regenerate briefing, link to context packet.
 
