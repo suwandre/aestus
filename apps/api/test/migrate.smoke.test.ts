@@ -75,7 +75,11 @@ function chParts(): { endpoint: string; user?: string; password?: string } {
   const password = decodeURIComponent(u.password) || undefined;
   u.username = "";
   u.password = "";
-  return { endpoint: u.toString().replace(/\/$/, ""), user, password };
+  return {
+    endpoint: u.toString().replace(/\/$/, ""),
+    ...(user !== undefined ? { user } : {}),
+    ...(password !== undefined ? { password } : {}),
+  };
 }
 
 async function chQuery(statement: string, db?: string): Promise<string> {

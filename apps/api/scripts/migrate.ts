@@ -99,7 +99,11 @@ function parseClickhouseUrl(raw: string): { endpoint: string; user?: string; pas
   const password = decodeURIComponent(url.password) || undefined;
   url.username = "";
   url.password = "";
-  return { endpoint: url.toString().replace(/\/$/, ""), user, password };
+  return {
+    endpoint: url.toString().replace(/\/$/, ""),
+    ...(user !== undefined ? { user } : {}),
+    ...(password !== undefined ? { password } : {}),
+  };
 }
 
 async function clickhouseQuery(statement: string): Promise<string> {

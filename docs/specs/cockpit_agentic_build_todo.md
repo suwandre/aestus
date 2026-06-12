@@ -1295,7 +1295,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Frontend and future agents can inspect API contracts.
 
-### [ ] P14-T015 - Add API integration tests
+### [x] P14-T015 - Add API integration tests
 
 - Agent action: Test every MVP endpoint using seeded local database/fixture data.
 

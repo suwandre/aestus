@@ -1811,6 +1811,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Spec is handcrafted (not auto-generated from Zod schemas) because P14 has no codegen tooling. The spec is a contract snapshot — it will drift unless kept updated manually. Auto-generation can be added in a later phase if needed.
 - Follow-ups: none.
 
+### P14-T015 — Add API integration tests
+
+- Files: apps/api/test/api.t015.test.ts (new, committed with T004 commit); apps/api/scripts/migrate.ts + apps/api/test/migrate.smoke.test.ts (pre-existing exactOptionalPropertyTypes bug fix, carried here)
+- Checks: `bun test` 57 pass, 1 skip (migrate.smoke when no DB). Tests cover all route groups: health, assets, watchlists, market, anomalies, briefings, decisions, journal, research, analytics, data, settings. No network — Router + FixtureStore instantiated directly.
+- Assumptions: Tests were authored early (T004) to drive development of T005–T013. migrate.ts / migrate.smoke.test.ts were pre-existing files with latent type errors surfaced by tsconfig changes in T001; fixes carried to this commit as no earlier commit owned them.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)
