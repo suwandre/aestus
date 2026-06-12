@@ -1838,3 +1838,23 @@ No [!] tasks in P13. No failures.
 - Checks: `bun run typecheck` clean; `bun test` 57 pass. Tests confirm: no token → all pass; token set + no header → 401; token set + correct header → pass; /health and /metrics bypass auth unconditionally.
 - Assumptions: `API_TOKEN` env var is the bearer token. Unset = open dev mode (fixture-first, no secrets). /health and /metrics are always public (needed for infra health checks). /openapi.json is also public (agents need it without auth).
 - Follow-ups: none.
+
+### P14 REVIEW — PASS
+
+Verified independently against the repo. All 15 tasks marked [x] satisfy their "Done when" criteria.
+
+- P14-T001: `/health` returns SystemHealth with dependency list (database/event-bus); graceful shutdown wired; typecheck clean.
+- P14-T002: `respond.ts` calls `schema.parse(data)` unconditionally — ZodError on non-conformant shape; all route handlers use `respond`/`respondList`/`Schema.parse`.
+- P14-T003: `checkAuth` blocks requests when API_TOKEN set; /health and /metrics in PUBLIC_PATHS; /openapi.json handled before auth gate in index.ts (effectively public); 5 auth tests pass.
+- P14-T004: GET/assets, GET/assets/:id, GET/watchlists, PATCH/watchlists/:id/members, GET/watchlists/:id/market-states all implemented; fixture data loads; tests pass.
+- P14-T005: Latest snapshot, venue quotes, feature stack, correlations, OHLCV candles — all 5 endpoints present and tested.
+- P14-T006: List/get/status-patch/context-refs endpoints present; status update is in-memory; tests confirm snooze/ack via PATCH.
+- P14-T007: List/get/regenerate (202)/context-packet endpoints present and tested.
+- P14-T008: POST create, PATCH update, GET list (filterable by briefing_id/asset_id/date); decision_type enum enforced by Zod; tests pass.
+- P14-T009: Tags (registered before /:id), list, get, create, outcome-patch — all 5 endpoints; tests pass.
+- P14-T010: POST submit (202, stub answer), GET poll, GET list — fixture mode resolves immediately; tests pass.
+- P14-T011: KPI, equity-curve, setup-edge, regime, signal-quality — all from closed journal trades; no LLM calls; tests pass.
+- P14-T012: Sources health, feed list, feed detail, data explorer — all 4 endpoints; config passed as 3rd arg for db/NATS mode reporting; tests pass.
+- P14-T013: Watchlist/alerts/model-routing/feeds/notifications/layout — all GET+PUT/PATCH pairs; Zod validation on all mutation bodies; tests pass.
+- P14-T014: GET /openapi.json serves OpenAPI 3.1 spec; 40+ paths; bearerAuth in securitySchemes; public endpoints have `security: []`; served before auth gate.
+- P14-T015: `bun test` → 57 pass, 1 skip (migrate.smoke, DB absent — expected), 0 fail; no live provider keys required; FixtureStore+Router used directly.
