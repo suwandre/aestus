@@ -1762,6 +1762,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Asset filter resolves through context packets (primary_asset field). Regenerate in fixture mode returns existing briefing + regenerating:true flag at 202; no NATS publish in P14 scope.
 - Follow-ups: none.
 
+### P14-T008 — Create decision endpoints
+
+- Files: apps/api/src/routes/decisions.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: POST /api/decisions (log decision with schema validation), PATCH /api/decisions/:id (update rationale/tags/snooze_until), GET /api/decisions (filterable by briefing_id/asset_id/date).
+- Assumptions: Decision id generated as `dec-${Date.now()}` (fixture mode; Postgres will use uuid). Asset filter joins through briefings→context packets. Patch uses Record<string,unknown> to satisfy exactOptionalPropertyTypes.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

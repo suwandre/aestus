@@ -1253,7 +1253,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Briefings tab can display stored briefings and details.
 
-### [ ] P14-T008 - Create decision endpoints
+### [x] P14-T008 - Create decision endpoints
 
 - Agent action: Implement create decision, update decision, list decisions by briefing/asset/date.
 
