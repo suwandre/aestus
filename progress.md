@@ -1740,3 +1740,17 @@ No [!] tasks in P13. No failures.
 - Checks: `bun run typecheck` clean; `bun test` 57 pass / 1 skip (migrate.smoke skipped — no DB); prettier clean. Health response validates against SystemHealth contract. Server wires FixtureStore + all route groups; SIGINT/SIGTERM trigger graceful stop.
 - Assumptions: Single Bun.serve() handles all routes (health/metrics/openapi public; all /api/* gated behind bearer-token auth). import.meta.dir used to derive repoRoot so fixture paths resolve on any OS without URL-encoding issues. @types/bun added (mirrors llm service pattern). test: "bun test" (not --pass-with-no-tests) because P14 adds real tests.
 - Follow-ups: T002–T015 build on this skeleton.
+
+### P14-T002 — Add API contract validation
+
+- Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. `respond()` calls `schema.parse(data)` before serializing — any route returning a non-conformant shape throws ZodError, failing the test immediately.
+- Assumptions: Validation is always active (not toggled by NODE_ENV) — the "fails tests during development" requirement means the throw path is the correct behavior. All route handlers use `respondList` or `Response.json(Schema.parse(x))` for typed responses.
+- Follow-ups: none.
+
+### P14-T003 — Implement simple single-user auth
+
+- Files: apps/api/src/auth.ts (new — `checkAuth`), apps/api/src/index.ts (wires auth gate before router)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Tests confirm: no token → all pass; token set + no header → 401; token set + correct header → pass; /health and /metrics bypass auth unconditionally.
+- Assumptions: `API_TOKEN` env var is the bearer token. Unset = open dev mode (fixture-first, no secrets). /health and /metrics are always public (needed for infra health checks). /openapi.json is also public (agents need it without auth).
+- Follow-ups: none.

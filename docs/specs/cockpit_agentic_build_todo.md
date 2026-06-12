@@ -1217,13 +1217,13 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: API starts locally and reports dependency health.
 
-### [ ] P14-T002 - Add API contract validation
+### [x] P14-T002 - Add API contract validation
 
 - Agent action: Use shared contracts to validate request/response payloads at route boundaries.
 
 - Done when: Invalid API responses fail tests during development.
 
-### [ ] P14-T003 - Implement simple single-user auth
+### [x] P14-T003 - Implement simple single-user auth
 
 - Agent action: Add session/token auth suitable for self-hosted single-user deployment; do not add multi-tenant accounts.
 
