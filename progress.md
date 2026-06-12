@@ -1797,6 +1797,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Data route handler receives `config` as 3rd arg so it can report database/NATS mode. Feed "status" is "ok" when enabled, "disabled" otherwise; no live last_event in fixture mode.
 - Follow-ups: none.
 
+### P14-T013 — Create settings endpoints
+
+- Files: apps/api/src/routes/settings.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET/PUT /api/settings/watchlist/:id, GET/PUT /api/settings/alerts/:id, GET/PUT /api/settings/model-routing/:task_kind, GET/PATCH /api/settings/feeds/:id, GET/PUT /api/settings/notifications/:id, GET/PUT /api/settings/layout. All PUT bodies validated via Zod.
+- Assumptions: Watchlist/alert/model-routing/notification PUTs are upsert semantics. Feed toggle is PATCH. Layout PUT is a single key-value upsert that returns the full layout array.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

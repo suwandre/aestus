@@ -1283,7 +1283,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Data tab can display ingestion and system health.
 
-### [ ] P14-T013 - Create settings endpoints
+### [x] P14-T013 - Create settings endpoints
 
 - Agent action: Implement watchlist settings, alert rules, model routing, notifications, layout preferences.
 
