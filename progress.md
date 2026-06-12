@@ -1748,6 +1748,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Validation is always active (not toggled by NODE_ENV) — the "fails tests during development" requirement means the throw path is the correct behavior. All route handlers use `respondList` or `Response.json(Schema.parse(x))` for typed responses.
 - Follow-ups: none.
 
+### P14-T004 — Create asset/watchlist endpoints
+
+- Files: apps/api/src/store.ts (new — FixtureStore loads all fixture JSONs), apps/api/src/routes/assets.ts (new), apps/api/test/api.t015.test.ts (T004 tests)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/assets (filterable by asset_class), GET /api/assets/:id, GET /api/watchlists, PATCH /api/watchlists/:id/members, GET /api/watchlists/:id/market-states (combines assets + feature snapshots). Tests confirm watchlist can load real/fixture data.
+- Assumptions: FixtureStore loads from `repoRoot/fixtures/` at startup; mutations are in-memory only (lost on restart) which is correct for fixture-first mode. Watchlist "market-states" combines AssetIdentity + FeatureSnapshot for each member.
+- Follow-ups: none.
+
 ### P14-T003 — Implement simple single-user auth
 
 - Files: apps/api/src/auth.ts (new — `checkAuth`), apps/api/src/index.ts (wires auth gate before router)

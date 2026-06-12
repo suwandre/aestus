@@ -1229,7 +1229,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Unauthenticated requests are blocked except health/public static as intended.
 
-### [ ] P14-T004 - Create asset/watchlist endpoints
+### [x] P14-T004 - Create asset/watchlist endpoints
 
 - Agent action: Implement list assets, get asset, list watchlists, update watchlist members, get watchlist market states.
 
