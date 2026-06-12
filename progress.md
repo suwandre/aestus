@@ -1790,6 +1790,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: All computations are deterministic from closed journal trades (outcome_status != "open" && realized_pnl != null). No price data fetched from LLM. Regime key is "trend/volatility" string; "unknown" for entries without regime_at_entry.
 - Follow-ups: none.
 
+### P14-T012 — Create data health endpoints
+
+- Files: apps/api/src/routes/data.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/data/health/sources (overall status + database/NATS mode), GET /api/data/health/feeds (list), GET /api/data/health/feeds/:id (detail), GET /api/data/explorer (venue quotes + candle count, filterable by asset).
+- Assumptions: Data route handler receives `config` as 3rd arg so it can report database/NATS mode. Feed "status" is "ok" when enabled, "disabled" otherwise; no live last_event in fixture mode.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)

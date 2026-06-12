@@ -1277,7 +1277,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Analytics tab can render MVP metrics from journal data.
 
-### [ ] P14-T012 - Create data health endpoints
+### [x] P14-T012 - Create data health endpoints
 
 - Agent action: Implement source health, feed list, feed detail, normalized data explorer endpoints.
 
