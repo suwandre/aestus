@@ -1259,7 +1259,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 - Done when: Decision modal can log act/skip/snooze/dismiss rationale.
 
-### [ ] P14-T009 - Create journal endpoints
+### [x] P14-T009 - Create journal endpoints
 
 - Agent action: Implement journal list, detail, create manual entry, update outcome, tag management.
 

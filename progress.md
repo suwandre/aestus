@@ -1769,6 +1769,13 @@ No [!] tasks in P13. No failures.
 - Assumptions: Decision id generated as `dec-${Date.now()}` (fixture mode; Postgres will use uuid). Asset filter joins through briefings→context packets. Patch uses Record<string,unknown> to satisfy exactOptionalPropertyTypes.
 - Follow-ups: none.
 
+### P14-T009 — Create journal endpoints
+
+- Files: apps/api/src/routes/journal.ts (new)
+- Checks: `bun run typecheck` clean; `bun test` 57 pass. Routes: GET /api/journal/tags (deduplicated from setup_tags), GET /api/journal (filterable by asset/outcome_status/limit), GET /api/journal/:id, POST /api/journal (create manual entry), PATCH /api/journal/:id/outcome.
+- Assumptions: Tags route registered before /:id to avoid param capture. Trade id is `trade-${Date.now()}` in fixture mode. Outcome patch uses Record<string,unknown> for exactOptionalPropertyTypes compliance.
+- Follow-ups: none.
+
 ### P14-T002 — Add API contract validation
 
 - Files: apps/api/src/respond.ts (new — `respond`, `respondList`, `respondError`)
