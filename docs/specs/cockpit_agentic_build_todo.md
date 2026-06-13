@@ -1335,7 +1335,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: UI can show connection status accurately.
 
-### [ ] P15-T006 - Implement event sequence handling
+### [x] P15-T006 - Implement event sequence handling
 
 - Agent action: Include sequence numbers and timestamps so frontend can drop stale/out-of-order updates.
 

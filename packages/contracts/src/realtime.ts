@@ -11,6 +11,21 @@
  */
 import { z } from "zod/v4";
 
+/**
+ * Common envelope stamped on every event by RealtimeManager.
+ *
+ * Sequence semantics (P15-T006):
+ *   - `seq` is a global monotonic counter owned by the RealtimeManager instance.
+ *   - It resets to 0 on server restart (a new `connected` event marks the reset).
+ *   - On reconnect, the client compares the new `connected.seq` against its last
+ *     seen seq. Any gap means missed events; the client must re-fetch stale data
+ *     via the relevant REST endpoint rather than waiting for the next push.
+ *   - On receipt of any data event, a client can skip processing if the event's
+ *     `ts` is older than its current cached value for that asset (stale drop).
+ *   - Duplicate detection: store the highest seen `seq`; discard events with
+ *     seq ≤ that value (can occur if the client processes a buffered frame after
+ *     receiving a newer one on reconnect).
+ */
 const EventBase = z.object({
   /** Global monotonic sequence number; resets to 0 on server restart. */
   seq: z.number().int().nonnegative(),

@@ -1925,3 +1925,11 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. All four lifecycle events: connected (on subscribe), heartbeat (timer), reconnect_required (graceful stop hook), degraded_mode (exposed for health monitor).
 - Assumptions: notifyDegradedMode is exposed for external callers (future NATS health monitor); no automatic trigger in fixture mode. reconnect_required is called with reason=server stopping in the SIGINT/SIGTERM handler.
 - Follow-ups: none.
+
+
+### P15-T006 — Implement event sequence handling
+
+- Files: packages/contracts/src/realtime.ts (EventBase comment block documenting seq/ts semantics)
+- Checks: typecheck clean (contracts + api); bun test 57 pass. Seq/ts were already on every event from T002; T006 adds the contract-level documentation of gap detection, stale-drop, and duplicate-detection semantics.
+- Assumptions: Seq is global monotonic to the RealtimeManager instance; resets on restart (new connected event marks the reset boundary). Reconnecting client compares new connected.seq against its last seen seq to detect missed events and re-fetches via REST. Clients can also use ts for stale-drop (older ts than cached value for same asset).
+- Follow-ups: none.
