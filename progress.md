@@ -1889,3 +1889,10 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - P14-T013: GET+PUT /api/settings/watchlist/:id, GET+PUT /api/settings/alerts/:id, GET+PUT /api/settings/model-routing/:task_kind, GET+PATCH /api/settings/feeds/:id, GET+PUT /api/settings/notifications/:id, GET+PUT /api/settings/layout — all pairs implemented; Zod validation on every mutation body; tests persist preferences. PASS.
 - P14-T014: `openapi.ts` returns OpenAPI 3.1 spec (40+ paths, all tab groups, bearerAuth scheme, public endpoints with `security:[]`); served at GET /openapi.json before auth gate; test confirms all major path groups present. PASS.
 - P14-T015: `bun test apps/api/test/api.t015.test.ts` → 57 pass, 0 fail, no live provider keys required; FixtureStore+Router used directly (no network). PASS.
+
+### P15-T001 — Choose realtime transport
+
+- Files: docs/adr/ADR-002-realtime-transport.md (new), docs/adr/README.md (index updated)
+- Checks: no code changes; ADR is documentation only.
+- Assumptions: SSE chosen over WebSocket — unidirectional push is sufficient; simpler proxy config; browser EventSource provides built-in reconnect. Fallback: heartbeat keeps connection distinguishable from broken; connected event carries seq on reconnect.
+- Follow-ups: none.

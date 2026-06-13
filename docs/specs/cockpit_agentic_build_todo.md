@@ -1305,7 +1305,7 @@ Goal: Expose typed HTTP endpoints for the frontend while keeping the system simp
 
 Goal: Make the frontend feel live with controlled, typed streaming updates rather than random polling.
 
-### [ ] P15-T001 - Choose realtime transport
+### [x] P15-T001 - Choose realtime transport
 
 - Agent action: Decide and document WebSocket vs SSE for MVP; prioritize simplicity and reliability for single-user app.
 
