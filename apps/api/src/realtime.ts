@@ -151,6 +151,48 @@ export class RealtimeManager {
     }
   }
 
+  /**
+   * Notify all connected clients that the server is about to restart.
+   * Call this in the shutdown handler before stopping the server, so clients
+   * can reconnect cleanly rather than retrying on a closed connection.
+   */
+  notifyReconnectRequired(reason?: string): void {
+    const event: ReconnectRequiredEvent = {
+      type: "reconnect_required",
+      seq: this.nextSeq(),
+      ts: this.now(),
+      ...(reason !== undefined && { reason }),
+    };
+    for (const sub of this.subs) {
+      try {
+        sub.sink(event);
+      } catch {
+        // Sink closed — will be cleaned up on cancel
+      }
+    }
+  }
+
+  /**
+   * Notify all connected clients that one or more data sources have degraded.
+   * Also broadcasts a `degraded_mode` UI event so the status cluster can show
+   * the correct state without polling /health.
+   */
+  notifyDegradedMode(sources: string[]): void {
+    const event: DegradedModeEvent = {
+      type: "degraded_mode",
+      seq: this.nextSeq(),
+      ts: this.now(),
+      sources,
+    };
+    for (const sub of this.subs) {
+      try {
+        sub.sink(event);
+      } catch {
+        // Sink closed — will be cleaned up on cancel
+      }
+    }
+  }
+
   /** Number of currently active subscriptions. */
   get connectionCount(): number {
     return this.subs.size;

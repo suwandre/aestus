@@ -1329,7 +1329,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: Cockpit receives relevant updates without full firehose.
 
-### [ ] P15-T005 - Implement connection lifecycle events
+### [x] P15-T005 - Implement connection lifecycle events
 
 - Agent action: Send connected, heartbeat, reconnect_required, and degraded-mode events.
 

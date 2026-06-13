@@ -102,6 +102,7 @@ console.log(
 // Graceful shutdown
 function shutdown() {
   console.log("[api] shutting down");
+  realtime.notifyReconnectRequired("server shutdown");
   realtime.stop();
   server.stop(true);
   process.exit(0);

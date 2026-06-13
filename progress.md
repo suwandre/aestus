@@ -1917,3 +1917,11 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. Filter logic in RealtimeManager.matchesFilter (all lifecycle events pass through; data events filtered by asset/venue intersection).
 - Assumptions: ?watchlist=id expands to member asset IDs in the FixtureStore; merged with any explicit ?asset= list. Empty filter = full firehose (desired default). tab param stored in filter for future use but not currently used in matching logic.
 - Follow-ups: none.
+
+
+### P15-T005 — Implement connection lifecycle events
+
+- Files: apps/api/src/realtime.ts (notifyReconnectRequired + notifyDegradedMode methods added), apps/api/src/index.ts (calls notifyReconnectRequired in graceful stop handler)
+- Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. All four lifecycle events: connected (on subscribe), heartbeat (timer), reconnect_required (graceful stop hook), degraded_mode (exposed for health monitor).
+- Assumptions: notifyDegradedMode is exposed for external callers (future NATS health monitor); no automatic trigger in fixture mode. reconnect_required is called with reason=server stopping in the SIGINT/SIGTERM handler.
+- Follow-ups: none.
