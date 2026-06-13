@@ -1910,3 +1910,10 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. Five mapper functions: mapPriceTick (NormalizedMarketEvent→market_state_updated), mapFeatureSnapshot (FeatureSnapshot→feature_updated), mapAnomalyEvent (AnomalyEvent→anomaly_created), mapBriefing (Briefing→briefing_created), mapDependencyHealth (DependencyHealth[]→source_health_changed[]).
 - Assumptions: mapBriefing takes assetId as separate param because the briefing's context_packet_id is the join key (not a direct field on Briefing). mapDependencyHealth returns only non-ok entries; callers broadcast each. The mapper layer is the decoupling point — NATS consumers will call these functions, not emit UIEvent types directly.
 - Follow-ups: none.
+
+### P15-T004 — Add subscription filtering
+
+- Files: apps/api/src/routes/realtime.ts (updated — adds watchlist/venue filter parsing), apps/api/src/index.ts (passes store to registerRealtimeRoutes)
+- Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. Filter logic in RealtimeManager.matchesFilter (all lifecycle events pass through; data events filtered by asset/venue intersection).
+- Assumptions: ?watchlist=id expands to member asset IDs in the FixtureStore; merged with any explicit ?asset= list. Empty filter = full firehose (desired default). tab param stored in filter for future use but not currently used in matching logic.
+- Follow-ups: none.

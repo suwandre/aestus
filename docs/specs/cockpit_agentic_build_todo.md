@@ -1323,7 +1323,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: Frontend does not need to understand raw backend event bus subjects.
 
-### [ ] P15-T004 - Add subscription filtering
+### [x] P15-T004 - Add subscription filtering
 
 - Agent action: Support filtering by watchlist, asset, venue, and tab to reduce client update volume.
 

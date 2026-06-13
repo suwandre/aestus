@@ -43,7 +43,7 @@ registerResearchRoutes(router, store);
 registerAnalyticsRoutes(router, store);
 registerDataRoutes(router, store, config);
 registerSettingsRoutes(router, store);
-registerRealtimeRoutes(router, realtime, config);
+registerRealtimeRoutes(router, realtime, store, config);
 
 const dependencies = (): DependencyHealth[] => [
   {
