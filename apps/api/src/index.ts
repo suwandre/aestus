@@ -21,6 +21,8 @@ import { registerResearchRoutes } from "./routes/research";
 import { registerAnalyticsRoutes } from "./routes/analytics";
 import { registerDataRoutes } from "./routes/data";
 import { registerSettingsRoutes } from "./routes/settings";
+import { registerRealtimeRoutes } from "./routes/realtime";
+import { RealtimeManager } from "./realtime";
 import { FixtureStore } from "./store";
 
 const config = loadConfig();
@@ -28,6 +30,7 @@ const startedAtMs = Date.now();
 const metrics = newMetrics();
 const store = new FixtureStore(config.repoRoot);
 const router = new Router();
+const realtime = new RealtimeManager(config.version);
 
 // Register all routes
 registerAssetRoutes(router, store);
@@ -40,6 +43,7 @@ registerResearchRoutes(router, store);
 registerAnalyticsRoutes(router, store);
 registerDataRoutes(router, store, config);
 registerSettingsRoutes(router, store);
+registerRealtimeRoutes(router, realtime, config);
 
 const dependencies = (): DependencyHealth[] => [
   {
@@ -98,6 +102,7 @@ console.log(
 // Graceful shutdown
 function shutdown() {
   console.log("[api] shutting down");
+  realtime.stop();
   server.stop(true);
   process.exit(0);
 }

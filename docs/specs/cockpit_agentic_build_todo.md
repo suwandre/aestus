@@ -1311,7 +1311,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: ADR records chosen transport and fallback behavior.
 
-### [ ] P15-T002 - Implement realtime server endpoint
+### [x] P15-T002 - Implement realtime server endpoint
 
 - Agent action: Create authenticated realtime endpoint that streams typed UI events.
 
