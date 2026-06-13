@@ -1903,3 +1903,10 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Checks: `bun run typecheck` clean (both contracts + api); `bun test api.t015.test.ts` 57 pass. Endpoint: GET /api/realtime/stream sends `connected` event on connect and `heartbeat` every 30 s.
 - Assumptions: SSE endpoint is registered via existing Router (GET pattern); auth gate in index.ts applies before router.handle() so /api/realtime/stream is already protected. Heartbeat interval is 30 000 ms (configurable in constructor for tests). Sequence counter is global to the manager instance; resets on server restart.
 - Follow-ups: none.
+
+### P15-T003 — Map backend events to UI events
+
+- Files: apps/api/src/event-mapper.ts (new)
+- Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. Five mapper functions: mapPriceTick (NormalizedMarketEvent→market_state_updated), mapFeatureSnapshot (FeatureSnapshot→feature_updated), mapAnomalyEvent (AnomalyEvent→anomaly_created), mapBriefing (Briefing→briefing_created), mapDependencyHealth (DependencyHealth[]→source_health_changed[]).
+- Assumptions: mapBriefing takes assetId as separate param because the briefing's context_packet_id is the join key (not a direct field on Briefing). mapDependencyHealth returns only non-ok entries; callers broadcast each. The mapper layer is the decoupling point — NATS consumers will call these functions, not emit UIEvent types directly.
+- Follow-ups: none.

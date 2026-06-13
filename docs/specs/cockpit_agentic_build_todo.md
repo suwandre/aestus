@@ -1317,7 +1317,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: Client can connect and receive heartbeat messages.
 
-### [ ] P15-T003 - Map backend events to UI events
+### [x] P15-T003 - Map backend events to UI events
 
 - Agent action: Translate NATS events into UI-facing events: market_state_updated, feature_updated, anomaly_created, briefing_created, source_health_changed.
 
