@@ -24,6 +24,7 @@ import { registerSettingsRoutes } from "./routes/settings";
 import { registerRealtimeRoutes } from "./routes/realtime";
 import { RealtimeManager } from "./realtime";
 import { FixtureStore } from "./store";
+import { startFixtureBroadcaster } from "../scripts/broadcast";
 
 const config = loadConfig();
 const startedAtMs = Date.now();
@@ -99,10 +100,17 @@ console.log(
   `[api] listening on :${config.httpPort} (db=${config.databaseUrl ? "postgres" : "fixture"}, auth=${config.apiToken ? "token" : "open"})`,
 );
 
+// Start in-process fixture broadcaster when FIXTURE_BROADCASTER=1
+let stopBroadcaster: (() => void) | undefined;
+if (process.env.FIXTURE_BROADCASTER === "1") {
+  stopBroadcaster = startFixtureBroadcaster(realtime);
+}
+
 // Graceful shutdown
 function shutdown() {
   console.log("[api] shutting down");
-  realtime.notifyReconnectRequired("server shutdown");
+  stopBroadcaster?.();
+  realtime.notifyReconnectRequired("server stopping");
   realtime.stop();
   server.stop(true);
   process.exit(0);

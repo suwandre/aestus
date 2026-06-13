@@ -1341,7 +1341,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: Client state is not corrupted by delayed events.
 
-### [ ] P15-T007 - Add realtime fixture broadcaster
+### [x] P15-T007 - Add realtime fixture broadcaster
 
 - Agent action: Create dev tool to broadcast fixture updates at realistic intervals.
 

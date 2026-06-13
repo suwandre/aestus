@@ -1,5 +1,5 @@
 /**
- * SSE realtime endpoint (P15-T002, filtering P15-T004).
+ * SSE realtime endpoints (P15-T002, filtering P15-T004, broadcaster P15-T007).
  *
  * GET /api/realtime/stream — authenticated SSE stream of UI events.
  *
@@ -17,10 +17,14 @@
  *   - Lifecycle events (connected, heartbeat, reconnect_required, degraded_mode)
  *     always pass through regardless of filter.
  *
+ * POST /api/realtime/broadcast — dev-only endpoint (requires FIXTURE_BROADCASTER=1).
+ * Accepts a BroadcastPayload JSON body and pushes it to all subscribers.
+ * Used by the standalone broadcast.ts script to inject fixture events.
+ *
  * The endpoint sits behind the same auth gate as the REST API.
  */
 import type { ApiConfig } from "../config";
-import type { SubscriptionFilter } from "../realtime";
+import type { BroadcastPayload, SubscriptionFilter } from "../realtime";
 import type { RealtimeManager } from "../realtime";
 import type { FixtureStore } from "../store";
 import type { Router } from "../router";
@@ -34,6 +38,21 @@ export function registerRealtimeRoutes(
   router.get("/api/realtime/stream", (_req, _params, url) => {
     return handleSse(url, manager, store);
   });
+
+  // Dev-only broadcast endpoint: POST /api/realtime/broadcast
+  // Only registered when FIXTURE_BROADCASTER=1. Accepts a BroadcastPayload JSON
+  // body and delivers it to all matching subscribers via the RealtimeManager.
+  if (process.env.FIXTURE_BROADCASTER === "1") {
+    router.post("/api/realtime/broadcast", async (req) => {
+      try {
+        const payload = (await req.json()) as BroadcastPayload;
+        manager.broadcast(payload);
+        return Response.json({ ok: true });
+      } catch {
+        return Response.json({ error: "invalid payload" }, { status: 400 });
+      }
+    });
+  }
 }
 
 function handleSse(url: URL, manager: RealtimeManager, store: FixtureStore): Response {
