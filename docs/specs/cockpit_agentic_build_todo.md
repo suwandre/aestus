@@ -1347,7 +1347,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 - Done when: Frontend can be developed with live-feeling fake data.
 
-### [ ] P15-T008 - Add realtime tests
+### [x] P15-T008 - Add realtime tests
 
 - Agent action: Test auth, heartbeat, event mapping, filtering, and disconnect cleanup.
 

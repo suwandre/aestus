@@ -1941,3 +1941,11 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Checks: typecheck clean; bun test 57 pass. Two modes: in-process (startFixtureBroadcaster(manager)) and standalone HTTP (bun run broadcast.ts targeting a running server). Round-robin rotation through fixture snapshots/quotes/anomalies/briefings at configurable interval (default 3 s).
 - Assumptions: FIXTURE_BROADCASTER=1 env var enables both the POST /api/realtime/broadcast endpoint and the in-process broadcaster. Only 1 activation mode used at a time. HTTP mode requires a running server; in-process mode is the dev-native path (bun run --hot src/index.ts with FIXTURE_BROADCASTER=1).
 - Follow-ups: none.
+
+
+### P15-T008 — Add realtime tests
+
+- Files: apps/api/test/realtime.test.ts (new — 25 tests)
+- Checks: typecheck clean; bun test (all) 82 pass, 1 skip (DB-absent), 0 fail. Coverage: auth (401 when token set + header absent; SSE stream when open mode), heartbeat (timer fires, min 2 heartbeats in 120 ms), event mapper (all 5 mappers), filtering (asset/venue/anomaly-assets-list/lifecycle-passthrough/empty-filter), lifecycle (connected on subscribe; reconnect_required; degraded_mode), disconnect (unsub removes subscriber; connectionCount tracks), sequence (seq monotonically increases), broadcaster (nextBatch types; anomaly every 5th; startFixtureBroadcaster pushes events).
+- Assumptions: RealtimeManager constructed with heartbeatIntervalMs=0 to disable timer in most tests (tested separately with 50 ms). Bun test runner handles async timers via real setTimeout (not faked). import.meta.main guard in broadcast.ts prevents auto-run when imported in tests.
+- Follow-ups: none.
