@@ -10,6 +10,52 @@ import {
 } from "@/components/cockpit/CorrelationMatrixPanel";
 import { OrderFlowPanel, type OrderFlowData } from "@/components/cockpit/OrderFlowPanel";
 import { NewsPanel, type NewsData } from "@/components/cockpit/NewsPanel";
+import { EventsPanel, type EventsData } from "@/components/cockpit/EventsPanel";
+
+const EVENTS: EventsData = {
+  events: [
+    {
+      id: "e1",
+      timeToEvent: "1h 35m",
+      name: "CPI m/m",
+      currency: "USD",
+      clockTime: "14:30",
+      importance: "high",
+    },
+    {
+      id: "e2",
+      timeToEvent: "1d 3h",
+      name: "PPI m/m",
+      currency: "USD",
+      clockTime: "16:00",
+      importance: "high",
+    },
+    {
+      id: "e3",
+      timeToEvent: "2d 1h",
+      name: "Retail Sales m/m",
+      currency: "USD",
+      clockTime: "14:30",
+      importance: "medium",
+    },
+    {
+      id: "e4",
+      timeToEvent: "3d 5h",
+      name: "FOMC Meeting Minutes",
+      currency: "USD",
+      clockTime: "20:00",
+      importance: "high",
+    },
+    {
+      id: "e5",
+      timeToEvent: "5d 2h",
+      name: "Initial Jobless Claims",
+      currency: "USD",
+      clockTime: "14:30",
+      importance: "medium",
+    },
+  ],
+};
 
 const NEWS: NewsData = {
   items: [
@@ -273,9 +319,9 @@ export default function CockpitPage() {
       </div>
 
       {/* Upcoming Events — T009 */}
-      <Panel title="Upcoming Events" style={{ gridArea: "events" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T009 —</div>
-      </Panel>
+      <div style={{ gridArea: "events" }}>
+        <EventsPanel data={EVENTS} />
+      </div>
 
       {/* On-Chain Insights — T010 */}
       <Panel title="On-Chain Insights" style={{ gridArea: "onchain" }}>

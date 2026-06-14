@@ -1511,7 +1511,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Panel filters to focused asset and supports all/news/on-chain/social tabs.
 
-### [ ] P17-T009 - Build Upcoming Events panel
+### [x] P17-T009 - Build Upcoming Events panel
 
 - Agent action: Render macro events with time-to-event, currency, importance, consensus/actual placeholders.
 

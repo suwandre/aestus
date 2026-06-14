@@ -2151,3 +2151,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: Tab filters — News tab shows macro/inst/reg/deriv; On-Chain tab shows onchain; Social tab shows social type. Asset filter: items with `assets` array filter to focusedAssetId base token; items with no assets array shown in all focused contexts (global news). Tabs use button elements styled to match reference. Social badge color uses --orange (no CSS token for social in reference; closest available).
 - Follow-ups: none.
+
+### P17-T009 — Build Upcoming Events Panel
+- Files: apps/web/src/components/cockpit/EventsPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (EVENTS fixture + panel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: High importance rows get subtle rgba(227,93,91,.03) background for prominence per "visually prominent" requirement; dots use 2 filled for high, 1 filled + 1 muted (var(--border)) for medium, both muted for low. Low importance type included in interface for completeness even though no fixture item uses it.
+- Follow-ups: none.
