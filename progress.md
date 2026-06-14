@@ -2012,3 +2012,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client"; notification bell with red dot when hasNotification=true; settings gear; brand-gradient avatar with "S" initials. Hover color transitions on icon buttons. Props: connected, hasNotification.
 - Assumptions: Status defaults to connected=true in MVP (fixture mode). Degraded state visualization is handled by DegradedSource component from states.tsx (P16-T012).
 - Follow-ups: none.
+
+### P16-T009 — Implement side navigation
+- Files: apps/web/src/components/Sidebar/index.tsx (new)
+- Checks: "use client"; usePathname() for active detection; 9 main nav items (Cockpit/Markets/Alerts/Briefings/Research/Journal/Analytics/Playbooks/Data) + Settings at bottom. Active: purple (#7b6cf6) icon+label, 2.5px left rail, rgba(123,108,246,0.12) chip bg. Hover: #69737f. Default: #4a525d. System status: green dot + "LIVE" label. All SVG icons inline.
+- Assumptions: startsWith(href+"/") active matching handles nested routes. System status shown as static "LIVE" in MVP; live connection status from realtime client connected in P17-T014.
+- Follow-ups: none.

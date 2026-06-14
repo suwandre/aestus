@@ -1411,7 +1411,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: User can tell if system is connected and feeds are healthy.
 
-### [ ] P16-T009 - Implement side navigation
+### [x] P16-T009 - Implement side navigation
 
 - Agent action: Create nav items for Cockpit, Markets, Alerts, Briefings, Research, Journal, Analytics, Playbooks, Data, Settings/System.
 
