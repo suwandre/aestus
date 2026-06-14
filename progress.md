@@ -2030,3 +2030,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: 10 fns: formatPrice (Intl.NumberFormat, 2dp default), formatPercent (signed, 2dp), formatBps (Math.round), formatFunding (4dp signed), formatNotional ($B/$M/$K), formatCompact (B/M/K no $), formatSigma (Xσ), formatConfidence (0-100 → "X%"), formatRMultiple (signed XR), formatAge (<5s "just now", minutes, hours). No external deps.
 - Assumptions: formatPrice uses en-US locale for thousands separator. formatAge takes elapsed seconds (caller computes diff).
 - Follow-ups: none.
+
+### P16-T012 — Create stale/loading/error components
+- Files: packages/ui/src/states.tsx (new)
+- Checks: "use client"; Skeleton (CSS keyframe pulse via <style> injection, lines prop for multi-line), EmptyState (centered, dim text), ErrorState (red text + optional retry Button), StaleBadge (amber dot + formatAge), DegradedSource (warning amber / error red tinted strip naming feeds). All components exported and re-exported from packages/ui/src/index.ts.
+- Assumptions: <style> tag injection for keyframe animation is the simplest cross-framework approach without CSS modules. In Next.js App Router, style tags in "use client" components are fine.
+- Follow-ups: none.

@@ -1429,7 +1429,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: All values format consistently across frontend.
 
-### [ ] P16-T012 - Create stale/loading/error components
+### [x] P16-T012 - Create stale/loading/error components
 
 - Agent action: Build standard skeleton, empty, error, stale badge, and degraded-source callout components.
 
