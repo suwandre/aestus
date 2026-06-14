@@ -9,6 +9,46 @@ import {
   type CorrelationMatrix,
 } from "@/components/cockpit/CorrelationMatrixPanel";
 import { OrderFlowPanel, type OrderFlowData } from "@/components/cockpit/OrderFlowPanel";
+import { NewsPanel, type NewsData } from "@/components/cockpit/NewsPanel";
+
+const NEWS: NewsData = {
+  items: [
+    {
+      id: "n1",
+      relativeTime: "11m",
+      headline: "Whale accumulates 4,200 BTC ($286M) across 3 exchanges",
+      sourceType: "onchain",
+      assets: ["btc"],
+    },
+    {
+      id: "n2",
+      relativeTime: "27m",
+      headline: "US CPI data comes in slightly below expectations",
+      sourceType: "macro",
+    },
+    {
+      id: "n3",
+      relativeTime: "1h",
+      headline: "Binance funding rate for BTCUSDT jumps to 0.010%",
+      sourceType: "deriv",
+      assets: ["btc"],
+    },
+    {
+      id: "n4",
+      relativeTime: "2h",
+      headline: "BlackRock IBIT sees $215M inflows",
+      sourceType: "inst",
+      assets: ["btc"],
+    },
+    {
+      id: "n5",
+      relativeTime: "3h",
+      headline: "SEC delays decision on spot Ethereum ETF options",
+      sourceType: "reg",
+      assets: ["eth"],
+    },
+  ],
+};
 
 const ORDER_FLOW: OrderFlowData = {
   symbol: "BTCUSDT",
@@ -228,9 +268,9 @@ export default function CockpitPage() {
       </div>
 
       {/* Recent News & Narratives — T008 */}
-      <Panel title="Recent News & Narratives" style={{ gridArea: "news" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T008 —</div>
-      </Panel>
+      <div style={{ gridArea: "news" }}>
+        <NewsPanel data={NEWS} focusedAssetId={focusedAssetId} />
+      </div>
 
       {/* Upcoming Events — T009 */}
       <Panel title="Upcoming Events" style={{ gridArea: "events" }}>

@@ -1505,7 +1505,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Panel handles missing orderbook feed with degraded state.
 
-### [ ] P17-T008 - Build Recent News & Narratives panel
+### [x] P17-T008 - Build Recent News & Narratives panel
 
 - Agent action: Render recent context items with timestamp, title, source/type badges, relevance, and asset/entity tags.
 

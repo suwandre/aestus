@@ -2145,3 +2145,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: Asks rendered reversed (highest first, closest ask nearest mid). Depth bar width = sum/maxSum×100% using position:absolute. Symbol in header derived from focusedAssetId at page level for fixture mode. degraded prop renders orange warning instead of ladder; footer always visible. imbalancePct negative → sell-side badge.
 - Follow-ups: none.
+
+### P17-T008 — Build Recent News & Narratives Panel
+- Files: apps/web/src/components/cockpit/NewsPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (NEWS fixture + panel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: Tab filters — News tab shows macro/inst/reg/deriv; On-Chain tab shows onchain; Social tab shows social type. Asset filter: items with `assets` array filter to focusedAssetId base token; items with no assets array shown in all focused contexts (global news). Tabs use button elements styled to match reference. Social badge color uses --orange (no CSS token for social in reference; closest available).
+- Follow-ups: none.
