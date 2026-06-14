@@ -2060,3 +2060,15 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client" page at /stories. Renders all primitives (Panel, Badge 8 variants, MetricStat, ConvictionBar 3 scores, Button 5 variants, Input, Tabs) and all state components (Skeleton 3 lines, EmptyState, ErrorState, StaleBadge, DegradedSource warning+error). Live without backend — all data is inline. Prettier clean.
 - Assumptions: /stories route is not in the sidebar (it's a dev tool, not a user-facing tab). Route is accessible in dev without auth. Serves as the design review surface for P17+ polish.
 - Follow-ups: none.
+
+### P16 REVIEW — FAIL
+
+Independent review of all 17 tasks (T000–T016). Tasks marked [!] none. Findings:
+
+**P16-T000** — Font CSS var values not byte-match: `--mono` and `--sans` in `packages/ui/src/tokens.css` use double quotes and a space after the comma (`"IBM Plex Mono", monospace`) whereas `docs/specs/reference/cockpit.html` `:root` uses single quotes with no space (`'IBM Plex Mono',monospace`). Done-when criterion explicitly requires byte-match of the `:root` block. All hex color values match exactly; this is a formatting-only delta with no functional rendering impact, but the criterion is unmet as stated.
+
+**P16-T002** — Same font var format issue as T000 (shares the same token source). Done-when says "every token value matches cockpit.html exactly" — `--mono`/`--sans` values differ in quote style and whitespace. No other mismatches found.
+
+**P16-T010** — `Card`, `Select`, and `Sparkline` (placeholder) not implemented. `Card` and `Select` appear in the task action list with no deferral noted in progress.md. The task explicitly calls for a "Sparkline placeholder" (not a full implementation); none exists at any path under apps/web or packages/ui. `Table`, `Drawer`, `Modal` were explicitly deferred in progress.md with stated reason; those are not flagged.
+
+All other tasks (T001, T003–T009, T011–T016) pass their Done-when criteria as verified against repo state.
