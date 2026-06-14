@@ -89,7 +89,10 @@ export default function StatusCluster({ hasNotification }: StatusClusterProps) {
         marginLeft: "auto",
       }}
     >
-      <IconButton ariaLabel="Notifications" {...(hasNotification !== undefined && { hasNotification })}>
+      <IconButton
+        ariaLabel="Notifications"
+        {...(hasNotification !== undefined && { hasNotification })}
+      >
         <BellIcon />
       </IconButton>
 
