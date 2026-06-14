@@ -1970,3 +1970,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: prettier format:check passes on all new files; runtime test requires bun install + bun run dev (bun not available in build env).
 - Assumptions: App Router (Next.js 14) used; tokens inlined in globals.css to avoid cross-package CSS import issues in development; route group (shell) wraps all main tabs. Placeholder pages serve as scaffolding for P17/P18.
 - Follow-ups: none.
+
+### P16-T002 — Create design token package
+- Files: packages/ui/src/tokens.css (new — :root vars verbatim from reference/cockpit.html), packages/ui/src/tokens.ts (new — JS mirror Record<string,string>), packages/ui/src/index.ts (updated — exports tokens+format+primitives+states), packages/ui/package.json (updated — added @types/react + @types/react-dom devDeps)
+- Checks: all 22 CSS vars verified byte-match with :root in docs/specs/reference/cockpit.html; extras added are --radius-panel, --radius-control, --radius-badge, --gap (geometry tokens documented in cockpit_ui_implementation.md §2.3). IBM Plex Sans + Mono pinned via @import in both tokens.css and globals.css.
+- Assumptions: Geometry tokens (radii, gap) added alongside color/font tokens to avoid hardcoding in components. CSS @import for fonts included in tokens.css for standalone consumers; globals.css in apps/web also imports them.
+- Follow-ups: none.

@@ -1369,7 +1369,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Web app loads locally and connects to API health endpoint.
 
-### [ ] P16-T002 - Create design token package
+### [x] P16-T002 - Create design token package
 
 - Agent action: Implement theme tokens by extracting them verbatim from `docs/specs/reference/cockpit.html` `:root` (canonical) as documented in `docs/specs/cockpit_ui_implementation.md`: backgrounds (`--bg #070a0f`, `--panel #0d1119`, `--panel-2`, `--panel-hl`), borders (`--border #1a212d`, `--border-soft`), text scale (`--text-strong`/`--text`/`--text-dim`/`--text-faint`), semantic colors (green `#26c281`, red `#e35d5b`, amber `#e0a13e`, blue `#4f8df7`, violet `#7b6cf6`, pink `#e368a8`, cyan `#3fb6c4`), radii (7px panel / 5px control / 4px badge), spacing (9px grid gap base), and the IBM Plex Sans + IBM Plex Mono fonts.
 
