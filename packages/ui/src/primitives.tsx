@@ -246,7 +246,7 @@ export function Button({
 // Input
 // ---------------------------------------------------------------------------
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export function Input({ style, onFocus, onBlur, ...props }: InputProps) {
   const [focused, setFocused] = useState(false);
