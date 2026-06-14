@@ -7,7 +7,7 @@ export default tseslint.config(
       "dist/**",
       "build/**",
       "target/**",
-      ".next/**",
+      "**/.next/**",
       "fixtures/**",
       "*.generated.ts",
     ],

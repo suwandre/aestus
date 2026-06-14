@@ -1,6 +1,120 @@
+"use client";
+
+import { useState } from "react";
 import { Panel } from "@aestus/ui";
+import { WatchlistPanel, type WatchlistItem } from "@/components/cockpit/WatchlistPanel";
+
+const WATCHLIST_ITEMS: WatchlistItem[] = [
+  {
+    asset_id: "btc-usd",
+    symbol: "BTCUSDT",
+    price: 68432.1,
+    change_pct_24h: 1.24,
+    alert_count: 3,
+    icon_char: "₿",
+    icon_color: "#f7931a",
+  },
+  {
+    asset_id: "eth-usd",
+    symbol: "ETHUSDT",
+    price: 3242.7,
+    change_pct_24h: 1.01,
+    alert_count: 2,
+    icon_char: "Ξ",
+    icon_color: "#627eea",
+    icon_text_color: "#fff",
+  },
+  {
+    asset_id: "sol-usd",
+    symbol: "SOLUSDT",
+    price: 152.18,
+    change_pct_24h: 2.31,
+    alert_count: 2,
+    icon_char: "◎",
+    icon_color: "#14f195",
+  },
+  {
+    asset_id: "bnb-usd",
+    symbol: "BNBUSDT",
+    price: 593.43,
+    change_pct_24h: -0.28,
+    alert_count: 1,
+    icon_char: "B",
+    icon_color: "#f0b90b",
+  },
+  {
+    asset_id: "btc-d",
+    symbol: "BTC.D",
+    price: 54.21,
+    change_pct_24h: 0.35,
+    alert_count: 0,
+    icon_char: "D",
+    icon_color: "#f7931a",
+  },
+  {
+    asset_id: "eth-btc",
+    symbol: "ETHBTC",
+    price: 0.04735,
+    change_pct_24h: -0.23,
+    alert_count: 0,
+    icon_char: "Ξ",
+    icon_color: "#627eea",
+    icon_text_color: "#fff",
+  },
+  {
+    asset_id: "es1",
+    symbol: "ES1!",
+    price: 5321.5,
+    change_pct_24h: -0.18,
+    alert_count: 1,
+    icon_char: "E",
+    icon_color: "#4f8df7",
+    icon_text_color: "#fff",
+  },
+  {
+    asset_id: "nq1",
+    symbol: "NQ1!",
+    price: 18677.25,
+    change_pct_24h: -0.32,
+    alert_count: 0,
+    icon_char: "N",
+    icon_color: "#4f8df7",
+    icon_text_color: "#fff",
+  },
+  {
+    asset_id: "dxy",
+    symbol: "DXY",
+    price: 104.28,
+    change_pct_24h: -0.21,
+    alert_count: 0,
+    icon_char: "$",
+    icon_color: "#5a6573",
+    icon_text_color: "#fff",
+  },
+  {
+    asset_id: "gold",
+    symbol: "GOLD",
+    price: 2343.9,
+    change_pct_24h: 0.35,
+    alert_count: 0,
+    icon_char: "Au",
+    icon_color: "#e0a13e",
+  },
+  {
+    asset_id: "us10y",
+    symbol: "US10Y",
+    price: 4.45,
+    change_pct_24h: -0.03,
+    alert_count: 0,
+    icon_char: "%",
+    icon_color: "#3fb6c4",
+    icon_text_color: "#fff",
+  },
+];
 
 export default function CockpitPage() {
+  const [focusedAssetId, setFocusedAssetId] = useState("btc-usd");
+
   return (
     <div
       style={{
@@ -26,11 +140,11 @@ export default function CockpitPage() {
           gap: 9,
         }}
       >
-        <Panel title="Watchlists">
-          <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>
-            — T002 —
-          </div>
-        </Panel>
+        <WatchlistPanel
+          items={WATCHLIST_ITEMS}
+          focusedAssetId={focusedAssetId}
+          onSelectAsset={setFocusedAssetId}
+        />
         <Panel title="Market State">
           <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>
             — T003 —

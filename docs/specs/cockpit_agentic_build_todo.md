@@ -1469,7 +1469,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Route matches `docs/specs/reference/cockpit.html` and the `cockpit_ui_implementation.md` layout grid (5-track columns `262fr 380fr 400fr 196fr 224fr`, areas: left | opp/chart/news/events | flow/onchain, alerts + ask along the bottom).
 
-### [ ] P17-T002 - Build Watchlist Panel
+### [x] P17-T002 - Build Watchlist Panel
 
 - Agent action: Render assets with icon, symbol, price, 24h change, alert count, freshness, and selected state.
 

@@ -2121,3 +2121,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓ (cockpit 179B static), tests 92 pass
 - Assumptions: CockpitPage is a Server Component for T001 (no state yet); "use client" added in T002 when focusedAsset state is introduced. T005/T006 grid slots hold "pending Opus worker" placeholders (checkboxes intentionally left unchecked per phase instructions). gridTemplateAreas uses array join to stay within printWidth=100.
 - Follow-ups: none.
+
+### P17-T002 — Build Watchlist Panel
+- Files: apps/web/src/components/cockpit/WatchlistPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (use client + WatchlistPanel wired), eslint.config.js (fix **/.next/** ignore pattern)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓, tests 92 pass
+- Assumptions: CockpitPage converted to client component (useState for focusedAssetId). WatchlistItem inline fixture matches cockpit.html 11-row watchlist. ESLint ignore `.next/**` only matched root-level .next — changed to `**/.next/**` so it also catches apps/web/.next (pre-existing bug, masked in CI by lint running before build).
+- Follow-ups: none.
