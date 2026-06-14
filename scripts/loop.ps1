@@ -293,7 +293,14 @@ function Invoke-CIGate([int]$Phase) {
         $fixer = $escalation[$attempt]
         Write-Host ("[{0}] CI FAILED ({1}) — repair attempt {2} ({3})" -f $label, $run.conclusion, ($attempt + 1), $fixer.Model) -ForegroundColor Yellow
         $prompt = @"
-CI on the ``main`` branch is failing. Fix the root cause with minimal, targeted changes — no scope expansion. A common cause early on: a test command that exits non-zero when a package has no test files yet. Project guardrails in CLAUDE.md are absolute.
+CI on the ``main`` branch is failing. Fix the EXACT failure shown in the log below — read it first, do not guess. Minimal, targeted changes, no scope expansion. Project guardrails in CLAUDE.md are absolute.
+
+Common causes and their fixes:
+- ``prettier --check`` / "format:check" / "Code style issues found" → run ``bun run format`` (or ``prettier --write`` on the named files) to fix formatting, then commit the reformatted files. Do NOT hand-edit whitespace.
+- A test command that exits non-zero when a package has no test files yet.
+- A typecheck error referencing a missing export/symbol.
+
+If multiple jobs/steps fail, fix ALL of them — CI is red if any single step is red.
 
 After each fix: commit (conventional message, e.g. ``fix(ci): ...``) and ``git push`` immediately. Never edit metrics.csv.
 

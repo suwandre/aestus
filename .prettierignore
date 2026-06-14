@@ -11,3 +11,7 @@ fixtures/
 packages/contracts/schema/
 docs/specs/cockpit.html
 docs/specs/reference/
+# Agent-maintained, append-heavy logs — formatting churn here breaks CI on every
+# task commit and carries no value. Their content is not source.
+progress.md
+docs/specs/cockpit_agentic_build_todo.md
