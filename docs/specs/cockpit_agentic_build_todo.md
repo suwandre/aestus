@@ -1475,7 +1475,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Selecting an asset updates focused asset state.
 
-### [ ] P17-T003 - Build Market State Summary
+### [x] P17-T003 - Build Market State Summary
 
 - Agent action: Render risk regime, volatility regime, BTC volatility, funding, OI, market breadth with semantic badges.
 

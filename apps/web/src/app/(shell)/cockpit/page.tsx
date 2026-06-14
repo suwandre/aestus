@@ -3,6 +3,18 @@
 import { useState } from "react";
 import { Panel } from "@aestus/ui";
 import { WatchlistPanel, type WatchlistItem } from "@/components/cockpit/WatchlistPanel";
+import { MarketStatePanel, type MarketState } from "@/components/cockpit/MarketStatePanel";
+
+const MARKET_STATE: MarketState = {
+  risk_regime: "risk_on",
+  volatility_regime: "normal",
+  btc_vol_30d: 42.1,
+  btc_vol_30d_delta: -2.1,
+  funding_btc: 0.0001,
+  oi_btc_notional: 31.2e9,
+  oi_btc_delta: 1.8,
+  market_breadth_pct: 62,
+};
 
 const WATCHLIST_ITEMS: WatchlistItem[] = [
   {
@@ -145,11 +157,7 @@ export default function CockpitPage() {
           focusedAssetId={focusedAssetId}
           onSelectAsset={setFocusedAssetId}
         />
-        <Panel title="Market State">
-          <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>
-            — T003 —
-          </div>
-        </Panel>
+        <MarketStatePanel state={MARKET_STATE} />
         <Panel title="Correlation Matrix (24H)" style={{ flex: 1 }}>
           <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>
             — T004 —

@@ -2127,3 +2127,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓, tests 92 pass
 - Assumptions: CockpitPage converted to client component (useState for focusedAssetId). WatchlistItem inline fixture matches cockpit.html 11-row watchlist. ESLint ignore `.next/**` only matched root-level .next — changed to `**/.next/**` so it also catches apps/web/.next (pre-existing bug, masked in CI by lint running before build).
 - Follow-ups: none.
+
+### P17-T003 — Build Market State Summary
+- Files: apps/web/src/components/cockpit/MarketStatePanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (MARKET_STATE fixture + MarketStatePanel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓, tests 159 pass (92 context + 67 llm)
+- Assumptions: funding_btc stored as decimal fraction (0.0001 = 0.010%); "High" threshold >0.00008 (>0.008%) so the reference fixture value of 0.010% correctly shows "High" badge. Volatility delta colored red-up/green-down (higher vol = risk signal). OI delta colored green-up/red-down (higher OI = momentum). Panel wraps its own Panel component (no outer Panel wrapper needed in page.tsx).
+- Follow-ups: none.
