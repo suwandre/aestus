@@ -14,3 +14,8 @@ metrics.csv
 
 # Local dev artifacts (briefings, logs, screenshots) — keep directory tracked
 .local/
+
+# Next.js / TypeScript build output (auto-generated, never commit)
+.next/
+next-env.d.ts
+*.tsbuildinfo

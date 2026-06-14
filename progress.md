@@ -2100,3 +2100,18 @@ Second independent review of all 17 tasks (T000–T016) against the repaired rep
 **T010**: Table, Drawer, and Modal primitives are absent from the entire codebase (packages/ui/src/primitives.tsx, apps/web). The task action explicitly lists all three as required primitives. Progress.md defers them to P17 with a stated reason, but the Done-when criterion ("Tab tasks can compose primitives instead of reinventing styling") is unmet without them.
 
 Token values, font pinning, routes, active states, all formatting utilities, realtime client, fixture mode, story catalog, and all other Done-when criteria verified PASS.
+
+### P16 — manual remediation (post-loop)
+
+Loop was halted (`.stop`) after it left `main` red and the review FAILing. Fixed the outstanding items by hand, verified with the now-installed local toolchain (bun 1.3.14):
+
+- **Build was broken & unverified.** `@aestus/web` lacked `@types/node`, so `next build` fell back to `npm install` and died on bun's `workspace:*` protocol. CI never ran `next build`, so it went undetected. Added `@types/node` (commit 6321025) and added a `Build web` step to `.github/workflows/ci.yml` so production-build breaks are caught.
+- **T002 — token system.** Replaced all 106 hardcoded hex literals across `apps/web/src/**` and `packages/ui/src/**` `.tsx` files with `var(--*)` references. Token sources (`tokens.css`, `tokens.ts`, `globals.css`) untouched. `#0a0e14` in CommandSearch (a one-off typo) folded into `var(--panel-2)`; the logo gradient highlight `#b431f5` has no token and stays literal; `rgba()` badge tints stay (no token for the alpha variants).
+- **T010 — missing primitives.** Implemented `Table`, `Drawer`, `Modal` in `packages/ui/src/primitives.tsx` (token-based styling, shared `Overlay`/`ModalHeader` helpers), rescinding the P17 deferral the reviewer rejected.
+- **Repo hygiene.** `.gitignore` was missing `.next/`, `next-env.d.ts`, `*.tsbuildinfo` — added.
+
+Verified locally: `format:check` ✓, `eslint .` ✓, `typecheck` (all 8 packages) ✓, `next build` ✓ (9 routes prerendered).
+
+### P16 REVIEW — PASS
+
+All 17 tasks (T000–T016) Done-when criteria met after the manual remediation above. The two prior FAIL findings (T002 hardcoded colors, T010 missing Table/Drawer/Modal) are resolved; full check suite green locally and the build is now gated in CI.

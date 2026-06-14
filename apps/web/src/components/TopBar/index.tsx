@@ -25,7 +25,7 @@ const AestusLogo = () => (
   >
     <defs>
       <linearGradient id="aestus-g" x1="16" y1="104" x2="88" y2="12" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#7a14d4" />
+        <stop offset="0" stopColor="var(--brand-2)" />
         <stop offset="1" stopColor="#b431f5" />
       </linearGradient>
     </defs>
@@ -51,8 +51,8 @@ export default function TopBar({ tickers }: TopBarProps) {
         top: 0,
         zIndex: 50,
         height: 46,
-        background: "#0a0e15",
-        borderBottom: "1px solid #1a212d",
+        background: "var(--panel-2)",
+        borderBottom: "1px solid var(--border)",
         display: "flex",
         alignItems: "center",
         paddingLeft: 16,
@@ -70,7 +70,7 @@ export default function TopBar({ tickers }: TopBarProps) {
             letterSpacing: 3,
             fontWeight: 600,
             fontSize: 13,
-            color: "#e8edf3",
+            color: "var(--text-strong)",
             fontFamily: "'IBM Plex Sans', sans-serif",
           }}
         >

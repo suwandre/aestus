@@ -193,7 +193,7 @@ const mainNav: NavItem[] = [
 function NavItemButton({ item, active }: { item: NavItem; active: boolean }) {
   const [hovered, setHovered] = useState(false);
 
-  const color = active ? "#7b6cf6" : hovered ? "#69737f" : "#4a525d";
+  const color = active ? "var(--purple)" : hovered ? "var(--text-dim)" : "var(--text-faint)";
 
   return (
     <Link
@@ -224,7 +224,7 @@ function NavItemButton({ item, active }: { item: NavItem; active: boolean }) {
               transform: "translateY(-50%)",
               width: 2.5,
               height: 20,
-              background: "#7b6cf6",
+              background: "var(--purple)",
               borderRadius: "0 2px 2px 0",
             }}
           />
@@ -271,8 +271,8 @@ export default function Sidebar() {
     <aside
       style={{
         width: 74,
-        background: "#0a0e15",
-        borderRight: "1px solid #1a212d",
+        background: "var(--panel-2)",
+        borderRight: "1px solid var(--border)",
         minHeight: "calc(100vh - 46px)",
         top: 46,
         position: "sticky",
@@ -314,8 +314,8 @@ export default function Sidebar() {
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: "#26c281",
-              boxShadow: "0 0 6px #26c281",
+              background: "var(--green)",
+              boxShadow: "0 0 6px var(--green)",
               flexShrink: 0,
             }}
           />
@@ -323,7 +323,7 @@ export default function Sidebar() {
             style={{
               fontSize: 9.5,
               fontWeight: 600,
-              color: "#26c281",
+              color: "var(--green)",
               fontFamily: "'IBM Plex Sans', sans-serif",
               letterSpacing: "0.5px",
             }}
@@ -334,7 +334,7 @@ export default function Sidebar() {
         <span
           style={{
             fontSize: 8.5,
-            color: "#4a525d",
+            color: "var(--text-faint)",
             fontFamily: "'IBM Plex Sans', sans-serif",
           }}
         >

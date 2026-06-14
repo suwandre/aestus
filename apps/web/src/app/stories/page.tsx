@@ -24,7 +24,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
         fontWeight: 600,
         textTransform: "uppercase",
         letterSpacing: "0.9px",
-        color: "#69737f",
+        color: "var(--text-dim)",
         marginBottom: 12,
         fontFamily: "'IBM Plex Sans', sans-serif",
       }}
@@ -50,13 +50,13 @@ export default function StoriesPage() {
         style={{
           fontSize: 16,
           fontWeight: 600,
-          color: "#e8edf3",
+          color: "var(--text-strong)",
           marginBottom: 4,
         }}
       >
         Component Gallery
       </h1>
-      <p style={{ color: "#69737f", fontSize: 12, marginBottom: 28 }}>
+      <p style={{ color: "var(--text-dim)", fontSize: 12, marginBottom: 28 }}>
         Visual regression reference — P16-T016. Primitives and state components for design review
         without live data.
       </p>
@@ -71,8 +71,8 @@ export default function StoriesPage() {
       {/* MetricStat */}
       <Section title="Metric / Stat">
         <MetricStat label="Conviction" value="72" />
-        <MetricStat label="24h Change" value="+1.24%" valueColor="#26c281" />
-        <MetricStat label="VIX" value="18.4" valueColor="#e0a13e" />
+        <MetricStat label="24h Change" value="+1.24%" valueColor="var(--green)" />
+        <MetricStat label="VIX" value="18.4" valueColor="var(--orange)" />
         <MetricStat label="Funding" value="+0.0124%" />
       </Section>
 
@@ -123,7 +123,7 @@ export default function StoriesPage() {
           headerRight={<Badge label="LIVE" variant="green" />}
           style={{ width: 280 }}
         >
-          <div style={{ padding: "10px 12px", color: "#cdd4de", fontSize: 12 }}>
+          <div style={{ padding: "10px 12px", color: "var(--text)", fontSize: 12 }}>
             Panel content area
           </div>
         </Panel>
@@ -134,10 +134,10 @@ export default function StoriesPage() {
         <div style={{ width: 200 }}>
           <Skeleton width="100%" height={14} lines={3} />
         </div>
-        <div style={{ width: 200, border: "1px solid #1a212d", borderRadius: 7 }}>
+        <div style={{ width: 200, border: "1px solid var(--border)", borderRadius: 7 }}>
           <EmptyState message="No alerts" />
         </div>
-        <div style={{ width: 200, border: "1px solid #1a212d", borderRadius: 7 }}>
+        <div style={{ width: 200, border: "1px solid var(--border)", borderRadius: 7 }}>
           <ErrorState message="Feed unavailable" />
         </div>
         <StaleBadge ageSeconds={135} />

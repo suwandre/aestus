@@ -16,7 +16,7 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#070a0f",
+        background: "var(--bg)",
       }}
     >
       <TopBar tickers={tickers} />

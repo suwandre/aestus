@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const styles = {
   container: (focused: boolean): React.CSSProperties => ({
-    background: "#0a0e14",
-    border: `1px solid ${focused ? "#7b6cf6" : "#1a212d"}`,
+    background: "var(--panel-2)",
+    border: `1px solid ${focused ? "var(--purple)" : "var(--border)"}`,
     borderRadius: 6,
     height: 30,
     padding: "0 10px",
@@ -18,7 +18,7 @@ const styles = {
   }),
   input: {
     fontSize: 12,
-    color: "#4a525d",
+    color: "var(--text-faint)",
     background: "transparent",
     border: "none",
     outline: "none",
@@ -28,8 +28,8 @@ const styles = {
   hint: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 10,
-    color: "#4a525d",
-    border: "1px solid #1a212d",
+    color: "var(--text-faint)",
+    border: "1px solid var(--border)",
     borderRadius: 3,
     padding: "1px 4px",
     lineHeight: 1,
@@ -39,13 +39,13 @@ const styles = {
 
 const SearchIcon = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <circle cx="6" cy="6" r="4.5" stroke="#4a525d" strokeWidth="1.4" />
+    <circle cx="6" cy="6" r="4.5" stroke="var(--text-faint)" strokeWidth="1.4" />
     <line
       x1="9.5"
       y1="9.5"
       x2="12.5"
       y2="12.5"
-      stroke="#4a525d"
+      stroke="var(--text-faint)"
       strokeWidth="1.4"
       strokeLinecap="round"
     />

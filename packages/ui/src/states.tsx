@@ -15,7 +15,7 @@ interface SkeletonProps {
 }
 
 const skeletonStyle = `
-@keyframes aestus-pulse { 0%,100%{background:#0d1119} 50%{background:#11161f} }
+@keyframes aestus-pulse { 0%,100%{background:var(--panel)} 50%{background:var(--panel-hl)} }
 .aestus-skeleton { animation: aestus-pulse 1.5s ease-in-out infinite; border-radius: 4px; }
 `;
 
@@ -60,7 +60,7 @@ export function EmptyState({ message = "No data", icon }: EmptyStateProps) {
         justifyContent: "center",
         gap: 8,
         padding: 24,
-        color: "#4a525d",
+        color: "var(--text-faint)",
         fontSize: 12,
         fontFamily: "'IBM Plex Sans', sans-serif",
       }}
@@ -94,7 +94,7 @@ export function ErrorState({ message = "Something went wrong.", onRetry }: Error
     >
       <span
         style={{
-          color: "#e35d5b",
+          color: "var(--red)",
           fontSize: 12,
           fontFamily: "'IBM Plex Sans', sans-serif",
         }}
@@ -127,10 +127,10 @@ export function StaleBadge({ ageSeconds }: StaleBadgeProps) {
         gap: 4,
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: 11,
-        color: "#e0a13e",
+        color: "var(--orange)",
       }}
     >
-      <span style={{ color: "#e0a13e" }}>•</span>
+      <span style={{ color: "var(--orange)" }}>•</span>
       {formatAge(ageSeconds)}
     </span>
   );
@@ -159,7 +159,7 @@ export function DegradedSource({ sources, severity = "warning" }: DegradedSource
         background: isError ? "rgba(227,93,91,0.12)" : "rgba(224,161,62,0.12)",
         fontSize: 11,
         fontFamily: "'IBM Plex Sans', sans-serif",
-        color: isError ? "#e35d5b" : "#e0a13e",
+        color: isError ? "var(--red)" : "var(--orange)",
       }}
     >
       <span style={{ fontWeight: 600 }}>{isError ? "Error" : "Degraded"}:</span>

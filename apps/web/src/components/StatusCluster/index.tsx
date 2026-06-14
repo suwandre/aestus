@@ -52,7 +52,7 @@ function IconButton({
         border: "none",
         cursor: "pointer",
         padding: 0,
-        color: hovered ? "#cdd4de" : "#69737f",
+        color: hovered ? "var(--text)" : "var(--text-dim)",
         position: "relative",
         display: "flex",
         alignItems: "center",
@@ -70,7 +70,7 @@ function IconButton({
             width: 6,
             height: 6,
             borderRadius: "50%",
-            background: "#e35d5b",
+            background: "var(--red)",
           }}
         />
       )}
@@ -105,7 +105,7 @@ export default function StatusCluster({ hasNotification }: StatusClusterProps) {
           width: 28,
           height: 28,
           borderRadius: 7,
-          background: "linear-gradient(150deg, #a826ec, #7a14d4)",
+          background: "linear-gradient(150deg, var(--brand), var(--brand-2))",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

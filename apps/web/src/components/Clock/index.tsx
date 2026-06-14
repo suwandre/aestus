@@ -32,7 +32,7 @@ export default function Clock({ timezone = "Europe/Berlin" }: ClockProps) {
       style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: 12,
-        color: "#69737f",
+        color: "var(--text-dim)",
         letterSpacing: "0.3px",
         whiteSpace: "nowrap",
         fontFeatureSettings: '"tnum"',

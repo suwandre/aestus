@@ -29,14 +29,14 @@ const styles = {
   sym: {
     fontSize: 11,
     fontWeight: 600,
-    color: "#69737f",
+    color: "var(--text-dim)",
     letterSpacing: "0.3px",
     fontFamily: "'IBM Plex Sans', sans-serif",
   } as React.CSSProperties,
   px: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 12,
-    color: "#e8edf3",
+    color: "var(--text-strong)",
     fontFeatureSettings: '"tnum"',
   } as React.CSSProperties,
 };
@@ -52,7 +52,7 @@ export default function TickerStrip({ tickers }: TickerStripProps) {
             style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: 11,
-              color: t.change_pct_24h >= 0 ? "#26c281" : "#e35d5b",
+              color: t.change_pct_24h >= 0 ? "var(--green)" : "var(--red)",
               fontFeatureSettings: '"tnum"',
             }}
           >
