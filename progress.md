@@ -2006,3 +2006,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client"; setInterval 1s; Intl.DateTimeFormat with timeZone, hour/minute/second 2-digit, hour12:false, timeZoneName:'short'. Defaults to Europe/Berlin. Renders HH:MM:SS TZ in IBM Plex Mono.
 - Assumptions: Server-side rendering returns empty string (to avoid hydration mismatch) and populates on client mount.
 - Follow-ups: none.
+
+### P16-T008 — Implement system status cluster
+- Files: apps/web/src/components/StatusCluster/index.tsx (new)
+- Checks: "use client"; notification bell with red dot when hasNotification=true; settings gear; brand-gradient avatar with "S" initials. Hover color transitions on icon buttons. Props: connected, hasNotification.
+- Assumptions: Status defaults to connected=true in MVP (fixture mode). Degraded state visualization is handled by DegradedSource component from states.tsx (P16-T012).
+- Follow-ups: none.

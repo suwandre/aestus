@@ -1405,7 +1405,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Top bar displays Europe/Berlin or configured exchange/UTC time clearly.
 
-### [ ] P16-T008 - Implement system status cluster
+### [x] P16-T008 - Implement system status cluster
 
 - Agent action: Show connection, feed health, notification, settings/user icons with degraded state support.
 
