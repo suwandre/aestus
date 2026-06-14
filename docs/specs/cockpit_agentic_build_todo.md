@@ -1523,7 +1523,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Panel marks data source confidence and staleness.
 
-### [ ] P17-T011 - Build Active Alerts Table
+### [x] P17-T011 - Build Active Alerts Table
 
 - Agent action: Render latest active alerts with time, type, asset, title, context summary, conviction, status.
 

@@ -12,6 +12,42 @@ import { OrderFlowPanel, type OrderFlowData } from "@/components/cockpit/OrderFl
 import { NewsPanel, type NewsData } from "@/components/cockpit/NewsPanel";
 import { EventsPanel, type EventsData } from "@/components/cockpit/EventsPanel";
 import { OnChainPanel, type OnChainData } from "@/components/cockpit/OnChainPanel";
+import { AlertsPanel, type AlertsData } from "@/components/cockpit/AlertsPanel";
+
+const ALERTS: AlertsData = {
+  alerts: [
+    {
+      id: "a1",
+      time: "11:23:41",
+      type: "funding",
+      asset: "BTCUSDT",
+      title: "Funding rate spiked to 0.010% (z-score: 2.8)",
+      context: "High OI, Long liquidations increasing",
+      conviction: 72,
+      status: "active",
+    },
+    {
+      id: "a2",
+      time: "11:18:02",
+      type: "liq",
+      asset: "ETHUSDT",
+      title: "Large liquidation cluster detected above $3,280",
+      context: "Cascading liquidations risk if price breaks above",
+      conviction: 65,
+      status: "active",
+    },
+    {
+      id: "a3",
+      time: "11:05:14",
+      type: "onchain",
+      asset: "BTC",
+      title: "Whale accumulation detected",
+      context: "3 wallets moved >1,000 BTC to cold storage",
+      conviction: 60,
+      status: "active",
+    },
+  ],
+};
 
 const ON_CHAIN: OnChainData = {
   metrics: [
@@ -358,9 +394,9 @@ export default function CockpitPage() {
       </div>
 
       {/* Active Alerts — T011 */}
-      <Panel title="Active Alerts" style={{ gridArea: "alerts" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T011 —</div>
-      </Panel>
+      <div style={{ gridArea: "alerts" }}>
+        <AlertsPanel data={ALERTS} />
+      </div>
 
       {/* Ask — T012 */}
       <Panel title="Ask" style={{ gridArea: "ask" }}>

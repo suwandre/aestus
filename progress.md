@@ -2163,3 +2163,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: Signal types — "bull" (green/Bullish), "neu" (orange/Neutral), "high" (red/(High)) matching cockpit.html. Direction arrows — up/down/flat map to ↑↓→ with green/red/text-dim colors. stale flag on individual metrics reduces opacity to 0.6. degraded banner shows amber warning at panel top. CIRCLE_ICON is a const JSX element (no runtime cost per row).
 - Follow-ups: none.
+
+### P17-T011 — Build Active Alerts Table
+- Files: apps/web/src/components/cockpit/AlertsPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (ALERTS fixture + panel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: Panel used without title so the tabs bar renders as the first child (Panel conditionally renders header only when title is truthy — confirmed from primitives.tsx). Tab underline uses borderBottom on button rather than ::after pseudo since inline styles can't set pseudo-elements. Conviction fill color: ≥66 green, 40-65 orange, <40 red. Drawer uses @aestus/ui Drawer from P16 primitives. Non-alerts tabs show "No items" empty state — signals/system/journal wired in T013/T014.
+- Follow-ups: none.
