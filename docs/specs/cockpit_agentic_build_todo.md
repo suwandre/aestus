@@ -1453,7 +1453,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Design/components can be reviewed without backend services.
 
-### [ ] P16-T016 - Add visual regression/story catalog placeholder
+### [x] P16-T016 - Add visual regression/story catalog placeholder
 
 - Agent action: Create stories or component gallery for primitives and key panels.
 

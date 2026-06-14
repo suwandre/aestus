@@ -2054,3 +2054,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: isFixtureMode() reads NEXT_PUBLIC_FIXTURE_MODE==="1". fixtureAssets: BTC-USD (crypto), ETH-USD (crypto), SPX (equity_index) — AssetIdentity shape with canonical_id, symbol, display_name, icon_key, asset_class, tags. fixtureTickers: 6 entries (BTC/ETH/SPX/DXY/GOLD/VIX) with price + change_pct_24h. Types verified against @aestus/contracts: AssetClass enum includes "equity_index".
 - Assumptions: Fixture mode is purely client-side (NEXT_PUBLIC_ prefix). Shell layout uses fixtureTickers for TopBar in all modes; individual panels switch between api.* calls and fixture data based on isFixtureMode() or API failure.
 - Follow-ups: none.
+
+### P16-T016 — Add visual regression/story catalog placeholder
+- Files: apps/web/src/app/stories/page.tsx (new)
+- Checks: "use client" page at /stories. Renders all primitives (Panel, Badge 8 variants, MetricStat, ConvictionBar 3 scores, Button 5 variants, Input, Tabs) and all state components (Skeleton 3 lines, EmptyState, ErrorState, StaleBadge, DegradedSource warning+error). Live without backend — all data is inline. Prettier clean.
+- Assumptions: /stories route is not in the sidebar (it's a dev tool, not a user-facing tab). Route is accessible in dev without auth. Serves as the design review surface for P17+ polish.
+- Follow-ups: none.
