@@ -2042,3 +2042,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: ApiClient class with 14 typed methods covering all major API surface areas. Types imported directly from @aestus/contracts (AssetIdentity, FeatureSnapshot, VenueQuote, AnomalyEvent, Briefing, Decision, JournalTrade). ResearchQuery defined locally (not yet in contracts). Authorization header via NEXT_PUBLIC_API_TOKEN. Singleton `api` exported.
 - Assumptions: NEXT_PUBLIC_API_TOKEN is empty string by default (open-access fixture mode). Fixture mode uses api client against running server (or component-level fixture fallback when NEXT_PUBLIC_FIXTURE_MODE=1). Components fetch typed data via `api.*()` methods rather than ad-hoc fetch.
 - Follow-ups: Consider adding ResearchQuery to contracts package when research tab (P18) is implemented.
+
+### P16-T014 — Create realtime client store
+- Files: apps/web/src/lib/realtime.ts (new)
+- Checks: RealtimeClient class: connect/disconnect/on(handler)/getStatus/getLastSeq. EventSource-based SSE. 5-retry reconnect at 3s delay; gives up after max retries (status='error'). JSON parses incoming events as UIEvent type from @aestus/contracts. Seq tracking for gap detection. createRealtimeClient(params?) factory builds URL from NEXT_PUBLIC_API_URL + optional ?asset=/?watchlist= params.
+- Assumptions: Client is used in React components via useEffect. Components call connect() on mount and disconnect() on unmount. Event handlers drive state patches (P17-T014).
+- Follow-ups: none.

@@ -1441,7 +1441,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Components fetch typed data without ad-hoc fetch calls.
 
-### [ ] P16-T014 - Create realtime client store
+### [x] P16-T014 - Create realtime client store
 
 - Agent action: Implement connection, event subscription, reconnection, and state patch handling.
 
