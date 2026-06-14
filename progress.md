@@ -2018,3 +2018,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client"; usePathname() for active detection; 9 main nav items (Cockpit/Markets/Alerts/Briefings/Research/Journal/Analytics/Playbooks/Data) + Settings at bottom. Active: purple (#7b6cf6) icon+label, 2.5px left rail, rgba(123,108,246,0.12) chip bg. Hover: #69737f. Default: #4a525d. System status: green dot + "LIVE" label. All SVG icons inline.
 - Assumptions: startsWith(href+"/") active matching handles nested routes. System status shown as static "LIVE" in MVP; live connection status from realtime client connected in P17-T014.
 - Follow-ups: none.
+
+### P16-T010 — Create core UI primitives
+- Files: packages/ui/src/primitives.tsx (new)
+- Checks: "use client"; exports Panel, Badge (8 variants), MetricStat, ConvictionBar (green/amber/red thresholds 66/40), Button (primary/ghost/danger × sm/md), Input (focus border), Tabs (pill style), Tooltip (title attr placeholder). All inline styles, no CSS modules.
+- Assumptions: Sparkline deferred (noted in spec as "placeholder"); Table and Drawer/Modal deferred — complex components best added in P17 when actual data shapes are known. The 8 badge variants cover all source types documented in cockpit_ui_implementation.md §4.
+- Follow-ups: Sparkline, Table, Drawer, Modal — implement in P17 as panel tasks require them.

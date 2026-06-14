@@ -1417,7 +1417,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Routes and active states work for every tab.
 
-### [ ] P16-T010 - Create core UI primitives
+### [x] P16-T010 - Create core UI primitives
 
 - Agent action: Build reusable Card, Panel, Table, Badge, Metric, Sparkline placeholder, Tabs, Drawer, Modal, Button, Input, Select, Tooltip.
 
