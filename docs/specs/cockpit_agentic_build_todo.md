@@ -1375,7 +1375,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: No component hardcodes colors outside the token system, and every token value matches `cockpit.html` exactly.
 
-### [ ] P16-T003 - Create base layout shell
+### [x] P16-T003 - Create base layout shell
 
 - Agent action: Build app shell with left nav, top bar, main content region, right/overlay support, and responsive constraints.
 

@@ -1976,3 +1976,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: all 22 CSS vars verified byte-match with :root in docs/specs/reference/cockpit.html; extras added are --radius-panel, --radius-control, --radius-badge, --gap (geometry tokens documented in cockpit_ui_implementation.md §2.3). IBM Plex Sans + Mono pinned via @import in both tokens.css and globals.css.
 - Assumptions: Geometry tokens (radii, gap) added alongside color/font tokens to avoid hardcoding in components. CSS @import for fonts included in tokens.css for standalone consumers; globals.css in apps/web also imports them.
 - Follow-ups: none.
+
+### P16-T003 — Create base layout shell
+- Files: apps/web/src/app/(shell)/layout.tsx (new — shell wrapping TopBar + Sidebar + main)
+- Checks: layout composes TopBar (fed fixtureTickers), Sidebar, and a flex main container. Matches spec: sticky 46px top bar over [74px sidebar | fluid main]. Prettier clean.
+- Assumptions: Shell layout is a server component (no "use client") that imports client components (Sidebar, Clock, StatusCluster) which declare their own "use client". fixtureTickers used for TopBar in MVP — live data wired in P17-T013.
+- Follow-ups: none.
