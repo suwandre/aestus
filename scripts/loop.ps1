@@ -5,17 +5,20 @@
 #
 # Usage:
 #   .\scripts\loop.ps1                       # run from first incomplete phase to P30
-#   .\scripts\loop.ps1 -Interactive          # pause for keypress between phases
 #   .\scripts\loop.ps1 -Budget 50            # halt when cumulative cost reaches $50
 #   .\scripts\loop.ps1 -StartPhase 3 -EndPhase 5
 #   .\scripts\loop.ps1 -DryRun               # print the plan, spawn nothing
 #
 # Graceful stop while running:  New-Item .stop  (worker finishes current task, then exits)
+#
+# Runs non-interactively to the end. The only between-phase pause is the 5h rate-limit
+# gate: when an agent emits a 'warned'/'limited' rate_limit_event for the five_hour
+# window, the loop stops after the current phase and asks before continuing — so it
+# won't keep burning the window once it's nearly exhausted.
 
 param(
     [int]$StartPhase = -1,
     [int]$EndPhase = 30,
-    [switch]$Interactive,
     [double]$Budget = 0,
     [switch]$DryRun,
     [switch]$SkipCI
@@ -131,6 +134,24 @@ function Invoke-Agent {
                     }
                 }
                 'result' { $script:r = $evt }
+                'system' {
+                    # stream-json emits a rate_limit_event only when crossing a warning
+                    # threshold; 'utilization' is absent in normal operation. We track the
+                    # five_hour window status so the loop can pause before exhausting it.
+                    if ($evt.subtype -eq 'rate_limit_event') {
+                        $rl = $evt.event
+                        if (-not $rl.rateLimitType -or $rl.rateLimitType -eq 'five_hour') {
+                            $script:RateLimitStatus = $rl.status
+                            $script:RateLimitResetsAt = $rl.resetsAt
+                            if ($rl.status -ne 'allowed') {
+                                Write-Host ("  ! 5h rate limit: {0} (resets {1})" -f `
+                                    $rl.status,
+                                    $(if ($rl.resetsAt) { [DateTimeOffset]::FromUnixTimeSeconds([long]$rl.resetsAt).LocalDateTime.ToString('HH:mm') } else { '?' })
+                                ) -ForegroundColor Yellow
+                            }
+                        }
+                    }
+                }
             }
         }
     } finally {
@@ -291,6 +312,8 @@ $log
 
 # --- Main ----------------------------------------------------------------------
 $script:TotalCost = 0.0
+$script:RateLimitStatus = 'allowed'
+$script:RateLimitResetsAt = $null
 $script:McpConfig = if (-not $DryRun) { New-McpConfig } else { '' }
 $loopStart = Get-Date
 
@@ -371,9 +394,19 @@ for ($phase = $StartPhase; $phase -le $EndPhase; $phase++) {
 
     Write-Host ("[{0}] PHASE COMPLETE | cumulative: `$$(Fmt $script:TotalCost 2) | elapsed: {1:hh\:mm\:ss}" -f $label, ((Get-Date) - $loopStart)) -ForegroundColor Magenta
 
-    if ($Interactive -and $phase -lt $EndPhase) {
-        Write-Host 'Interactive mode — press Enter to start next phase (or Ctrl+C to stop)...' -ForegroundColor Yellow
-        Read-Host | Out-Null
+    # 5h rate-limit gate: only pause if an agent reported the five_hour window as
+    # near/at its cap. Otherwise run straight through to the next phase.
+    if ($script:RateLimitStatus -ne 'allowed' -and $phase -lt $EndPhase) {
+        $reset = if ($script:RateLimitResetsAt) {
+            [DateTimeOffset]::FromUnixTimeSeconds([long]$script:RateLimitResetsAt).LocalDateTime.ToString('HH:mm')
+        } else { 'unknown' }
+        Write-Host ("`n5h usage near limit (status=$script:RateLimitStatus, resets $reset). Continue to next phase and keep spending? [y/N]") -ForegroundColor Yellow
+        $ans = Read-Host
+        if ($ans -notmatch '^(y|yes)$') {
+            Write-Host 'Stopping to preserve the 5h window. Rerun later to continue.' -ForegroundColor Yellow
+            break
+        }
+        $script:RateLimitStatus = 'allowed'  # ask once per warning crossing
     }
 }
 
