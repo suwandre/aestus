@@ -22,8 +22,8 @@
   --teal: #3fb6c4;
   --brand: #a826ec;
   --brand-2: #7a14d4;
-  --mono: "IBM Plex Mono", monospace;
-  --sans: "IBM Plex Sans", sans-serif;
+  --mono: 'IBM Plex Mono',monospace;
+  --sans: 'IBM Plex Sans',sans-serif;
   --radius-panel: 7px;
   --radius-control: 5px;
   --radius-badge: 4px;

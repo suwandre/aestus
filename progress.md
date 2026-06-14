@@ -2072,3 +2072,21 @@ Independent review of all 17 tasks (T000–T016). Tasks marked [!] none. Finding
 **P16-T010** — `Card`, `Select`, and `Sparkline` (placeholder) not implemented. `Card` and `Select` appear in the task action list with no deferral noted in progress.md. The task explicitly calls for a "Sparkline placeholder" (not a full implementation); none exists at any path under apps/web or packages/ui. `Table`, `Drawer`, `Modal` were explicitly deferred in progress.md with stated reason; those are not flagged.
 
 All other tasks (T001, T003–T009, T011–T016) pass their Done-when criteria as verified against repo state.
+
+### P16-T000 — repair
+- Files: packages/ui/src/tokens.css (modified)
+- Checks: `--mono` and `--sans` values changed to single quotes with no space after comma, matching `docs/specs/cockpit.html` `:root` exactly: `'IBM Plex Mono',monospace` / `'IBM Plex Sans',sans-serif`. All hex values were already correct.
+- Assumptions: Space after colon (`--mono: `) retained; review confirmed hex values pass despite that formatting; only the font value format (quote style + comma spacing) was flagged.
+- Follow-ups: none.
+
+### P16-T002 — repair
+- Files: packages/ui/src/tokens.css (same change as T000 — shared token source)
+- Checks: `--mono`/`--sans` now match cockpit.html exactly. Done-when "every token value matches cockpit.html exactly" now met.
+- Assumptions: Same as T000 repair.
+- Follow-ups: none.
+
+### P16-T010 — repair
+- Files: packages/ui/src/primitives.tsx (modified — added Card, Select, Sparkline)
+- Checks: `Card` renders bg #0d1119, border #1a212d, borderRadius 7, padding prop. `Select` wraps native `<select>` with dropdown caret, matches cockpit.html `.dropdown` style (bg #0a0e15, border, borderRadius 5, caret ▾). `Sparkline` placeholder renders a fixed-size container with a stub SVG polyline and accepts color/width/height props; full chart deferred to P17. TypeScript strict check: no errors. All three exported from packages/ui/src/primitives.tsx (re-exported via index.ts `export * from "./primitives"`).
+- Assumptions: Sparkline stub uses a minimal SVG rather than a plain div to make the placeholder slot-compatible with the full chart implementation planned for P17.
+- Follow-ups: Full Sparkline SVG chart — implement in P17 when chart data shapes are known.
