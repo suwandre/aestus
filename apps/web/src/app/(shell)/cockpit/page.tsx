@@ -4,6 +4,22 @@ import { useState } from "react";
 import { Panel } from "@aestus/ui";
 import { WatchlistPanel, type WatchlistItem } from "@/components/cockpit/WatchlistPanel";
 import { MarketStatePanel, type MarketState } from "@/components/cockpit/MarketStatePanel";
+import {
+  CorrelationMatrixPanel,
+  type CorrelationMatrix,
+} from "@/components/cockpit/CorrelationMatrixPanel";
+
+const CORRELATION: CorrelationMatrix = {
+  matrix: [
+    [1.0, 0.82, 0.41, -0.28, 0.36, 0.22],
+    [0.82, 1.0, 0.48, -0.32, 0.25, 0.21],
+    [0.41, 0.48, 1.0, -0.62, -0.15, 0.33],
+    [-0.28, -0.32, -0.62, 1.0, 0.31, -0.27],
+    [0.36, 0.25, -0.15, 0.31, 1.0, 0.42],
+    [0.22, 0.21, 0.33, -0.27, 0.42, 1.0],
+  ],
+  updatedAt: "11:24:11",
+};
 
 const MARKET_STATE: MarketState = {
   risk_regime: "risk_on",
@@ -158,11 +174,7 @@ export default function CockpitPage() {
           onSelectAsset={setFocusedAssetId}
         />
         <MarketStatePanel state={MARKET_STATE} />
-        <Panel title="Correlation Matrix (24H)" style={{ flex: 1 }}>
-          <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>
-            — T004 —
-          </div>
-        </Panel>
+        <CorrelationMatrixPanel data={CORRELATION} />
       </div>
 
       {/* Top Opportunity — P17-T005 (Opus worker) */}

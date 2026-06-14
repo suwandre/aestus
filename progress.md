@@ -2133,3 +2133,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓, tests 159 pass (92 context + 67 llm)
 - Assumptions: funding_btc stored as decimal fraction (0.0001 = 0.010%); "High" threshold >0.00008 (>0.008%) so the reference fixture value of 0.010% correctly shows "High" badge. Volatility delta colored red-up/green-down (higher vol = risk signal). OI delta colored green-up/red-down (higher OI = momentum). Panel wraps its own Panel component (no outer Panel wrapper needed in page.tsx).
 - Follow-ups: none.
+
+### P17-T004 — Build Correlation Matrix Mini
+- Files: apps/web/src/components/cockpit/CorrelationMatrixPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (CORRELATION fixture + panel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: 6×6 matrix uses assets BTC/ETH/SPX/DXY/GOLD/OIL matching cockpit.html reference. Cell bg computed inline via rgba literals (green tint positive, red tint negative, alpha ∝ |value|; diagonal v≥0.999 uses stronger formula). null values render "—" with rgba(255,255,255,0.04) muted bg. degraded prop shows "⚠ Stale" in orange instead of updated time.
+- Follow-ups: T005/T006 skipped (Opus worker). Next is T007.

@@ -1481,7 +1481,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Panel can show bullish/bearish/neutral/degraded states.
 
-### [ ] P17-T004 - Build Correlation Matrix Mini
+### [x] P17-T004 - Build Correlation Matrix Mini
 
 - Agent action: Render compact correlation grid for key assets and macro instruments with values and muted/positive/negative semantics.
 
