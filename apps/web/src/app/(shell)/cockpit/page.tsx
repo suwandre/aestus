@@ -8,6 +8,32 @@ import {
   CorrelationMatrixPanel,
   type CorrelationMatrix,
 } from "@/components/cockpit/CorrelationMatrixPanel";
+import { OrderFlowPanel, type OrderFlowData } from "@/components/cockpit/OrderFlowPanel";
+
+const ORDER_FLOW: OrderFlowData = {
+  symbol: "BTCUSDT",
+  venue: "Binance Perp",
+  timeframe: "24H",
+  midPrice: 68432.1,
+  asks: [
+    { price: 68440, size: 152.3, sum: 468.3 },
+    { price: 68439, size: 98.6, sum: 316.0 },
+    { price: 68438, size: 75.1, sum: 217.7 },
+    { price: 68437, size: 62.4, sum: 142.3 },
+    { price: 68436, size: 48.7, sum: 79.9 },
+    { price: 68435, size: 31.2, sum: 31.2 },
+  ],
+  bids: [
+    { price: 68432, size: 42.1, sum: 42.1 },
+    { price: 68431, size: 56.3, sum: 98.4 },
+    { price: 68430, size: 81.7, sum: 180.1 },
+    { price: 68429, size: 103.2, sum: 283.3 },
+    { price: 68428, size: 136.4, sum: 419.7 },
+    { price: 68427, size: 198.7, sum: 618.4 },
+  ],
+  maxSum: 618.4,
+  imbalancePct: 1.35,
+};
 
 const CORRELATION: CorrelationMatrix = {
   matrix: [
@@ -192,9 +218,14 @@ export default function CockpitPage() {
       </Panel>
 
       {/* Order Flow — T007 */}
-      <Panel title="Order Flow" style={{ gridArea: "flow" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T007 —</div>
-      </Panel>
+      <div style={{ gridArea: "flow" }}>
+        <OrderFlowPanel
+          data={{
+            ...ORDER_FLOW,
+            symbol: focusedAssetId.split("-")[0].toUpperCase() + "USDT",
+          }}
+        />
+      </div>
 
       {/* Recent News & Narratives — T008 */}
       <Panel title="Recent News & Narratives" style={{ gridArea: "news" }}>

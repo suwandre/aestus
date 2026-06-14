@@ -1499,7 +1499,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Chart displays fixture candles and overlays horizontal levels, AND a reviewer comparing it to `cockpit.html` sees matching candle/volume/liquidation-line/POC/current-price styling. (Advanced interactions - drawing tools, heatmaps, multi-asset compare - remain deferred to D09.)
 
-### [ ] P17-T007 - Build Order Flow/Depth Panel
+### [x] P17-T007 - Build Order Flow/Depth Panel
 
 - Agent action: Render venue selector, timeframe selector, price ladder/depth bars, imbalance, and buy/sell pressure badge.
 

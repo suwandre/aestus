@@ -2139,3 +2139,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: 6×6 matrix uses assets BTC/ETH/SPX/DXY/GOLD/OIL matching cockpit.html reference. Cell bg computed inline via rgba literals (green tint positive, red tint negative, alpha ∝ |value|; diagonal v≥0.999 uses stronger formula). null values render "—" with rgba(255,255,255,0.04) muted bg. degraded prop shows "⚠ Stale" in orange instead of updated time.
 - Follow-ups: T005/T006 skipped (Opus worker). Next is T007.
+
+### P17-T007 — Build Order Flow/Depth Panel
+- Files: apps/web/src/components/cockpit/OrderFlowPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (ORDER_FLOW fixture + panel wired in "flow" grid area)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: Asks rendered reversed (highest first, closest ask nearest mid). Depth bar width = sum/maxSum×100% using position:absolute. Symbol in header derived from focusedAssetId at page level for fixture mode. degraded prop renders orange warning instead of ladder; footer always visible. imbalancePct negative → sell-side badge.
+- Follow-ups: none.
