@@ -1964,3 +1964,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: files present at canonical paths; cockpit_ui_implementation.md already referenced docs/specs/reference/ paths correctly.
 - Assumptions: cockpit.html source at docs/specs/cockpit.html is the approved mock; original preserved in place. aestus-logo.svg sourced from assets/aestus-logo.svg. Token extraction (byte-match of :root) is enforced in P16-T002.
 - Follow-ups: none.
+
+### P16-T001 — Initialize web app
+- Files: apps/web/next.config.mjs (new), apps/web/src/app/layout.tsx (new — root layout), apps/web/src/app/globals.css (new — tokens + reset), apps/web/src/app/page.tsx (new — redirect to /cockpit), apps/web/src/app/(shell)/cockpit/page.tsx through settings/page.tsx (new — route placeholders)
+- Checks: prettier format:check passes on all new files; runtime test requires bun install + bun run dev (bun not available in build env).
+- Assumptions: App Router (Next.js 14) used; tokens inlined in globals.css to avoid cross-package CSS import issues in development; route group (shell) wraps all main tabs. Placeholder pages serve as scaffolding for P17/P18.
+- Follow-ups: none.

@@ -1363,7 +1363,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: The token package values byte-match the `:root` block in `cockpit.html`, fonts are pinned, and `docs/specs/cockpit_ui_implementation.md` and the reference file agree. A reviewer diffing a rendered component against the mock sees no token-level drift (colors, borders, radii, font).
 
-### [ ] P16-T001 - Initialize web app
+### [x] P16-T001 - Initialize web app
 
 - Agent action: Create frontend app with chosen framework, TypeScript strict mode, routing, API client, and build config.
 
