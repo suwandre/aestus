@@ -2115,3 +2115,9 @@ Verified locally: `format:check` ✓, `eslint .` ✓, `typecheck` (all 8 package
 ### P16 REVIEW — PASS
 
 All 17 tasks (T000–T016) Done-when criteria met after the manual remediation above. The two prior FAIL findings (T002 hardcoded colors, T010 missing Table/Drawer/Modal) are resolved; full check suite green locally and the build is now gated in CI.
+
+### P17-T001 — Create Cockpit route layout
+- Files: apps/web/src/app/(shell)/cockpit/page.tsx (replaced)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓ (cockpit 179B static), tests 92 pass
+- Assumptions: CockpitPage is a Server Component for T001 (no state yet); "use client" added in T002 when focusedAsset state is introduced. T005/T006 grid slots hold "pending Opus worker" placeholders (checkboxes intentionally left unchecked per phase instructions). gridTemplateAreas uses array join to stay within printWidth=100.
+- Follow-ups: none.

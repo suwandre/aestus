@@ -1463,7 +1463,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 Goal: Build the main high-density decision cockpit view from the UI spec.
 
-### [ ] P17-T001 - Create Cockpit route layout
+### [x] P17-T001 - Create Cockpit route layout
 
 - Agent action: Implement desktop grid: left watchlist/market/correlation column, center briefing/chart/news/events, right order-flow/on-chain/ask, bottom alerts.
 
