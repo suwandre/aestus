@@ -321,6 +321,133 @@ export function Tabs({ tabs, active, onChange }: TabsProps) {
 }
 
 // ---------------------------------------------------------------------------
+// Card
+// ---------------------------------------------------------------------------
+
+interface CardProps {
+  children: React.ReactNode;
+  padding?: number | string;
+  style?: React.CSSProperties;
+}
+
+export function Card({ children, padding = 12, style }: CardProps) {
+  return (
+    <div
+      style={{
+        background: "#0d1119",
+        border: "1px solid #1a212d",
+        borderRadius: 7,
+        overflow: "hidden",
+        padding,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Select
+// ---------------------------------------------------------------------------
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  options: SelectOption[];
+}
+
+export function Select({ options, style, ...props }: SelectProps) {
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        position: "relative",
+        background: "#0a0e15",
+        border: "1px solid #1a212d",
+        borderRadius: 5,
+      }}
+    >
+      <select
+        style={{
+          appearance: "none",
+          background: "transparent",
+          border: "none",
+          color: "#cdd4de",
+          fontSize: 12,
+          fontFamily: "'IBM Plex Sans', sans-serif",
+          padding: "0 28px 0 10px",
+          height: 28,
+          outline: "none",
+          cursor: "pointer",
+          width: "100%",
+          ...style,
+        }}
+        {...props}
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value} style={{ background: "#0d1119" }}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+      <span
+        style={{
+          position: "absolute",
+          right: 8,
+          color: "#69737f",
+          fontSize: 9,
+          pointerEvents: "none",
+        }}
+      >
+        ▾
+      </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sparkline (placeholder — full SVG chart in P17)
+// ---------------------------------------------------------------------------
+
+interface SparklineProps {
+  data?: number[];
+  color?: string;
+  width?: number;
+  height?: number;
+}
+
+export function Sparkline({ color = "#26c281", width = 80, height = 28 }: SparklineProps) {
+  return (
+    <div
+      style={{
+        width,
+        height,
+        background: "rgba(26,33,45,0.5)",
+        borderRadius: 3,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <svg width={width - 8} height={height - 8} viewBox={`0 0 ${width - 8} ${height - 8}`}>
+        <polyline
+          points={`0,${height - 12} ${(width - 8) / 2},4 ${width - 8},${(height - 8) / 2}`}
+          fill="none"
+          stroke={color}
+          strokeWidth={1}
+          opacity={0.4}
+        />
+      </svg>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Tooltip
 // ---------------------------------------------------------------------------
 
