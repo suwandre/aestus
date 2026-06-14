@@ -2169,3 +2169,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: Panel used without title so the tabs bar renders as the first child (Panel conditionally renders header only when title is truthy — confirmed from primitives.tsx). Tab underline uses borderBottom on button rather than ::after pseudo since inline styles can't set pseudo-elements. Conviction fill color: ≥66 green, 40-65 orange, <40 red. Drawer uses @aestus/ui Drawer from P16 primitives. Non-alerts tabs show "No items" empty state — signals/system/journal wired in T013/T014.
 - Follow-ups: none.
+
+### P17-T012 — Build Ask Mini Panel
+- Files: apps/web/src/components/cockpit/AskPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (ASK fixture + AskPanel wired in "ask" grid area)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓ (/cockpit 8.44kB), tests 92 pass
+- Assumptions: Three tabs (ASK/RESEARCH/PLAYBOOKS) with only ASK tab rendering content (others deferred to dedicated routes). Submit routes to /research?q=<encoded> via next/navigation. Bullets support optional `bold` prefix field (rendered as <strong> with --text color). Panel used without title prop so header slot not rendered. Router used to navigate to /research for "View Full Analysis" link.
+- Follow-ups: none.

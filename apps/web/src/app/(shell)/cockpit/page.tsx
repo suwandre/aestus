@@ -13,6 +13,21 @@ import { NewsPanel, type NewsData } from "@/components/cockpit/NewsPanel";
 import { EventsPanel, type EventsData } from "@/components/cockpit/EventsPanel";
 import { OnChainPanel, type OnChainData } from "@/components/cockpit/OnChainPanel";
 import { AlertsPanel, type AlertsData } from "@/components/cockpit/AlertsPanel";
+import { AskPanel, type AskData } from "@/components/cockpit/AskPanel";
+
+const ASK: AskData = {
+  recent: {
+    question: "What's driving BTC's move today?",
+    lead: "BTC is up 1.24% today driven by a combination of factors:",
+    bullets: [
+      { bold: "DXY weakness", text: "(-0.21%) supporting risk assets" },
+      { text: "Lower than expected ", bold: "CPI data" },
+      { bold: "Strong spot demand", text: "(net outflow from exchanges)" },
+      { bold: "Short squeeze", text: "as funding rates increase" },
+      { text: "No significant on-chain selling pressure" },
+    ],
+  },
+};
 
 const ALERTS: AlertsData = {
   alerts: [
@@ -399,9 +414,9 @@ export default function CockpitPage() {
       </div>
 
       {/* Ask — T012 */}
-      <Panel title="Ask" style={{ gridArea: "ask" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T012 —</div>
-      </Panel>
+      <div style={{ gridArea: "ask" }}>
+        <AskPanel data={ASK} />
+      </div>
     </div>
   );
 }

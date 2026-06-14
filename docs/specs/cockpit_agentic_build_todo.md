@@ -1529,7 +1529,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: Clicking alert opens anomaly detail drawer.
 
-### [ ] P17-T012 - Build Ask Mini Panel
+### [x] P17-T012 - Build Ask Mini Panel
 
 - Agent action: Render compact natural-language input plus latest answer/summary for focused asset.
 
