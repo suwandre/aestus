@@ -1435,7 +1435,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Every data component can represent non-happy states.
 
-### [ ] P16-T013 - Create frontend API client
+### [x] P16-T013 - Create frontend API client
 
 - Agent action: Generate or handwrite typed client using shared contracts/OpenAPI.
 

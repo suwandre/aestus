@@ -2036,3 +2036,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client"; Skeleton (CSS keyframe pulse via <style> injection, lines prop for multi-line), EmptyState (centered, dim text), ErrorState (red text + optional retry Button), StaleBadge (amber dot + formatAge), DegradedSource (warning amber / error red tinted strip naming feeds). All components exported and re-exported from packages/ui/src/index.ts.
 - Assumptions: <style> tag injection for keyframe animation is the simplest cross-framework approach without CSS modules. In Next.js App Router, style tags in "use client" components are fine.
 - Follow-ups: none.
+
+### P16-T013 — Create frontend API client
+- Files: apps/web/src/lib/api.ts (new)
+- Checks: ApiClient class with 14 typed methods covering all major API surface areas. Types imported directly from @aestus/contracts (AssetIdentity, FeatureSnapshot, VenueQuote, AnomalyEvent, Briefing, Decision, JournalTrade). ResearchQuery defined locally (not yet in contracts). Authorization header via NEXT_PUBLIC_API_TOKEN. Singleton `api` exported.
+- Assumptions: NEXT_PUBLIC_API_TOKEN is empty string by default (open-access fixture mode). Fixture mode uses api client against running server (or component-level fixture fallback when NEXT_PUBLIC_FIXTURE_MODE=1). Components fetch typed data via `api.*()` methods rather than ad-hoc fetch.
+- Follow-ups: Consider adding ResearchQuery to contracts package when research tab (P18) is implemented.
