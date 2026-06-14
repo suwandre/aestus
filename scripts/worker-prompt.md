@@ -20,7 +20,7 @@ For each task in phase {PHASE} with an unchecked box `[ ]`, in order:
    - If you touched `apps/web` or `packages/ui`: also `bun run --filter '@aestus/web' build` (CI does not catch a broken production build any other way).
    - If you touched Rust (`apps/api`, `services/*`, any `*.rs`/`Cargo.toml`): also `cargo fmt --all -- --check`, `cargo check --workspace`, `cargo clippy --workspace`, `cargo test --workspace`.
    - Tests: `bun run test`.
-   If a required tool is missing (`command not found` for `bun`/`cargo`/`bunx`): **STOP — do not commit or push.** A worker with no way to verify must not push blind. Mark the task `[!]`, log "verification toolchain unavailable: <tool>" in `progress.md`, and exit. Note: `progress.md` and the build todo are in `.prettierignore`, so editing them never breaks `format:check`.
+     If a required tool is missing (`command not found` for `bun`/`cargo`/`bunx`): **STOP — do not commit or push.** A worker with no way to verify must not push blind. Mark the task `[!]`, log "verification toolchain unavailable: <tool>" in `progress.md`, and exit. Note: `progress.md` and the build todo are in `.prettierignore`, so editing them never breaks `format:check`.
 4. Flip the task's checkbox `[ ]` → `[x]` in the todo file.
 5. Append a `progress.md` entry in the format documented at the top of that file.
 6. Commit: conventional commit message referencing the task ID (e.g. `feat(P01-T003): initialize Rust workspace`). Include the todo and progress.md changes in the same commit.
