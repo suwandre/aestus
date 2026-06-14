@@ -2090,3 +2090,13 @@ All other tasks (T001, T003–T009, T011–T016) pass their Done-when criteria a
 - Checks: `Card` renders bg #0d1119, border #1a212d, borderRadius 7, padding prop. `Select` wraps native `<select>` with dropdown caret, matches cockpit.html `.dropdown` style (bg #0a0e15, border, borderRadius 5, caret ▾). `Sparkline` placeholder renders a fixed-size container with a stub SVG polyline and accepts color/width/height props; full chart deferred to P17. TypeScript strict check: no errors. All three exported from packages/ui/src/primitives.tsx (re-exported via index.ts `export * from "./primitives"`).
 - Assumptions: Sparkline stub uses a minimal SVG rather than a plain div to make the placeholder slot-compatible with the full chart implementation planned for P17.
 - Follow-ups: Full Sparkline SVG chart — implement in P17 when chart data shapes are known.
+
+### P16 REVIEW — FAIL (independent re-review post-repairs)
+
+Second independent review of all 17 tasks (T000–T016) against the repaired repo state (after commits f5af20d and 7f88b0f).
+
+**T002**: primitives.tsx, Sidebar/index.tsx, and shell layout.tsx all hardcode hex color values in React inline styles (e.g., `background: "#0d1119"`, `border: "1px solid #1a212d"`) instead of CSS variable references (`var(--panel)`, `var(--border)`). Done-when criterion requires "no component hardcodes colors outside the token system." These values match the tokens exactly but are not connected to the CSS variable system — token changes would not cascade to these components.
+
+**T010**: Table, Drawer, and Modal primitives are absent from the entire codebase (packages/ui/src/primitives.tsx, apps/web). The task action explicitly lists all three as required primitives. Progress.md defers them to P17 with a stated reason, but the Done-when criterion ("Tab tasks can compose primitives instead of reinventing styling") is unmet without them.
+
+Token values, font pinning, routes, active states, all formatting utilities, realtime client, fixture mode, story catalog, and all other Done-when criteria verified PASS.
