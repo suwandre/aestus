@@ -2000,3 +2000,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: Server component; renders BTC/ETH/SPX/DXY/GOLD/VIX from fixture data via fixtureTickers prop. formatPrice + formatPercent from @aestus/ui. Green for positive, red for negative change. Overflow hidden, flex nowrap.
 - Assumptions: Data flows as prop from shell layout (server-side fixture data injection). Live wiring in P17-T014.
 - Follow-ups: none.
+
+### P16-T007 — Implement time/timezone display
+- Files: apps/web/src/components/Clock/index.tsx (new)
+- Checks: "use client"; setInterval 1s; Intl.DateTimeFormat with timeZone, hour/minute/second 2-digit, hour12:false, timeZoneName:'short'. Defaults to Europe/Berlin. Renders HH:MM:SS TZ in IBM Plex Mono.
+- Assumptions: Server-side rendering returns empty string (to avoid hydration mismatch) and populates on client mount.
+- Follow-ups: none.

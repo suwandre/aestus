@@ -1399,7 +1399,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Ticker can render fixture BTC/ETH/SPX/DXY/GOLD/VIX values.
 
-### [ ] P16-T007 - Implement time/timezone display
+### [x] P16-T007 - Implement time/timezone display
 
 - Agent action: Show current time and configured timezone in top bar with update interval.
 
