@@ -2157,3 +2157,9 @@ All 17 tasks (T000–T016) Done-when criteria met after the manual remediation a
 - Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
 - Assumptions: High importance rows get subtle rgba(227,93,91,.03) background for prominence per "visually prominent" requirement; dots use 2 filled for high, 1 filled + 1 muted (var(--border)) for medium, both muted for low. Low importance type included in interface for completeness even though no fixture item uses it.
 - Follow-ups: none.
+
+### P17-T010 — Build On-Chain Insights Panel
+- Files: apps/web/src/components/cockpit/OnChainPanel.tsx (new), apps/web/src/app/(shell)/cockpit/page.tsx (ON_CHAIN fixture + panel wired)
+- Checks: format:check ✓, eslint ✓, typecheck ✓, next build ✓
+- Assumptions: Signal types — "bull" (green/Bullish), "neu" (orange/Neutral), "high" (red/(High)) matching cockpit.html. Direction arrows — up/down/flat map to ↑↓→ with green/red/text-dim colors. stale flag on individual metrics reduces opacity to 0.6. degraded banner shows amber warning at panel top. CIRCLE_ICON is a const JSX element (no runtime cost per row).
+- Follow-ups: none.

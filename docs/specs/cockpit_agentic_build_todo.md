@@ -1517,7 +1517,7 @@ Goal: Build the main high-density decision cockpit view from the UI spec.
 
 - Done when: High-importance events are visually prominent.
 
-### [ ] P17-T010 - Build On-Chain Insights panel
+### [x] P17-T010 - Build On-Chain Insights panel
 
 - Agent action: Render exchange netflow, whale transactions, active addresses, MVRV, realized cap change with directional badges.
 

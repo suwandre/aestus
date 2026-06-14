@@ -11,6 +11,35 @@ import {
 import { OrderFlowPanel, type OrderFlowData } from "@/components/cockpit/OrderFlowPanel";
 import { NewsPanel, type NewsData } from "@/components/cockpit/NewsPanel";
 import { EventsPanel, type EventsData } from "@/components/cockpit/EventsPanel";
+import { OnChainPanel, type OnChainData } from "@/components/cockpit/OnChainPanel";
+
+const ON_CHAIN: OnChainData = {
+  metrics: [
+    {
+      id: "oc1",
+      label: "Exchange Netflow (BTC)",
+      value: "-2,341 BTC",
+      direction: "down",
+      signal: "bull",
+    },
+    {
+      id: "oc2",
+      label: "Whale Transactions (7D)",
+      value: "1,247",
+      direction: "up",
+      signal: "high",
+    },
+    { id: "oc3", label: "Active Addresses (7D)", value: "912,384", direction: "up", signal: "neu" },
+    { id: "oc4", label: "MVRV Z-Score", value: "1.82", direction: "flat", signal: "neu" },
+    {
+      id: "oc5",
+      label: "Realized Cap Change (7D)",
+      value: "+0.45%",
+      direction: "up",
+      signal: "bull",
+    },
+  ],
+};
 
 const EVENTS: EventsData = {
   events: [
@@ -324,9 +353,9 @@ export default function CockpitPage() {
       </div>
 
       {/* On-Chain Insights — T010 */}
-      <Panel title="On-Chain Insights" style={{ gridArea: "onchain" }}>
-        <div style={{ padding: "10px 12px", color: "var(--text-dim)", fontSize: 11 }}>— T010 —</div>
-      </Panel>
+      <div style={{ gridArea: "onchain" }}>
+        <OnChainPanel data={ON_CHAIN} />
+      </div>
 
       {/* Active Alerts — T011 */}
       <Panel title="Active Alerts" style={{ gridArea: "alerts" }}>
