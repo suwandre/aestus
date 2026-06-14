@@ -2024,3 +2024,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client"; exports Panel, Badge (8 variants), MetricStat, ConvictionBar (green/amber/red thresholds 66/40), Button (primary/ghost/danger × sm/md), Input (focus border), Tabs (pill style), Tooltip (title attr placeholder). All inline styles, no CSS modules.
 - Assumptions: Sparkline deferred (noted in spec as "placeholder"); Table and Drawer/Modal deferred — complex components best added in P17 when actual data shapes are known. The 8 badge variants cover all source types documented in cockpit_ui_implementation.md §4.
 - Follow-ups: Sparkline, Table, Drawer, Modal — implement in P17 as panel tasks require them.
+
+### P16-T011 — Create numeric formatting utilities
+- Files: packages/ui/src/format.ts (new)
+- Checks: 10 fns: formatPrice (Intl.NumberFormat, 2dp default), formatPercent (signed, 2dp), formatBps (Math.round), formatFunding (4dp signed), formatNotional ($B/$M/$K), formatCompact (B/M/K no $), formatSigma (Xσ), formatConfidence (0-100 → "X%"), formatRMultiple (signed XR), formatAge (<5s "just now", minutes, hours). No external deps.
+- Assumptions: formatPrice uses en-US locale for thousands separator. formatAge takes elapsed seconds (caller computes diff).
+- Follow-ups: none.

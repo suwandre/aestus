@@ -1423,7 +1423,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Tab tasks can compose primitives instead of reinventing styling.
 
-### [ ] P16-T011 - Create numeric formatting utilities
+### [x] P16-T011 - Create numeric formatting utilities
 
 - Agent action: Implement price, percent, basis points, funding, notional, compact number, sigma, confidence, R-multiple formatting.
 
