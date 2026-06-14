@@ -1919,7 +1919,7 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Follow-ups: none.
 
 
-### P15-T005 � Implement connection lifecycle events
+### P15-T005 � Implement connection lifecycle events
 
 - Files: apps/api/src/realtime.ts (notifyReconnectRequired + notifyDegradedMode methods added), apps/api/src/index.ts (calls notifyReconnectRequired in graceful stop handler)
 - Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. All four lifecycle events: connected (on subscribe), heartbeat (timer), reconnect_required (graceful stop hook), degraded_mode (exposed for health monitor).
@@ -1927,7 +1927,7 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Follow-ups: none.
 
 
-### P15-T006 � Implement event sequence handling
+### P15-T006 � Implement event sequence handling
 
 - Files: packages/contracts/src/realtime.ts (EventBase comment block documenting seq/ts semantics)
 - Checks: typecheck clean (contracts + api); bun test 57 pass. Seq/ts were already on every event from T002; T006 adds the contract-level documentation of gap detection, stale-drop, and duplicate-detection semantics.
@@ -1935,7 +1935,7 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Follow-ups: none.
 
 
-### P15-T007 � Add realtime fixture broadcaster
+### P15-T007 � Add realtime fixture broadcaster
 
 - Files: apps/api/scripts/broadcast.ts (new), apps/api/src/routes/realtime.ts (POST /api/realtime/broadcast dev endpoint), apps/api/src/index.ts (startFixtureBroadcaster wired when FIXTURE_BROADCASTER=1)
 - Checks: typecheck clean; bun test 57 pass. Two modes: in-process (startFixtureBroadcaster(manager)) and standalone HTTP (bun run broadcast.ts targeting a running server). Round-robin rotation through fixture snapshots/quotes/anomalies/briefings at configurable interval (default 3 s).
@@ -1943,9 +1943,22 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Follow-ups: none.
 
 
-### P15-T008 � Add realtime tests
+### P15-T008 � Add realtime tests
 
-- Files: apps/api/test/realtime.test.ts (new � 25 tests)
+- Files: apps/api/test/realtime.test.ts (new � 25 tests)
 - Checks: typecheck clean; bun test (all) 82 pass, 1 skip (DB-absent), 0 fail. Coverage: auth (401 when token set + header absent; SSE stream when open mode), heartbeat (timer fires, min 2 heartbeats in 120 ms), event mapper (all 5 mappers), filtering (asset/venue/anomaly-assets-list/lifecycle-passthrough/empty-filter), lifecycle (connected on subscribe; reconnect_required; degraded_mode), disconnect (unsub removes subscriber; connectionCount tracks), sequence (seq monotonically increases), broadcaster (nextBatch types; anomaly every 5th; startFixtureBroadcaster pushes events).
 - Assumptions: RealtimeManager constructed with heartbeatIntervalMs=0 to disable timer in most tests (tested separately with 50 ms). Bun test runner handles async timers via real setTimeout (not faked). import.meta.main guard in broadcast.ts prevents auto-run when imported in tests.
 - Follow-ups: none.
+
+### P15 REVIEW — PASS
+
+Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not available in the reviewer's shell environment so test execution was not possible; all verification was done by reading source files directly. No [!] tasks in P15.
+
+- P15-T001: `docs/adr/ADR-002-realtime-transport.md` exists; SSE chosen over WebSocket with explicit rationale; fallback section covers EventSource reconnect + seq-based gap detection, `reconnect_required` before planned restart, heartbeat to distinguish quiet-from-broken. `docs/adr/README.md` updated. PASS.
+- P15-T002: `packages/contracts/src/realtime.ts` — UIEvent discriminated union (9 types) + SubscriptionFilter exported; re-exported from `packages/contracts/src/index.ts`. `apps/api/src/realtime.ts` — RealtimeManager with subscribe/broadcast/heartbeat timer/seq counter. `apps/api/src/routes/realtime.ts` — GET /api/realtime/stream returns `text/event-stream` response. `apps/api/src/index.ts` wires manager + route. PASS.
+- P15-T003: `apps/api/src/event-mapper.ts` — 5 mapper functions: mapPriceTick→market_state_updated, mapFeatureSnapshot→feature_updated, mapAnomalyEvent→anomaly_created, mapBriefing→briefing_created, mapDependencyHealth→source_health_changed[]. UI event types decouple frontend from NATS subjects. PASS.
+- P15-T004: SSE handler parses ?asset=, ?venue=, ?watchlist= query params; watchlist ID expanded to member asset IDs via FixtureStore; filter built and passed to RealtimeManager.subscribe(). matchesFilter() in realtime.ts applies asset/venue intersection checks; lifecycle events always pass through. PASS.
+- P15-T005: All 4 lifecycle events implemented — `connected` (on subscribe), `heartbeat` (timer), `reconnect_required` (notifyReconnectRequired), `degraded_mode` (notifyDegradedMode). Shutdown handler in index.ts calls `notifyReconnectRequired("server stopping")` before `realtime.stop()` and `server.stop(true)`. PASS.
+- P15-T006: EventBase schema has `seq` (nonnegative int) and `ts` (ISO-8601 string); comment block in contracts/realtime.ts documents gap-detection, stale-drop, and duplicate-detection semantics. RealtimeManager.nextSeq() increments monotonically per emitted event. PASS.
+- P15-T007: `apps/api/scripts/broadcast.ts` — nextBatch() round-robins through snapshots/quotes/anomalies/briefings (anomaly every 5th, briefing every 10th); startFixtureBroadcaster(manager) for in-process mode; standalone HTTP mode POSTs to /api/realtime/broadcast. POST /api/realtime/broadcast registered when FIXTURE_BROADCASTER=1. index.ts wires startFixtureBroadcaster when env var set; stopBroadcaster() called in shutdown. import.meta.main guard prevents auto-run on import. Fixture files verified present. PASS.
+- P15-T008: `apps/api/test/realtime.test.ts` — 25 tests (counted): auth (2), heartbeat/basic (5), disconnect (2), lifecycle (2), filtering (6), event-mapper (5), broadcaster (3). Covers all criteria: auth, heartbeat, mapping, filtering, disconnect cleanup. Could not execute `bun test` (bun not in reviewer shell PATH) but test file structure and logic verified by code read. PASS on structure.
