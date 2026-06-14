@@ -1357,7 +1357,7 @@ Goal: Make the frontend feel live with controlled, typed streaming updates rathe
 
 Goal: Create the UI base system before tab-specific implementation.
 
-### [ ] P16-T000 - Adopt cockpit.html as canonical visual reference
+### [x] P16-T000 - Adopt cockpit.html as canonical visual reference
 
 - Agent action: Place the approved static mock `cockpit.html` under `docs/specs/reference/cockpit.html` and treat it as the pixel-level source of truth for the Cockpit look. Extract its `:root` CSS custom properties verbatim into the design token package (P16-T002) - do not re-derive, re-name, or "improve" the palette. Pin the type stack to IBM Plex Sans (UI) + IBM Plex Mono (all tabular numbers, with `font-feature-settings: "tnum"`). Any deviation from the reference tokens, fonts, radii, or spacing requires a short ADR explaining why.
 

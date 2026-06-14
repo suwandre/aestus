@@ -1958,3 +1958,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - P15-T006: EventBase schema has `seq` (nonnegative int) and `ts` (ISO-8601 string); comment block in contracts/realtime.ts documents gap-detection, stale-drop, and duplicate-detection semantics. RealtimeManager.nextSeq() increments monotonically per emitted event. PASS.
 - P15-T007: `apps/api/scripts/broadcast.ts` — nextBatch() round-robins through snapshots/quotes/anomalies/briefings (anomaly every 5th, briefing every 10th); startFixtureBroadcaster(manager) for in-process mode; standalone HTTP mode POSTs to /api/realtime/broadcast. POST /api/realtime/broadcast registered when FIXTURE_BROADCASTER=1. index.ts wires startFixtureBroadcaster when env var set; stopBroadcaster() called in shutdown. import.meta.main guard prevents auto-run on import. Fixture files verified present. PASS.
 - P15-T008: `apps/api/test/realtime.test.ts` — 25 tests (counted): auth (2), heartbeat/basic (5), disconnect (2), lifecycle (2), filtering (6), event-mapper (5), broadcaster (3). Covers all criteria: auth, heartbeat, mapping, filtering, disconnect cleanup. Could not execute `bun test` (bun not in reviewer shell PATH) but test file structure and logic verified by code read. PASS on structure.
+
+### P16-T000 — Adopt cockpit.html as canonical visual reference
+- Files: docs/specs/reference/cockpit.html (new — copy of docs/specs/cockpit.html), docs/specs/reference/aestus-logo.svg (new — copy of assets/aestus-logo.svg)
+- Checks: files present at canonical paths; cockpit_ui_implementation.md already referenced docs/specs/reference/ paths correctly.
+- Assumptions: cockpit.html source at docs/specs/cockpit.html is the approved mock; original preserved in place. aestus-logo.svg sourced from assets/aestus-logo.svg. Token extraction (byte-match of :root) is enforced in P16-T002.
+- Follow-ups: none.

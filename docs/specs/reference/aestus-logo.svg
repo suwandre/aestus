@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" width="112" height="112" role="img" aria-label="Aestus">
+  <defs>
+    <linearGradient id="aestus-g" x1="16" y1="104" x2="88" y2="12" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7a14d4"/>
+      <stop offset="1" stop-color="#b431f5"/>
+    </linearGradient>
+  </defs>
+  <!-- left blade of the chevron "A" -->
+  <path d="M53.6 12.8 16 101.6l18-7.6 22.8-56.8z" fill="url(#aestus-g)"/>
+  <!-- right blade with forked tail -->
+  <path d="M53.6 12.8 74.4 64l-11.6 6.4-9.2-23.6-4 37.2-8.4 7.2z" fill="url(#aestus-g)"/>
+  <!-- upward trend line piercing the apex -->
+  <path d="M34.4 76.8 48 58.4l10.4 8.4 20.8-36.4" fill="none" stroke="url(#aestus-g)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- arrowhead -->
+  <path d="M66.8 26.8 84 21.6l-4 17.6z" fill="url(#aestus-g)"/>
+</svg>
