@@ -43,12 +43,7 @@ interface Subscription {
 
 function matchesFilter(filter: SubscriptionFilter, event: UIEvent): boolean {
   // Lifecycle events always pass through
-  const lifecycle = new Set([
-    "connected",
-    "heartbeat",
-    "reconnect_required",
-    "degraded_mode",
-  ]);
+  const lifecycle = new Set(["connected", "heartbeat", "reconnect_required", "degraded_mode"]);
   if (lifecycle.has(event.type)) return true;
 
   const { assets, venues } = filter;

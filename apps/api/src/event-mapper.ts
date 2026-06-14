@@ -8,12 +8,7 @@
  * These functions return `BroadcastPayload` (UIEvent minus seq/ts), which the
  * RealtimeManager stamps with sequence number and timestamp before delivering.
  */
-import type {
-  AnomalyEvent,
-  Briefing,
-  DependencyHealth,
-  FeatureSnapshot,
-} from "@aestus/contracts";
+import type { AnomalyEvent, Briefing, DependencyHealth, FeatureSnapshot } from "@aestus/contracts";
 import type { BroadcastPayload } from "./realtime";
 
 /** NormalizedMarketEvent price_tick shape (minimal fields used for mapping). */
@@ -67,7 +62,12 @@ export function mapAnomalyEvent(anomaly: AnomalyEvent): BroadcastPayload {
  * Briefing itself. Callers that don't have the context packet can omit it.
  */
 export function mapBriefing(briefing: Briefing, assetId?: string): BroadcastPayload {
-  const payload: { type: "briefing_created"; briefing_id: string; stance: string; asset_id?: string } = {
+  const payload: {
+    type: "briefing_created";
+    briefing_id: string;
+    stance: string;
+    asset_id?: string;
+  } = {
     type: "briefing_created",
     briefing_id: briefing.id,
     stance: briefing.stance,
@@ -82,9 +82,7 @@ export function mapBriefing(briefing: Briefing, assetId?: string): BroadcastPayl
  * Returns one event per dependency whose status is not "ok". Callers should
  * broadcast each item.
  */
-export function mapDependencyHealth(
-  deps: DependencyHealth[],
-): BroadcastPayload[] {
+export function mapDependencyHealth(deps: DependencyHealth[]): BroadcastPayload[] {
   return deps
     .filter((d) => d.status !== "ok")
     .map((d) => ({

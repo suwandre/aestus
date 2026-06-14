@@ -51,12 +51,12 @@ Key reasons:
 
 ## Alternatives considered
 
-| Alternative                | Reason not chosen                                                                         |
-| -------------------------- | ----------------------------------------------------------------------------------------- |
-| WebSocket                  | Bidirectionality unused; more complex proxy config; application-owned reconnect required  |
-| HTTP polling               | High latency for market updates; wasteful for a persistent single-user process            |
-| gRPC-Web streaming         | Requires additional proxy transcoder; no benefit over SSE at this scale                   |
-| MQTT over WebSocket        | Additional broker dependency; over-engineered for single-user UI event delivery           |
+| Alternative         | Reason not chosen                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| WebSocket           | Bidirectionality unused; more complex proxy config; application-owned reconnect required |
+| HTTP polling        | High latency for market updates; wasteful for a persistent single-user process           |
+| gRPC-Web streaming  | Requires additional proxy transcoder; no benefit over SSE at this scale                  |
+| MQTT over WebSocket | Additional broker dependency; over-engineered for single-user UI event delivery          |
 
 ## Consequences
 

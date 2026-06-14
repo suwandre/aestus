@@ -1918,14 +1918,12 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Assumptions: ?watchlist=id expands to member asset IDs in the FixtureStore; merged with any explicit ?asset= list. Empty filter = full firehose (desired default). tab param stored in filter for future use but not currently used in matching logic.
 - Follow-ups: none.
 
-
 ### P15-T005 � Implement connection lifecycle events
 
 - Files: apps/api/src/realtime.ts (notifyReconnectRequired + notifyDegradedMode methods added), apps/api/src/index.ts (calls notifyReconnectRequired in graceful stop handler)
 - Checks: `bun run typecheck` clean; `bun test api.t015.test.ts` 57 pass. All four lifecycle events: connected (on subscribe), heartbeat (timer), reconnect_required (graceful stop hook), degraded_mode (exposed for health monitor).
 - Assumptions: notifyDegradedMode is exposed for external callers (future NATS health monitor); no automatic trigger in fixture mode. reconnect_required is called with reason=server stopping in the SIGINT/SIGTERM handler.
 - Follow-ups: none.
-
 
 ### P15-T006 � Implement event sequence handling
 
@@ -1934,14 +1932,12 @@ Zero-trust independent review. Read every file; re-ran `bun test` (57 pass, 1 sk
 - Assumptions: Seq is global monotonic to the RealtimeManager instance; resets on restart (new connected event marks the reset boundary). Reconnecting client compares new connected.seq against its last seen seq to detect missed events and re-fetches via REST. Clients can also use ts for stale-drop (older ts than cached value for same asset).
 - Follow-ups: none.
 
-
 ### P15-T007 � Add realtime fixture broadcaster
 
 - Files: apps/api/scripts/broadcast.ts (new), apps/api/src/routes/realtime.ts (POST /api/realtime/broadcast dev endpoint), apps/api/src/index.ts (startFixtureBroadcaster wired when FIXTURE_BROADCASTER=1)
 - Checks: typecheck clean; bun test 57 pass. Two modes: in-process (startFixtureBroadcaster(manager)) and standalone HTTP (bun run broadcast.ts targeting a running server). Round-robin rotation through fixture snapshots/quotes/anomalies/briefings at configurable interval (default 3 s).
 - Assumptions: FIXTURE_BROADCASTER=1 env var enables both the POST /api/realtime/broadcast endpoint and the in-process broadcaster. Only 1 activation mode used at a time. HTTP mode requires a running server; in-process mode is the dev-native path (bun run --hot src/index.ts with FIXTURE_BROADCASTER=1).
 - Follow-ups: none.
-
 
 ### P15-T008 � Add realtime tests
 

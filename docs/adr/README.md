@@ -41,7 +41,7 @@ Do NOT write an ADR for implementation details (function signatures, library ver
 
 ## Index
 
-| ADR                         | Title                | Status   |
-| --------------------------- | -------------------- | -------- |
-| [ADR-001](ADR-001-stack.md) | Core stack selection        | accepted |
+| ADR                                      | Title                   | Status   |
+| ---------------------------------------- | ----------------------- | -------- |
+| [ADR-001](ADR-001-stack.md)              | Core stack selection    | accepted |
 | [ADR-002](ADR-002-realtime-transport.md) | Realtime transport: SSE | accepted |

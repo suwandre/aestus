@@ -63,7 +63,12 @@ function handleSse(url: URL, manager: RealtimeManager, store: FixtureStore): Res
 
   // Start with explicit asset list
   const assetSet = new Set<string>(
-    rawAssets ? rawAssets.split(",").map((s) => s.trim()).filter(Boolean) : [],
+    rawAssets
+      ? rawAssets
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [],
   );
 
   // Expand watchlist members into the asset set
@@ -74,7 +79,12 @@ function handleSse(url: URL, manager: RealtimeManager, store: FixtureStore): Res
     }
   }
 
-  const venueList = rawVenues ? rawVenues.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
+  const venueList = rawVenues
+    ? rawVenues
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : undefined;
 
   // Build filter without undefined values (exactOptionalPropertyTypes)
   const filter: SubscriptionFilter = {};

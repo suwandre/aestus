@@ -24,12 +24,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type {
-  AnomalyEvent,
-  Briefing,
-  FeatureSnapshot,
-  VenueQuote,
-} from "@aestus/contracts";
+import type { AnomalyEvent, Briefing, FeatureSnapshot, VenueQuote } from "@aestus/contracts";
 import type { BroadcastPayload } from "../src/realtime";
 import {
   mapAnomalyEvent,
