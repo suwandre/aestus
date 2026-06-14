@@ -1387,7 +1387,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Top bar shows the Aestus identity. (The main dashboard tab remains named "Cockpit" - do not rename it.)
 
-### [ ] P16-T005 - Implement global command/search input
+### [x] P16-T005 - Implement global command/search input
 
 - Agent action: Build command/search visual component with keyboard shortcut hint; wire to placeholder actions initially.
 

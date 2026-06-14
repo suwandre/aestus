@@ -1988,3 +1988,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: Inline SVG uses exact paths from docs/specs/reference/aestus-logo.svg with linearGradient (--brand-2 → #b431f5). Wordmark: uppercase AESTUS, letter-spacing 3px, weight 600, color --text-strong. TopBar is a server component that delegates interactive children (Clock, StatusCluster) to "use client" sub-components.
 - Assumptions: AestusLogo SVG inlined rather than referencing the .svg file — simpler dependency, consistent with reference mock's inline approach. The gradient IDs could clash if multiple SVGs are on page; acceptable for single top bar instance.
 - Follow-ups: none.
+
+### P16-T005 — Implement global command/search input
+- Files: apps/web/src/components/CommandSearch/index.tsx (new)
+- Checks: "use client" component; border transitions #1a212d → #7b6cf6 on focus; ⌘K hint rendered in monospace; placeholder-only (no search logic per task scope).
+- Assumptions: Full command palette implementation deferred. Component exposes ref/onSubmit hooks for future wiring.
+- Follow-ups: none.
