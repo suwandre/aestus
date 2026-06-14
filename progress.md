@@ -2048,3 +2048,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: RealtimeClient class: connect/disconnect/on(handler)/getStatus/getLastSeq. EventSource-based SSE. 5-retry reconnect at 3s delay; gives up after max retries (status='error'). JSON parses incoming events as UIEvent type from @aestus/contracts. Seq tracking for gap detection. createRealtimeClient(params?) factory builds URL from NEXT_PUBLIC_API_URL + optional ?asset=/?watchlist= params.
 - Assumptions: Client is used in React components via useEffect. Components call connect() on mount and disconnect() on unmount. Event handlers drive state patches (P17-T014).
 - Follow-ups: none.
+
+### P16-T015 — Add frontend fixture mode
+- Files: apps/web/src/lib/fixtures.ts (new)
+- Checks: isFixtureMode() reads NEXT_PUBLIC_FIXTURE_MODE==="1". fixtureAssets: BTC-USD (crypto), ETH-USD (crypto), SPX (equity_index) — AssetIdentity shape with canonical_id, symbol, display_name, icon_key, asset_class, tags. fixtureTickers: 6 entries (BTC/ETH/SPX/DXY/GOLD/VIX) with price + change_pct_24h. Types verified against @aestus/contracts: AssetClass enum includes "equity_index".
+- Assumptions: Fixture mode is purely client-side (NEXT_PUBLIC_ prefix). Shell layout uses fixtureTickers for TopBar in all modes; individual panels switch between api.* calls and fixture data based on isFixtureMode() or API failure.
+- Follow-ups: none.

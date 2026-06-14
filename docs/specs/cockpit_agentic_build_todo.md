@@ -1447,7 +1447,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Frontend can consume fixture realtime broadcaster.
 
-### [ ] P16-T015 - Add frontend fixture mode
+### [x] P16-T015 - Add frontend fixture mode
 
 - Agent action: Allow app to run entirely from fixtures when API is unavailable.
 
