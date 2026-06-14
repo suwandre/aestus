@@ -1381,7 +1381,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: Shell visually matches high-density terminal direction.
 
-### [ ] P16-T004 - Implement top bar logo/product mark
+### [x] P16-T004 - Implement top bar logo/product mark
 
 - Agent action: Add the Aestus product mark (purple chevron-A + trend arrow, from `docs/specs/reference/aestus-logo.svg`) and `AESTUS` wordmark (uppercase, wide tracking, white) with compact styling and a future workspace/system indicator. Use `--brand`/`--brand-2` for the mark and avatar; keep `--purple` as the functional UI accent.
 
