@@ -1393,7 +1393,7 @@ Goal: Create the UI base system before tab-specific implementation.
 
 - Done when: User sees searchable command input in top bar.
 
-### [ ] P16-T006 - Implement market ticker strip
+### [x] P16-T006 - Implement market ticker strip
 
 - Agent action: Build horizontal ticker strip showing key assets, price, percent change, up/down color, freshness.
 

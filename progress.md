@@ -1994,3 +1994,9 @@ Zero-trust independent review of all 8 P15 tasks against live repo. `bun` not av
 - Checks: "use client" component; border transitions #1a212d → #7b6cf6 on focus; ⌘K hint rendered in monospace; placeholder-only (no search logic per task scope).
 - Assumptions: Full command palette implementation deferred. Component exposes ref/onSubmit hooks for future wiring.
 - Follow-ups: none.
+
+### P16-T006 — Implement market ticker strip
+- Files: apps/web/src/components/TickerStrip/index.tsx (new)
+- Checks: Server component; renders BTC/ETH/SPX/DXY/GOLD/VIX from fixture data via fixtureTickers prop. formatPrice + formatPercent from @aestus/ui. Green for positive, red for negative change. Overflow hidden, flex nowrap.
+- Assumptions: Data flows as prop from shell layout (server-side fixture data injection). Live wiring in P17-T014.
+- Follow-ups: none.
